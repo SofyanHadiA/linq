@@ -1,7 +1,7 @@
 package main
 
 import (
-	"fmt"
+	"log"
 	"net/http"
 	
 	"linq/core"
@@ -9,7 +9,12 @@ import (
 
 func main() {
 	server := core.GetStrConfig("app.server") + ":" + core.GetIntConfig("app.port")
+	
+	router := core.NewRouter(GetRoutes())
+	staticDir := core.GetStrConfig("app.staticDir")
+	router.PathPrefix("/").Handler(http.FileServer(http.Dir(staticDir)))
 
-	fmt.Printf("Listen and serve to: %s \n", server)
-	http.ListenAndServe(server, core.NewRouter(GetRoutes()))
+	http.Handle("/", router)
+	log.Println("Listen and serve to: " + server)
+	http.ListenAndServe(server, nil)
 }

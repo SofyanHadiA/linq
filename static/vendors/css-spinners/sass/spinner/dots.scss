@@ -1,0 +1,148 @@
+@import "compass/css3";
+
+$dots-loader-size: 49px !default;
+$dots-loader-colors: #f86 #fc6 #6d7 #4ae !default;
+$dots-loader-speed: 5s !default;
+
+$dots-loader-1: nth($dots-loader-colors, 1) !default;
+$dots-loader-2: nth($dots-loader-colors, 2) !default;
+$dots-loader-3: nth($dots-loader-colors, 3) !default;
+$dots-loader-4: nth($dots-loader-colors, 4) !default;
+
+$dots-loader-segment: $dots-loader-size / 7 !default;
+$dots-loader-dot-size: $dots-loader-segment * 3 !default;
+
+$dots-loader-position-1: (-2 * $dots-loader-segment) (-2 * $dots-loader-segment);
+$dots-loader-position-2: ( 2 * $dots-loader-segment) (-2 * $dots-loader-segment);
+$dots-loader-position-3: ( 2 * $dots-loader-segment) ( 2 * $dots-loader-segment);
+$dots-loader-position-4: (-2 * $dots-loader-segment) ( 2 * $dots-loader-segment);
+
+@include keyframes(dots-loader) {
+  0%   {
+    @include box-shadow(
+      $dots-loader-1 $dots-loader-position-1 0 $dots-loader-segment,
+      $dots-loader-2 $dots-loader-position-2 0 $dots-loader-segment,
+      $dots-loader-3 $dots-loader-position-3 0 $dots-loader-segment,
+      $dots-loader-4 $dots-loader-position-4 0 $dots-loader-segment
+    );
+  }
+  8.33% {
+    @include box-shadow(
+      $dots-loader-1 $dots-loader-position-2 0 $dots-loader-segment,
+      $dots-loader-2 $dots-loader-position-2 0 $dots-loader-segment,
+      $dots-loader-3 $dots-loader-position-3 0 $dots-loader-segment,
+      $dots-loader-4 $dots-loader-position-4 0 $dots-loader-segment
+    );
+  }
+  16.67% {
+    @include box-shadow(
+      $dots-loader-1 $dots-loader-position-3 0 $dots-loader-segment,
+      $dots-loader-2 $dots-loader-position-3 0 $dots-loader-segment,
+      $dots-loader-3 $dots-loader-position-3 0 $dots-loader-segment,
+      $dots-loader-4 $dots-loader-position-4 0 $dots-loader-segment
+    );
+  }
+  25% {
+    @include box-shadow(
+      $dots-loader-1 $dots-loader-position-4 0 $dots-loader-segment,
+      $dots-loader-2 $dots-loader-position-4 0 $dots-loader-segment,
+      $dots-loader-3 $dots-loader-position-4 0 $dots-loader-segment,
+      $dots-loader-4 $dots-loader-position-4 0 $dots-loader-segment
+    );
+  }
+  33.33% {
+    @include box-shadow(
+      $dots-loader-1 $dots-loader-position-1 0 $dots-loader-segment,
+      $dots-loader-2 $dots-loader-position-4 0 $dots-loader-segment,
+      $dots-loader-3 $dots-loader-position-1 0 $dots-loader-segment,
+      $dots-loader-4 $dots-loader-position-1 0 $dots-loader-segment
+    );
+  }
+  41.67% {
+    @include box-shadow(
+      $dots-loader-1 $dots-loader-position-2 0 $dots-loader-segment,
+      $dots-loader-2 $dots-loader-position-4 0 $dots-loader-segment,
+      $dots-loader-3 $dots-loader-position-1 0 $dots-loader-segment,
+      $dots-loader-4 $dots-loader-position-2 0 $dots-loader-segment
+    );
+  }
+  50% {
+    @include box-shadow(
+      $dots-loader-1 $dots-loader-position-3 0 $dots-loader-segment,
+      $dots-loader-2 $dots-loader-position-4 0 $dots-loader-segment,
+      $dots-loader-3 $dots-loader-position-1 0 $dots-loader-segment,
+      $dots-loader-4 $dots-loader-position-2 0 $dots-loader-segment
+    );
+  }
+  58.33% {
+    @include box-shadow(
+      $dots-loader-1 $dots-loader-position-4 0 $dots-loader-segment,
+      $dots-loader-2 $dots-loader-position-4 0 $dots-loader-segment,
+      $dots-loader-3 $dots-loader-position-1 0 $dots-loader-segment,
+      $dots-loader-4 $dots-loader-position-2 0 $dots-loader-segment
+    );
+  }
+  66.67% {
+    @include box-shadow(
+      $dots-loader-1 $dots-loader-position-1 0 $dots-loader-segment,
+      $dots-loader-2 $dots-loader-position-1 0 $dots-loader-segment,
+      $dots-loader-3 $dots-loader-position-1 0 $dots-loader-segment,
+      $dots-loader-4 $dots-loader-position-2 0 $dots-loader-segment
+    );
+  }
+  75% {
+    @include box-shadow(
+      $dots-loader-1 $dots-loader-position-2 0 $dots-loader-segment,
+      $dots-loader-2 $dots-loader-position-2 0 $dots-loader-segment,
+      $dots-loader-3 $dots-loader-position-2 0 $dots-loader-segment,
+      $dots-loader-4 $dots-loader-position-2 0 $dots-loader-segment
+    );
+  }
+  83.33% {
+    @include box-shadow(
+      $dots-loader-1 $dots-loader-position-3 0 $dots-loader-segment,
+      $dots-loader-2 $dots-loader-position-2 0 $dots-loader-segment,
+      $dots-loader-3 $dots-loader-position-3 0 $dots-loader-segment,
+      $dots-loader-4 $dots-loader-position-3 0 $dots-loader-segment
+    );
+  }
+  91.67% {
+    @include box-shadow(
+      $dots-loader-1 $dots-loader-position-4 0 $dots-loader-segment,
+      $dots-loader-2 $dots-loader-position-2 0 $dots-loader-segment,
+      $dots-loader-3 $dots-loader-position-3 0 $dots-loader-segment,
+      $dots-loader-4 $dots-loader-position-4 0 $dots-loader-segment
+    );
+  }
+  100%   {
+    @include box-shadow(
+      $dots-loader-1 $dots-loader-position-1 0 $dots-loader-segment,
+      $dots-loader-2 $dots-loader-position-2 0 $dots-loader-segment,
+      $dots-loader-3 $dots-loader-position-3 0 $dots-loader-segment,
+      $dots-loader-4 $dots-loader-position-4 0 $dots-loader-segment
+    );
+  }
+}
+
+/* :not(:required) hides this rule from IE9 and below */
+.dots-loader:not(:required) {
+  overflow: hidden;
+  position: relative;
+  text-indent: -9999px;
+
+  display: inline-block;
+  width: $dots-loader-segment;
+  height: $dots-loader-segment;
+
+  background: transparent;
+  border-radius: 100%;
+  @include box-shadow(
+    $dots-loader-1 $dots-loader-position-1 0 $dots-loader-segment,
+    $dots-loader-2 $dots-loader-position-2 0 $dots-loader-segment,
+    $dots-loader-3 $dots-loader-position-3 0 $dots-loader-segment,
+    $dots-loader-4 $dots-loader-position-4 0 $dots-loader-segment
+  );
+
+  @include animation(dots-loader $dots-loader-speed infinite ease-in-out);
+  @include transform-origin(50%, 50%);
+}

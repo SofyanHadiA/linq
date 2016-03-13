@@ -1,0 +1,53 @@
+{
+  "name": "RinjaniPOS",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./app/main.js",
+  "dependencies": {
+    "bootbox": "^4.4.0",
+    "bootstrap": "^3.3.5",
+    "bootstrap-notify": "^3.1.3",
+    "browserify": "^11.2.0",
+    "browserify-shim": "^3.8.10",
+    "datatables": "^1.10.9",
+    "di4js": "^1.1.3",
+    "handlebars": "^4.0.3",
+    "hbsfy": "^2.3.1",
+    "jquery": "^2.1.4",
+    "jquery-validation": "^1.14.0"
+  },
+  "devDependencies": {
+    "browserify-shim": "^3.8.10",
+    "gulp": "^3.9.0",
+    "gulp-uglify": "^1.4.1",
+    "phantomjs": "^1.9.18",
+    "watchify": "^3.4.0"
+  },
+  "browser": {
+    "jquery-validate": "./node_modules/jquery-validation/dist/jquery.validate.js"
+  },
+  "browserify": {
+    "transform": [
+      "browserify-shim"
+    ]
+  },
+  "browserify-shim": {
+    "jquery": "$",
+    "jquery-validate": {
+      "depends": [
+        "jQuery"
+      ]
+    }
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "watch": "watchify app/main.js -o dist/bundle.js --v",
+    "bundle": "browserify app/main.js -o dist/bundle.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://bitbucket.org/Sofyan_A/pos"
+  },
+  "author": "Sofyan Hadi A.",
+  "license": "ISC"
+}

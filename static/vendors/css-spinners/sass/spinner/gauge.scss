@@ -1,0 +1,65 @@
+@import "compass/css3";
+
+$gauge-loader-size: 64px !default;
+$gauge-loader-speed: 4000ms !default;
+$gauge-loader-color: #6ca !default;
+
+@include keyframes(gauge-loader) {
+  0%   { @include rotateZ(-50deg); }
+  
+  10%  { @include rotateZ(20deg); }
+  20%  { @include rotateZ(60deg); }
+  24%  { @include rotateZ(60deg); }
+  
+  40%  { @include rotateZ(-20deg); }
+  54%  { @include rotateZ(70deg); }
+  56%  { @include rotateZ(78deg); }
+  58%  { @include rotateZ(73deg); }
+  60%  { @include rotateZ(75deg); }
+  62%  { @include rotateZ(70deg); }
+  
+  70%  { @include rotateZ(-20deg); }
+  
+  80%  { @include rotateZ(20deg); }
+  83%  { @include rotateZ(25deg); }
+  86%  { @include rotateZ(20deg); }
+  89%  { @include rotateZ(25deg); }
+  
+  100% { @include rotateZ(-50deg); }
+}
+
+/* :not(:required) hides this rule from IE9 and below */
+.gauge-loader:not(:required) {
+  background: $gauge-loader-color;
+  @include border-top-radius($gauge-loader-size / 2);
+  display: inline-block;
+  width: $gauge-loader-size;
+  height: $gauge-loader-size / 2;
+  overflow: hidden;
+  position: relative;
+  text-indent: -9999px;
+  
+  &::before {
+    @include animation(gauge-loader $gauge-loader-speed infinite ease);
+    background: white;
+    @include border-radius($gauge-loader-size / 32);
+    content: '';
+    position: absolute;
+    left: ($gauge-loader-size / 2) - ($gauge-loader-size / 32);
+    top: ($gauge-loader-size / 12);
+    width: ($gauge-loader-size / 16);
+    height: (5 * $gauge-loader-size / 12);
+    @include transform-origin(50%, 100%);
+  }
+  
+  &::after {
+    content: '';
+    background: white;
+    @include border-radius($gauge-loader-size / 8);
+    position: absolute;
+    left: ($gauge-loader-size / 2) - ($gauge-loader-size / 10);
+    top: ($gauge-loader-size / 2) - ($gauge-loader-size / 10);
+    width: ($gauge-loader-size / 5);
+    height: ($gauge-loader-size / 5);
+  }
+}

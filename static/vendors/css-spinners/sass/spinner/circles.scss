@@ -1,0 +1,57 @@
+@import "compass/css3";
+
+$circles-loader-size: 50px !default;
+$circles-loader-speed: 3s !default;
+$circles-loader-colors: rgba(#fc3, 0.9) rgba(#f60, 0.6)  rgba(#f30, 0.4) !default;
+
+$circles-loader-radius: $circles-loader-size / 4 !default;
+$circles-loader-diameter: $circles-loader-size / 2 !default;
+
+$circles-loader-1: nth($circles-loader-colors, 1) !default;
+$circles-loader-2: nth($circles-loader-colors, 2) !default;
+$circles-loader-3: nth($circles-loader-colors, 3) !default;
+
+@include keyframes(circles-loader) {
+  0%  { @include rotateZ(-2*360deg); }
+  50% { @include rotateZ(2*360deg); }
+}
+
+/* :not(:required) hides this rule from IE9 and below */
+.circles-loader:not(:required) {
+  position: relative;
+  text-indent: -9999px;
+
+  display: inline-block;
+  width: $circles-loader-diameter;
+  height: $circles-loader-diameter;
+
+  background: $circles-loader-1;
+  border-radius: 100%;
+  
+  //@include box-shadow(white 0 -($circles-loader-segment/2) 0 0 inset);
+  
+  &::before {
+    background: $circles-loader-2;
+    border-radius: 100%;
+    content: '';
+    position: absolute;
+    width: $circles-loader-diameter;
+    height: $circles-loader-diameter;
+    top: $circles-loader-radius + ($circles-loader-radius * sin(30deg));
+    left: -$circles-loader-radius * cos(30deg);
+  }
+  
+  &::after {
+    background: $circles-loader-3;
+    border-radius: 100%;
+    content: '';
+    position: absolute;
+    width: $circles-loader-diameter;
+    height: $circles-loader-diameter;
+    top: $circles-loader-radius + ($circles-loader-radius * sin(30deg));
+    left: $circles-loader-radius * cos(30deg);
+  }
+  
+  @include animation(circles-loader $circles-loader-speed infinite ease-in-out);
+  @include transform-origin(50%, 100%);
+}

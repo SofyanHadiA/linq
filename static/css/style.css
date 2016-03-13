@@ -1,0 +1,23 @@
+.form-group {
+    margin-top: 15px;
+    margin-bottom: 0px !important;
+}
+
+.form-group .control-label.required:after {
+    content:"*";
+}
+
+.top-buffer { margin-top:20px; }
+
+.error {
+    font-size: smaller;
+    font-weight: normal;
+    font-style: normal;
+    margin-top: -15px;
+    margin-bottom: -15px;
+    float: right;
+}
+
+.spinner{
+    padding-top: 100px;
+}

@@ -1,0 +1,248 @@
+@import url(autocomplete.css);
+@import url(general.css);
+@import url(popupbox.css);
+@import url(register.css);
+@import url(receipt.css);
+@import url(reports.css);
+@import url(tables.css);
+@import url(datepicker.css);
+@import url(dashboard.css);
+@import url(login.css);
+
+a.none
+{
+	text-decoration:none;
+}
+
+
+#title_bar
+{
+	position:relative;
+	margin-top:10px;
+	margin-bottom:10px;
+	width:100%;
+	height:50px;
+}
+
+#title
+{
+	position:absolute;
+	bottom:0px;
+	left:0px;
+	font-size:30px;
+	font-weight:bold;
+	color:#000000;
+}	
+
+#page_title
+{
+	margin-top:8px;
+	font-size:30px;
+	font-weight:bold;
+	color:#000000;
+	text-align:center;
+
+}
+
+#page_subtitle
+{
+	margin-top:8px;
+	font-size:16px;
+	font-weight:bold;
+	color:#000000;
+	text-align:center;
+}
+
+#new_button
+{
+	position:absolute;
+	bottom:-5px;
+	right:0px;
+}
+
+#spinner
+{
+        float:right;	
+	display:none;
+}
+
+#feedback_bar
+{
+	position:fixed;
+	bottom:0;
+	left:0;
+	width:100%;
+	height:55px;	
+	position:fixed;
+	opacity: 0;
+	filter: alpha(opacity=0);
+	z-index:1;
+	line-height:3.3;
+}
+
+#home_module_list
+{
+	position: relative;
+}
+
+.module-item
+{
+	padding: 10px;
+}
+
+#config_wrapper
+{
+	text-align:center;
+}
+
+#config_info
+{
+	width:80%;
+	margin:0 auto;
+	padding:10px;
+	margin-bottom:30px;
+	margin-top:10px;
+	text-align:left;
+}
+
+#config_info .wide
+{
+	width: 30%;
+}
+
+#footer
+{
+	position:relative;
+	margin-top:25px;
+	margin-bottom:15px;	
+	text-align:center;
+	font-size:11px;
+	color:#777777;
+	clear:both;
+	
+}
+
+  		body{
+            background:#00407A !important;
+        }
+        
+        input, textarea, keygen, select{
+            margin-bottom: 10px !important;
+        }
+        
+        div, input, select, textarea, span, img, table, label, td, th, p, a, button, ul, code, pre, li {
+            -webkit-border-radius: 0 !important;
+            -moz-border-radius: 0 !important;
+            border-radius: 0 !important;
+        }
+        
+        h3{
+            margin: 5px 0;
+        }
+        
+        #content_area_wrapper
+        {           
+            margin-top: 55px;            
+        }
+        
+        .btn {
+            font-size: 14px;
+            outline: none !important;
+            background-image: none !important;
+            filter: none;
+            -webkit-box-shadow: none;
+            -moz-box-shadow: none;
+            box-shadow: none;
+            text-shadow: none;
+            margin-bottom: 5px;
+        }
+        
+        .btn-circle {
+            border-radius: 25px !important;
+            border-top-left-radius: 25px;
+            border-top-right-radius: 25px;
+            border-bottom-right-radius: 25px;
+            border-bottom-left-radius: 25px;
+        }
+        
+        .btn-group.btn-group-circle > .btn:first-child {
+            border-radius: 25px 0 0 25px !important;
+        }
+        
+        .btn-group.btn-group-circle > .btn:last-child {
+            border-radius: 0 25px 25px 0 !important;
+        }
+            
+        .btn-default:hover, .btn-default:focus, .btn-default:active, .btn-default.active {
+            color: #333;
+            background-color: #ededed;
+            border-color: #b3b3b3;
+        }
+        
+        .input-icon {
+            position: relative;
+            left: 0;
+        }
+        
+        .input-icon > i {
+            color: #ccc;
+            display: block;
+            position: absolute;
+            margin: 11px 2px 4px 10px;
+            z-index: 3;
+            width: 16px;
+            font-size: 16px;
+            text-align: center;
+        }
+        
+        .input-icon > .form-control {
+            padding-left: 33px;
+        }
+        
+        .well {            
+            font-family: 'Open Sans', sans-serif;
+            padding: 5px;
+            margin:0 0 5px 0;
+            background-color: #EEEEEE;
+            border: 0;
+            border-top-color: initial;
+            border-top-style: initial;
+            border-top-width: 0px;
+            border-right-color: initial;
+            border-right-style: initial;
+            border-right-width: 0px;
+            border-bottom-color: initial;
+            border-bottom-style: initial;
+            border-bottom-width: 0px;
+            border-left-color: initial;
+            border-left-style: initial;
+            border-left-width: 0px;
+            -webkit-box-shadow: none !important;
+            -moz-box-shadow: none !important;
+            box-shadow: none !important;
+        }
+        
+         .well hr{
+            border: 1px;
+            border-bottom-color: #000;
+            border-bottom-width: 1px;
+            border-bottom-style: solid;
+         }
+         
+         .bg-danger
+         {
+             padding: 10px;
+             margin: 10px 0;
+         }
+         
+            #login-container
+            {             
+                background: #fff;            
+            }
+         
+         @media (min-width: 992px){
+            #login-container
+            {             
+                width:500px;           
+            }
+         }

@@ -2,22 +2,23 @@ package chat
 
 import (
 	"log"
-	"text/template"
 	"net/http"
-
+	
+	core "linq/core"
 	services "linq/apps/chat/services"
 )
-
-var homeTempl = template.Must(template.ParseFiles("apps/chat/views/index.html"))
 
 func init(){
 	go services.Hubs.Run()
 }
 
 func ServeHome(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "text/html; charset=utf-8")
-	homeTempl.Execute(w, r.Host)
 	
+	viewData := core.ViewData{
+		PageDesc : "Chat page",
+	}
+	
+	core.ParseHtml("apps/chat/views/index.html", viewData, w, r)
 }
 
 func ServeWs(w http.ResponseWriter, r *http.Request) {
