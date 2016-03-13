@@ -5,6 +5,7 @@ import (
 
 	Todo "linq/apps/todo"
 	User "linq/apps/user"
+	Chat "linq/apps/chat"
 )
 
 var routes = Routes{
@@ -13,6 +14,8 @@ var routes = Routes{
 	Route{"TodoShow", "GET", "/todos/{todoId}", Todo.TodoShow},
 	Route{"TodoCreate", "POST", "/todos", Todo.TodoCreate},
 	Route{"UserList", "GET", "/users", User.UserList},
+	Route{"ChatIndex", "GET", "/chat", Chat.ServeHome},
+	Route{"ChatWs", "GET", "/ws", Chat.ServeWs},
 }
 
 func GetRoutes() Routes {

@@ -1,49 +1,45 @@
-// Copyright 2013 The Gorilla WebSocket Authors. All rights reserved.
-// Use of this source code is governed by a BSD-style
-// license that can be found in the LICENSE file.
+package services
 
-package main
+// Hub maintains the set of active ChatConnections and broadcasts messages to the
+// ChatConnections.
+type Hub struct {
+	// Registered ChatConnections.
+	ChatConnections map[*ChatConnection]bool
 
-// hub maintains the set of active connections and broadcasts messages to the
-// connections.
-type hub struct {
-	// Registered connections.
-	connections map[*connection]bool
+	// Inbound messages from the ChatConnections.
+	Broadcast chan []byte
 
-	// Inbound messages from the connections.
-	broadcast chan []byte
+	// Register requests from the ChatConnections.
+	Register chan *ChatConnection
 
-	// Register requests from the connections.
-	register chan *connection
-
-	// Unregister requests from connections.
-	unregister chan *connection
+	// Unregister requests from ChatConnections.
+	Unregister chan *ChatConnection
 }
 
-var h = hub{
-	broadcast:   make(chan []byte),
-	register:    make(chan *connection),
-	unregister:  make(chan *connection),
-	connections: make(map[*connection]bool),
+var Hubs = Hub{
+	Broadcast:   make(chan []byte),
+	Register:    make(chan *ChatConnection),
+	Unregister:  make(chan *ChatConnection),
+	ChatConnections: make(map[*ChatConnection]bool),
 }
 
-func (h *hub) run() {
+func (hub *Hub) Run() {
 	for {
 		select {
-		case c := <-h.register:
-			h.connections[c] = true
-		case c := <-h.unregister:
-			if _, ok := h.connections[c]; ok {
-				delete(h.connections, c)
-				close(c.send)
+		case c := <-hub.Register:
+			hub.ChatConnections[c] = true
+		case c := <-hub.Unregister:
+			if _, ok := hub.ChatConnections[c]; ok {
+				delete(hub.ChatConnections, c)
+				close(c.Send)
 			}
-		case m := <-h.broadcast:
-			for c := range h.connections {
+		case m := <-hub.Broadcast:
+			for c := range hub.ChatConnections {
 				select {
-				case c.send <- m:
+				case c.Send <- m:
 				default:
-					close(c.send)
-					delete(h.connections, c)
+					close(c.Send)
+					delete(hub.ChatConnections, c)
 				}
 			}
 		}
