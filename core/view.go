@@ -1,37 +1,65 @@
 package core
 
-import(
-	"text/template"
+import (
+	log "linq/core/log"
 	"net/http"
-	"log"
+	"text/template"
 )
 
-type ViewData struct{
+type ViewData struct {
+	BaseUrl   string
 	PageTitle string
-	PageDesc string
-	Content string
-	Data map[string]interface{}
+	PageDesc  string
+	Data      map[string]interface{}
 }
 
 var viewData ViewData
 
-func init(){
+var mainTemplate string = "views/_template.html"
+var headerTemplate string = "views/_header.html"
+var footerTemplate string = "views/_footer.html"
+var sidebarTemplate string = "views/_sidebar.html"
+var menubarTemplate string = "views/_menubar.html"
+
+func init() {
 	viewData = ViewData{
-		PageTitle : GetStrConfig("app.pageTitle"),
+		BaseUrl:   GetStrConfig("app.baseUrl"),
+		PageTitle: GetStrConfig("app.pageTitle"),
 	}
 }
 
 func ParseHtml(templateLoc string, data ViewData, w http.ResponseWriter, r *http.Request) {
 	data.PageTitle = viewData.PageTitle
-	data.Content = "content"
-    
-	w.Header().Set("Content-Type", "text/html; charset=utf-8")
-	
-	t := template.Must(template.New("template").ParseFiles("views/template.html"))
-	// t = template.Must(t.ParseFiles(templateLoc))
+	data.BaseUrl = viewData.BaseUrl
 
-    err := t.Execute(w, &data)
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+
+	log.Debug("Parsing view(s): ", mainTemplate, templateLoc)
+	t := template.Must(template.ParseFiles(templateLoc))
+
+	err := t.ExecuteTemplate(w, "main", data)
 	if err != nil {
-		log.Println("executing template:", err)
+		log.Fatal("executing template: ", err)
+	}
+}
+
+func ParseHtmlTemplate(templateLoc string, data ViewData, w http.ResponseWriter, r *http.Request) {
+	data.PageTitle = viewData.PageTitle
+	data.BaseUrl = viewData.BaseUrl
+
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+
+	log.Debug("Parsing view(s): ", mainTemplate, templateLoc)
+	t := template.Must(template.ParseFiles(
+		mainTemplate,
+		headerTemplate,
+		footerTemplate,
+		sidebarTemplate,
+		menubarTemplate,
+		templateLoc))
+
+	err := t.ExecuteTemplate(w, "main", data)
+	if err != nil {
+		log.Fatal("executing template: ", err)
 	}
 }

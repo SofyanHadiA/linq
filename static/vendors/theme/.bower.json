@@ -30,7 +30,7 @@
     "composer.json",
     "documentation"
   ],
-  "_source": "/home/ubuntu/go/src/linq/static/local_package/theme-2.3.0",
+  "_source": "/home/ubuntu/workspace/go/src/linq/static/local_package/theme-2.3.0",
   "_target": "*",
   "_originalSource": "./local_package/theme-2.3.0"
 }

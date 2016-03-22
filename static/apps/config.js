@@ -8,12 +8,12 @@ var config = {
             controller: 'dashboardController'
         },
         customers: {
-            templateUrl: '../app/people/customer.html',
+            templateUrl: 'people/customer.html',
             controller: 'customerController',
             model: ''
         },
         items: {
-            templateUrl: '../app/item/item.html',
+            templateUrl: 'item/item.html',
             controller: 'itemController'
         }
     }

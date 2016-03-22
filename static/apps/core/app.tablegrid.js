@@ -5,8 +5,8 @@ var $ = jQuery;
 var bootbox = require('bootbox');
 
 // load from bower since npm datatables package version does not include dataTables.bootstrap.js
-require('./../../packages/datatables/media/js/jquery.dataTables.js');
-require('./../../packages/datatables/media/js/dataTables.bootstrap.js');
+require('./../../vendors/datatables/media/js/jquery.dataTables.js');
+require('./../../vendors/datatables/media/js/dataTables.bootstrap.js');
 
 function tableGridModule($modal, $http) {
 

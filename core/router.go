@@ -5,7 +5,7 @@ import (
 
 	"github.com/gorilla/mux"
 
-	utils "linq/core/utils"
+	log "linq/core/log"
 )
 
 type Route struct {
@@ -22,7 +22,7 @@ func NewRouter(routes Routes) *mux.Router {
 	for _, route := range routes {
 		var handler http.Handler
 		handler = route.HandlerFunc
-		handler = utils.Logger(handler, route.Name)
+		handler = log.Logger(handler, route.Name)
 
 		router.
 			Methods(route.Method).
@@ -30,6 +30,6 @@ func NewRouter(routes Routes) *mux.Router {
 			Name(route.Name).
 			Handler(handler)
 	}
-	
+
 	return router
 }

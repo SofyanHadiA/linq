@@ -3,7 +3,7 @@
 */
 
 // Load jQuery and register it to globl and load bootstrap
-var $ = global.jQuery = require('jquery');
+var $ = jQuery = global.jQuery = require('jquery');
 require('bootstrap');
 
 // Load core modules
@@ -29,7 +29,7 @@ var $app = {
     $form: $form,
     $modal: $modal,
     $loader: $loader,
-    $tablegrid: $tablegrid,
+    //$tablegrid: $tablegrid,
     $notify: $notify,
     $http: $http,
     $language: $language,

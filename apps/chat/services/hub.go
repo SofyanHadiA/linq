@@ -17,9 +17,9 @@ type Hub struct {
 }
 
 var Hubs = Hub{
-	Broadcast:   make(chan []byte),
-	Register:    make(chan *ChatConnection),
-	Unregister:  make(chan *ChatConnection),
+	Broadcast:       make(chan []byte),
+	Register:        make(chan *ChatConnection),
+	Unregister:      make(chan *ChatConnection),
 	ChatConnections: make(map[*ChatConnection]bool),
 }
 

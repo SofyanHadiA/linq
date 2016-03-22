@@ -37,7 +37,7 @@ type ChatConnection struct {
 // readPump pumps messages from the websocket ChatConnection to the hub.
 func (c *ChatConnection) ReadPump() {
 	defer func() {
-		 Hubs.Unregister <- c
+		Hubs.Unregister <- c
 		c.WS.Close()
 	}()
 	c.WS.SetReadLimit(MaxMessageSize)
@@ -51,7 +51,7 @@ func (c *ChatConnection) ReadPump() {
 			}
 			break
 		}
-		 Hubs.Broadcast <- message
+		Hubs.Broadcast <- message
 	}
 }
 
@@ -85,4 +85,3 @@ func (c *ChatConnection) WritePump() {
 		}
 	}
 }
-

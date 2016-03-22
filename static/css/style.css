@@ -21,3 +21,13 @@
 .spinner{
     padding-top: 100px;
 }
+.login-page,
+.register-page {
+  background: #24242D;
+}
+.login-logo{
+    color: #ccc;
+}
+.login-logo b{
+    color: #ddd;
+}
