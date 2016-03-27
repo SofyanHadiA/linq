@@ -3,7 +3,6 @@ package core
 import (
 	"io/ioutil"
 	"os"
-	"strconv"
 	"strings"
 
 	log "linq/core/log"
@@ -33,8 +32,8 @@ func GetStrConfig(configKey string) string {
 	return configs[configKey].(string)
 }
 
-func GetIntConfig(configKey string) string {
-	return strconv.Itoa(configs[configKey].(int))
+func GetIntConfig(configKey string) int {
+	return configs[configKey].(int)
 }
 
 func loadConfig(file string) Configs {

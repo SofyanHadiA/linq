@@ -5,6 +5,7 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="google-signin-cookiepolicy" content="single_host_origin" />
   <title>{{.PageTitle}} - {{.PageDesc}}</title>
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
   <link rel="stylesheet" href="{{.BaseUrl}}vendors/bootstrap/dist/css/bootstrap.min.css">
@@ -29,7 +30,7 @@
 
 <body class="hold-transition login-page">
   <div class="login-box">
-    
+
     <div class="login-logo">
       <b>LINQ</b>Dev
     </div>
@@ -38,15 +39,12 @@
       <p class="login-box-msg">Sign in to start your session</p>
 
       <div class="social-auth-links text-center">
-        <button class="btn btn-block btn-social btn-facebook btn-flat signin-facebook">
-          <i class="fa fa-facebook"></i> Sign in using Facebook
-        </button>
         <button class="btn btn-block btn-social btn-google btn-flat signin-google">
           <i class="fa fa-google-plus"></i> Sign in using Google
         </button>
       </div>
       <!-- /.social-auth-links -->
-    
+
       <form method="post">
         <div class="form-group has-feedback">
           <input id="a0-signin_easy_email" type="email" class="form-control" placeholder="Email">
@@ -71,24 +69,63 @@
     <!-- /.login-box-body -->
   </div>
   <!-- /.login-box -->
-  <script src="https://cdn.auth0.com/js/lock-8.2.js"></script>
   <script src="{{.BaseUrl}}vendors/jquery/dist/jquery.min.js"></script>
   <script src="{{.BaseUrl}}vendors/bootstrap/dist/js/bootstrap.min.js"></script>
   <script src="{{.BaseUrl}}vendors/theme/plugins/iCheck/icheck.min.js"></script>
-  <script src="https://cdn.auth0.com/w2/auth0-6.7.min.js"></script>
+  <script src="https://apis.google.com/js/client:platform.js"></script>
 
   <script>
-    var auth0 = new Auth0({
-      domain: 'linq.auth0.com',
-      clientID: 'a98rUrbNXIgr7U5D1vaIvVlTs2BgTccp',
-      callbackURL: 'https://linq-sofyan-a-1.c9users.io/login/callback'
-    });
+    // var auth0 = new Auth0({
+    //   domain: 'linq.auth0.com',
+    //   clientID: 'a98rUrbNXIgr7U5D1vaIvVlTs2BgTccp',
+    //   callbackURL: 'https://linq-sofyan-a-1.c9users.io/login/callback'
+    // });
+    var additionalParams = {
+      hd: "linq.im",
+      'callback': signinCallback
+    };
+    
+    function authenticate(token) {
+      var redirectUrl = params["redirectUrl"] == undefined ? '' : params['redirectUrl'];
+      $.ajax({
+          type: "POST",
+          url: "/dashboard/auth/login?redirectUrl=" + redirectUrl,
+          data: JSON.stringify({
+              authType: "google",
+              accessToken: "Bearer " + token
+          }),
+          processData: false,
+          contentType: "application/json",
+          dataType: "text",
+          success: function(data) {
+              showSuccessMessage("Authenticated, redirecting...");
+              window.location.href = data;
+          },
+          error: function(jqXHR) {
+              var errorText = '';
+              try {
+                  errorText = $.parseJSON(jqXHR.responseText);
+              } catch (e) {
+                  errorText = jqXHR.responseText;
+              }
+              showErrorMessage(errorText);
+              $('#loginbox' ).addClass('loginbox--error')
+          }
+      });
+    }
+
+    function signinCallback(authResult) {
+      if (authResult['status']['signed_in']) {
+        if (authResult['status']['method'] === 'PROMPT') {
+          authenticate(authResult['access_token']);
+        }
+      }
+    }
+
 
     // sign-in with social provider with plain redirect
     $('.signin-google').on('click', function() {
-      auth0.signin({
-        connection: 'google-oauth2'
-      }); // use connection identifier
+      gapi.auth.signIn();
     });
 
     // sign-in with social provider with plain redirect
