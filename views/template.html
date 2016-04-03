@@ -14,34 +14,30 @@
 	<link rel="stylesheet" href="{{.BaseUrl}}vendors/theme/dist/css/theme.min.css">
 	<link rel="stylesheet" href="{{.BaseUrl}}vendors/theme/dist/css/skins/skin-red.css">
 	<link rel="stylesheet" href="{{.BaseUrl}}vendors/datatables/media/css/dataTables.bootstrap.css">
-	<link rel="stylesheet" href="{{.BaseUrl}}vendors/PACE/themes/yellow/pace-theme-loading-bar.css">
+	<link rel="stylesheet" href="{{.BaseUrl}}vendors/PACE/themes/white/pace-theme-minimal.css">
 	<link rel="stylesheet" href="{{.BaseUrl}}vendors/blueimp-file-upload/css/jquery.fileupload.css">
 	<link rel="stylesheet" href="{{.BaseUrl}}vendors/css-spinners/css/spinner/dots.css">
 </head>
 
 <body class="hold-transition skin-red sidebar-mini">
 	<div class="wrapper">
-
 		{{template "header" .}}
-		
 		{{template "menubar" .}}
-
-		<!-- Content Wrapper. Contains page content -->
 		<div class="content-wrapper">
-			<app-view>Loading...</app-view>
+			<app-view/>
 		</div>
-		<!-- /.content-wrapper -->
-		
 		{{template "footer" .}}
-		
 		{{template "sidebar" .}}
 	</div>
 
-	<script src="{{.BaseUrl}}dist/bundle.js"></script>
 	<script src="{{.BaseUrl}}vendors/jquery/dist/jquery.min.js"></script>
+	<script src="{{.BaseUrl}}vendors/bootstrap/dist/js/bootstrap.min.js"></script>
+	<script src="{{.BaseUrl}}vendors/datatables/media/js/jquery.dataTables.js"></script>
+	<script src="{{.BaseUrl}}vendors/datatables/media/js/dataTables.bootstrap.js"></script>
 	<script src="{{.BaseUrl}}vendors/theme/dist/js/app.js"></script>
 	<script src="{{.BaseUrl}}vendors/PACE/pace.js"></script>
-
+	<script src="{{.BaseUrl}}dist/bundle.js"></script>
+	
 </body>
 
 </html>

@@ -1,17 +1,19 @@
 package utils
 
-import(
-    log "linq/core/log"
-)
-
-func HandleWarn(err error) {
+func HandleWarn(err error) bool {
     if err != nil {
-        log.Warn(err.Error())
+        Log.Warn(err.Error())
+        return true
+    }else{
+        return false
     }
 }
 
-func HandleFatal(err error) {
+func HandleFatal(err error) bool {
     if err != nil {
-        log.Fatal(err.Error())
+        Log.Fatal(err.Error())
+        return true
+    }else{
+        return false
     }
 }

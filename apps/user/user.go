@@ -1,11 +1,11 @@
 package user
 
-import "time"
-
 type User struct {
-	Name      string    `json:"name"`
+	Uid  	  int  		`json:"uid"`
+	Username  string    `json:"username"`
+	Password  string    `json:"password"`
 	Email     string    `json:"email"`
-	LastLogin time.Time `json:"lastLogin"`
+	LastLogin int 		`json:"lastLogin"`
 }
 
 type Users []User

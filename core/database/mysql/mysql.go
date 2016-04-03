@@ -3,7 +3,6 @@ package mysql
 import(
     "database/sql"
 
-    log "linq/core/log"
     utils "linq/core/utils"
     
     _ "github.com/go-sql-driver/mysql"
@@ -23,9 +22,9 @@ func (mysql MySqlDB) Ping() bool{
     db, err := sql.Open("mysql", mysql.ConnectionString) 
     err = db.Ping()
     if err != nil {
-        log.Fatal(err.Error(), mysql.ConnectionString)
+        utils.Log.Fatal(err.Error(), mysql.ConnectionString)
     }else{
-        log.Info("Connected to mysql server", mysql.ConnectionString)
+        utils.Log.Info("Connected to mysql server", mysql.ConnectionString)
     }
     
     return true

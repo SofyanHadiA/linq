@@ -21,7 +21,6 @@ var $handlebars = require('handlebars');
 
 // Core application instance
 var $app = {
-    
     // register module
     $:$,
     $config: $config,
@@ -29,7 +28,7 @@ var $app = {
     $form: $form,
     $modal: $modal,
     $loader: $loader,
-    //$tablegrid: $tablegrid,
+    $tablegrid: $tablegrid,
     $notify: $notify,
     $http: $http,
     $language: $language,
@@ -39,7 +38,7 @@ var $app = {
     start: function (config) {
         // merge default application config with custom comfig
         $app.$config = $.extend($app.$config, config);
-        
+
         // bind loader to window on hash change
         window.onhashchange = $app.$loader.load;
         

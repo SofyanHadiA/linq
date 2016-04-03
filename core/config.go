@@ -5,7 +5,6 @@ import (
 	"os"
 	"strings"
 
-	log "linq/core/log"
 	"linq/core/utils"
 
 	"gopkg.in/yaml.v2"
@@ -25,7 +24,7 @@ func init() {
 	utils.MapCopy(configs, appConfig)
 	utils.MapCopy(configs, auth0Config)
 
-	log.Info("Application configs: ", configs)
+	utils.Log.Info("Application configs: ", configs)
 }
 
 func GetStrConfig(configKey string) string {
@@ -42,12 +41,12 @@ func loadConfig(file string) Configs {
 
 	conf, errFile := ioutil.ReadFile(file)
 	if errFile != nil {
-		log.Fatal("error: %v", errFile)
+		utils.Log.Fatal("error: %v", errFile)
 	}
 
 	errYaml := yaml.Unmarshal([]byte(conf), &config)
 	if errYaml != nil {
-		log.Fatal("error: %v", errYaml)
+		utils.Log.Fatal("error: %v", errYaml)
 	}
 
 	for k := range config {

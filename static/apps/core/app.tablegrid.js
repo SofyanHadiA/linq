@@ -1,7 +1,3 @@
-
-
-var $ = jQuery;
-
 var bootbox = require('bootbox');
 
 // load from bower since npm datatables package version does not include dataTables.bootstrap.js
@@ -9,7 +5,6 @@ require('./../../vendors/datatables/media/js/jquery.dataTables.js');
 require('./../../vendors/datatables/media/js/dataTables.bootstrap.js');
 
 function tableGridModule($modal, $http) {
-
     var tablegrid = {
         table: "",
         dataTable: {},
@@ -21,28 +16,26 @@ function tableGridModule($modal, $http) {
     return tablegrid;
 
     function render(tableContainer, serviceUrl, tableConfig, columnId) {
-
         tablegrid.table = tableContainer;
 
         tableConfig = [{
             sortable: false,
             data: columnId,
             render: function (data, type, row) {
-                return '<input type="checkbox" id="person_' + data +
-                    '" value="' + data + '"/>';
+                return '<input type="checkbox" id="rows-' + data + '" value="' + data + '"/>';
             }
         }]
-            .concat(tableConfig)
-            .concat([{
-                sortable: false,
-                data: columnId,
-                render: function (data, type, row) {
-                    return '<div class="btn-group"><a class="btn btn-xs btn-default edit-data" href="' + serviceUrl + '/view/' + data + '">'
-                        + '<i class="fa fa-edit"></i></a> '
-                        + '<a class="btn btn-xs btn-default btn-delete" href="' + serviceUrl + '/delete/' + data
-                        + '"><i class="fa fa-trash"></i></a></div>';
-                }
-            }]);
+        .concat(tableConfig)
+        .concat([{
+            sortable: false,
+            data: columnId,
+            render: function (data, type, row) {
+                return '<div class="btn-group"><a class="btn btn-xs btn-default edit-data" href="' + serviceUrl + '/view/' + data + '">'
+                    + '<i class="fa fa-edit"></i></a> '
+                    + '<a class="btn btn-xs btn-default btn-delete" href="' + serviceUrl + '/delete/' + data
+                    + '"><i class="fa fa-trash"></i></a></div>';
+            }
+        }]);
 
         tablegrid.dataTable = $(tablegrid.table).DataTable({
             "info": true,
@@ -53,15 +46,10 @@ function tableGridModule($modal, $http) {
             "processing": true,
             "serverSide": true,
             "ajax": {
-                url: serviceUrl + '/get',
-                type: "post",
+                url: serviceUrl,
+                type: "get",
                 error: function (error) {
-                    $.notify({
-                        icon: 'fa fa-info-circle',
-                        message: error.message
-                    }, {
-                            type: "info"
-                        });
+                    $.notify({icon: 'fa fa-info-circle', message: error.message}, { type: "info" });
                 }
             }
         });

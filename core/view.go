@@ -1,9 +1,10 @@
 package core
 
 import (
-	log "linq/core/log"
 	"net/http"
 	"text/template"
+	
+	"linq/core/utils"
 )
 
 type ViewData struct {
@@ -15,7 +16,7 @@ type ViewData struct {
 
 var viewData ViewData
 
-var mainTemplate string = "views/_template.html"
+var mainTemplate string = "views/template.html"
 var headerTemplate string = "views/_header.html"
 var footerTemplate string = "views/_footer.html"
 var sidebarTemplate string = "views/_sidebar.html"
@@ -34,12 +35,12 @@ func ParseHtml(templateLoc string, data ViewData, w http.ResponseWriter, r *http
 
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 
-	log.Debug("Parsing view(s): ", mainTemplate, templateLoc)
+	utils.Log.Debug("Parsing view(s): ", mainTemplate, templateLoc)
 	t := template.Must(template.ParseFiles(templateLoc))
 
 	err := t.ExecuteTemplate(w, "main", data)
 	if err != nil {
-		log.Fatal("executing template: ", err)
+		utils.Log.Fatal("executing template: ", err)
 	}
 }
 
@@ -49,7 +50,7 @@ func ParseHtmlTemplate(templateLoc string, data ViewData, w http.ResponseWriter,
 
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 
-	log.Debug("Parsing view(s): ", mainTemplate, templateLoc)
+	utils.Log.Debug("Parsing view(s): ", mainTemplate, templateLoc)
 	t := template.Must(template.ParseFiles(
 		mainTemplate,
 		headerTemplate,
@@ -60,6 +61,6 @@ func ParseHtmlTemplate(templateLoc string, data ViewData, w http.ResponseWriter,
 
 	err := t.ExecuteTemplate(w, "main", data)
 	if err != nil {
-		log.Fatal("executing template: ", err)
+		utils.Log.Fatal("executing template: ", err)
 	}
 }

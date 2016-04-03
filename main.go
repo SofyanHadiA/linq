@@ -5,12 +5,12 @@ import (
 	"strconv"
 
 	core "linq/core"
-	log "linq/core/log"
 	"linq/core/database"
+	"linq/core/utils"
 )
 
 func main() {
-	log.SetLogLevel(log.DEBUG)
+	utils.NewLogger(core.GetIntConfig("app.logLevel"))
 	
 	database.UseMysql(
 		core.GetStrConfig("db.host"), 
@@ -27,7 +27,7 @@ func main() {
 	router.PathPrefix("/").Handler(http.FileServer(http.Dir(staticDir)))
 
 	http.Handle("/", router)
-	log.Info("Listen and serve to: " + server)
+	utils.Log.Info("Listen and serve to: " + server)
 
 	http.ListenAndServe(server, nil)
 }

@@ -6,8 +6,8 @@ import (
 	"io/ioutil"
 	"linq/core"
 	"net/http"
-
-	"linq/core/log"
+	
+	"linq/core/utils"
 
 	"golang.org/x/oauth2"
 	"github.com/astaxie/beego/session"
@@ -63,7 +63,7 @@ func OauthCallbackHandler(w http.ResponseWriter, r *http.Request) {
 	go currentSession.GC()
 	session, err := currentSession.SessionStart(w, r)
 	if err != nil {
-		log.Fatal("Session could not started ", err)
+		utils.Log.Fatal("Session could not started ", err)
 	}
 	defer session.SessionRelease(w)
 
@@ -71,7 +71,6 @@ func OauthCallbackHandler(w http.ResponseWriter, r *http.Request) {
 	session.Set("access_token", token.AccessToken)
 	session.Set("profile", profile)
 
-	log.Debug("Started new session", session.Get("profile"))
 
 	// Redirect to logged in page
 	http.Redirect(w, r, "/", http.StatusMovedPermanently)
