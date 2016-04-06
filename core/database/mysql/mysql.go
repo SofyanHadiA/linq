@@ -30,19 +30,6 @@ func (mysql MySqlDB) Ping() bool{
     return true
 }
 
-func (mysql MySqlDB) SetUsernamePassword(username string, password string) MySqlDB{
-    mysql.Username = username
-    mysql.Password = password
-    
-    return mysql
-}
-
-func (mysql MySqlDB) SetQuery(query string) MySqlDB{
-    mysql.query = query
-    return mysql
-}
-
-
 func (mysql MySqlDB) Resolve(query string) *sql.Rows{
     db, err := sql.Open("mysql", mysql.ConnectionString) 
     defer db.Close()

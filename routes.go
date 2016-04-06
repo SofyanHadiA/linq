@@ -7,8 +7,10 @@ import (
 	Chat "linq/apps/chat"
 	Dashboard "linq/apps/dashboard"
 	Todo "linq/apps/todo"
-	User "linq/apps/user"
+	. "linq/apps/user"
 )
+
+var userController = NewUserController(NewUserRepository())
 
 var routes = Routes{
 	Route{"DashboardIndex", "GET", "/", Dashboard.Index},
@@ -23,7 +25,7 @@ var routes = Routes{
 	Route{"TodoShow", "GET", "/todos/{todoId}", Todo.TodoShow},
 	Route{"TodoCreate", "POST", "/todos", Todo.TodoCreate},
 
-	Route{"UserList", "GET", "/api/v1/users", User.UserList},
+	Route{"UserList", "GET", "/api/v1/users", userController.UserList},
 
 	Route{"ChatIndex", "GET", "/chat", Chat.ServeHome},
 	Route{"ChatWs", "GET", "/ws", Chat.ServeWs},

@@ -17,10 +17,10 @@ type ViewData struct {
 var viewData ViewData
 
 var mainTemplate string = "views/template.html"
-var headerTemplate string = "views/_header.html"
-var footerTemplate string = "views/_footer.html"
-var sidebarTemplate string = "views/_sidebar.html"
-var menubarTemplate string = "views/_menubar.html"
+var headerTemplate string = "views/header.html"
+var footerTemplate string = "views/footer.html"
+var sidebarTemplate string = "views/sidebar.html"
+var menubarTemplate string = "views/menubar.html"
 
 func init() {
 	viewData = ViewData{

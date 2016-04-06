@@ -1,5 +1,9 @@
 package user
 
+import(
+	. "linq/core/repository"
+)
+
 type User struct {
 	Uid  	  int  		`json:"uid"`
 	Username  string    `json:"username"`
@@ -8,4 +12,8 @@ type User struct {
 	LastLogin int 		`json:"lastLogin"`
 }
 
-type Users []User
+type Users []IModel
+
+func (user User) SetupModel() IModel{
+	return user
+}

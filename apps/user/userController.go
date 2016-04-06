@@ -1,23 +1,31 @@
 package user
 
 import (
+	"linq/core/api"	    
+	. "linq/core/repository"
+	
 	"encoding/json"
 	"net/http"
 )
 
-type ApiResponse struct{
-	Draw  	  		int 		`json:"draw"`
-	RecordsTotal  	int			`json:"recordsTotal"`
-	RecordsFiltered interface{}	`json:"recordsFiltered"`
-	Data     		interface{} `json:"data"`
+type userController struct{
+	repo IRepository
 }
 
-func UserList(w http.ResponseWriter, r *http.Request) {
-	var users = getAllUser()
+func NewUserController(repo IRepository) userController{
+	return userController{
+		repo: repo,
+	}
+}
+
+func (ctrl userController)UserList(w http.ResponseWriter, r *http.Request) {
+
+	var users = ctrl.repo.GetAll()
 	
-	var response = ApiResponse{
-		Draw: 1,
-		RecordsTotal: 2,
+	var response = api.JsonDTResponse{
+		Draw: r.URL.Query().Get("draw"),
+		RecordsTotal: ctrl.repo.CountAll(),
+		RecordsFiltered: len(users),
 		Data: users,
 	}
 	

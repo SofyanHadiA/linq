@@ -2,12 +2,35 @@ package user
 
 import(
     "linq/core/utils"
+    . "linq/core/repository"
     . "linq/core/database"
 )
 
-func getAllUser() Users{
-    var result = Users{}
+type userRepository struct{
+    countQuery string
+}
+
+func NewUserRepository() IRepository{
+    return userRepository{
+        countQuery : "SELECT COUNT(*) FROM users",
+    }
+}
+
+func (repo userRepository) CountAll() int{
+    var result int
+    rows := DB.Resolve(repo.countQuery)
     
+    for rows.Next() {  
+        err := rows.Scan(&result)
+        utils.HandleWarn(err)
+    }
+    
+    utils.HandleWarn(rows.Err())
+    return result
+}
+
+func (repo userRepository) GetAll() []IModel{
+    var result = Users{}
     rows := DB.Resolve("select uid, username, password, email, last_login from users")
     
     for rows.Next() {  
