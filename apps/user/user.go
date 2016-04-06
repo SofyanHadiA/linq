@@ -14,6 +14,6 @@ type User struct {
 
 type Users []IModel
 
-func (user User) SetupModel() IModel{
-	return user
+func (user User) GetId() int{
+	return user.Uid
 }

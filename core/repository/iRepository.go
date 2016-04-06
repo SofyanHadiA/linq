@@ -1,7 +1,7 @@
 package repository
 
 type IModel interface{
-    SetupModel() IModel
+    GetId() int
 }
 
 type IRepository interface {
