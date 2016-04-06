@@ -1,7 +1,3 @@
-/*
- * 
- */
-
 var $ = jQuery;
 
 // TODO: Update Token

@@ -1,12 +1,13 @@
-function userController() {
+'use strict'
+/* global $app */
 
+function userController() {
     var $ = $app.$;
     var $notify = $app.$notify;
     var $tablegrid = $app.$tablegrid;
     var $modal = $app.$modal;
     var $form = $app.$form;
     var userForm = require('./form/user.form.js')($app);
-
     var self = {
         tableGrid: {},
         table: '#manage-table ',
@@ -14,17 +15,17 @@ function userController() {
         load: onLoad,
         showForm: showForm,
     };
-
+    
     self.load();
-
+    
     return self;
-
+    
     function onLoad() {
         self.tableGrid = $tablegrid.render("#user-table", 'api/v1/users',
             [
                 { data: 'username' },
                 { data: 'email' }
-            ], 'uid');
+            ], 'id');
 
         $('body').on('click', '#user-add', function () {
             self.showForm();
