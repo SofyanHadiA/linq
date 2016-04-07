@@ -7,4 +7,5 @@ type IModel interface{
 type IRepository interface {
     CountAll() int
     GetAll() []IModel
+    Get(id int) IModel
 }

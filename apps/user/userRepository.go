@@ -7,18 +7,24 @@ import(
 )
 
 type userRepository struct{
+    db IDB
     countQuery string
+    selectAllQuery string
+    selectQuery string
 }
 
-func NewUserRepository() IRepository{
+func NewUserRepository(db IDB) IRepository{
     return userRepository{
+        db : db,
         countQuery : "SELECT COUNT(*) FROM users",
+        selectAllQuery : "SELECT uid, username, password, email, last_login FROM users",
+        selectQuery : "SELECT uid, username, password, email, last_login FROM users WHERE uid = ?",
     }
 }
 
 func (repo userRepository) CountAll() int{
     var result int
-    rows := DB.Resolve(repo.countQuery)
+    rows := repo.db.Resolve(repo.countQuery)
     
     for rows.Next() {  
         err := rows.Scan(&result)
@@ -31,7 +37,7 @@ func (repo userRepository) CountAll() int{
 
 func (repo userRepository) GetAll() []IModel{
     var result = Users{}
-    rows := DB.Resolve("select uid, username, password, email, last_login from users")
+    rows := repo.db.Resolve(repo.selectAllQuery)
     
     for rows.Next() {  
         var user = User{}
@@ -43,4 +49,18 @@ func (repo userRepository) GetAll() []IModel{
     utils.HandleWarn(rows.Err())
     
     return result
+}
+
+func (repo userRepository) Get(id int) IModel{
+    user := User{ Uid :-1 }
+    rows := repo.db.Resolve(repo.selectQuery, id)
+    
+    for rows.Next() {  
+        err := rows.Scan(&user.Uid, &user.Username, &user.Password, &user.Email, &user.LastLogin)
+        utils.HandleWarn(err)
+    }
+    
+    utils.HandleWarn(rows.Err())
+    
+    return user
 }

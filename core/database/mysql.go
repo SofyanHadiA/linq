@@ -1,9 +1,10 @@
-package mysql
+package database
 
 import(
+    "fmt"
     "database/sql"
 
-    utils "linq/core/utils"
+    "linq/core/utils"
     
     _ "github.com/go-sql-driver/mysql"
 )
@@ -15,7 +16,19 @@ type MySqlDB struct {
     Password string
     Database string
     ConnectionString string
-    query string
+}
+
+
+func NewMysqlDB(host string, username string, password string, database string, port int) IDB {
+    DB := MySqlDB{
+        Username : username,
+        Password : password,
+        Database : database,
+        // Format : "user:password@tcp(localhost:5555)/dbname"
+        ConnectionString : fmt.Sprintf("%s:%s@tcp(%s:%d)/%s", username, password, host, port, database),  
+    }
+    DB.Ping()
+    return DB
 }
 
 func (mysql MySqlDB) Ping() bool{
@@ -30,11 +43,18 @@ func (mysql MySqlDB) Ping() bool{
     return true
 }
 
-func (mysql MySqlDB) Resolve(query string) *sql.Rows{
+func (mysql MySqlDB) Resolve(query string, args ...interface{}) *sql.Rows{
     db, err := sql.Open("mysql", mysql.ConnectionString) 
     defer db.Close()
     
-    rows, err := db.Query(query)
+    var rows = &sql.Rows{}
+    
+    if len(args) > 0 {
+        rows, err = db.Query(query, args...)
+    }else{
+        rows, err = db.Query(query)
+    }
+    
     utils.HandleWarn(err)
     
     return rows
@@ -42,6 +62,7 @@ func (mysql MySqlDB) Resolve(query string) *sql.Rows{
 
 func (mysql MySqlDB) Execute(query string) sql.Result{
     db, err := sql.Open("mysql", mysql.ConnectionString) 
+    defer db.Close()
 
     stmtOut, err := db.Prepare(query)
     utils.HandleWarn(err)
