@@ -13,7 +13,7 @@ type jsonDTResponse struct{
 	Token			uuid.UUID	`json:"token"`
 }
 
-func NewJsonResponse(data interface{}, success bool, recordsTotal int, recordsFiltered int, draw string) jsonDTResponse{
+func NewJsonResponse(data interface{}, success bool, recordsTotal int, recordsFiltered int, draw int) jsonDTResponse{
 	response := jsonDTResponse{
 		Data: data,
 		Success: success,
