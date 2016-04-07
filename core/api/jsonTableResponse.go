@@ -1,28 +1,26 @@
 package api
 
 import(
-	"os/exec"
+    "github.com/satori/go.uuid"
 )
 
-type JsonDTResponse struct{
-	Draw  	  		string 		`json:"draw"`
+type jsonDTResponse struct{
+	Draw  	  		int 		`json:"draw"`
 	RecordsTotal  	int			`json:"recordsTotal"`
 	RecordsFiltered int			`json:"recordsFiltered"`
 	Data     		interface{} `json:"data"`
 	Success			bool		`json:"success"`
-	Token			[]byte		`json:"token"`
+	Token			uuid.UUID	`json:"token"`
 }
 
-func NewJsonResponse(data interface{}, success bool, recordsTotal int, recordsFiltered int, draw string) JsonDTResponse{
-	token, _ := exec.Command("uuidgen").Output()
-
-	response := JsonDTResponse{
+func NewJsonResponse(data interface{}, success bool, recordsTotal int, recordsFiltered int, draw string) jsonDTResponse{
+	response := jsonDTResponse{
 		Data: data,
 		Success: success,
 		RecordsTotal: recordsTotal,
 		RecordsFiltered: recordsFiltered,
 		Draw: draw,
-		Token: token,
+		Token: uuid.NewV4(),
 	}
 	
 	return response

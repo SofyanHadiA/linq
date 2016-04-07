@@ -48,7 +48,11 @@ func (repo userRepository) GetAll() []IModel{
     
     utils.HandleWarn(rows.Err())
     
-    return result
+    if(len(result) > 0){
+        return result
+    }else{
+        return nil
+    }
 }
 
 func (repo userRepository) Get(id int) IModel{
@@ -62,5 +66,9 @@ func (repo userRepository) Get(id int) IModel{
     
     utils.HandleWarn(rows.Err())
     
-    return user
+    if(user.Uid > 0){
+        return user
+    }else{
+        return nil
+    }
 }
