@@ -28,7 +28,6 @@
   },
   "browserify": {
     "transform": [
-      "browserify-shim"
     ]
   },
   "scripts": {
@@ -40,6 +39,6 @@
     "type": "git",
     "url": "https://bitbucket.org/Sofyan_A/pos"
   },
-  "author": "Sofyan Hadi A.",
+  "author": "Sofyan Hadi Ahmad",
   "license": "ISC"
 }

@@ -1,617 +1,616 @@
-
 module.exports = {
-	alpha: "The %s field may only contain alphabetical characters."
-	, alpha_dash: "The %s field may only contain alpha-numeric characters, underscores, and dashes."
-	, alpha_numeric: "The %s field may only contain alpha-numeric characters."
-	, common_address_1: "Address 1"
-	, common_address_2: "Address 2"
-	, common_city: "City"
-	, common_comments: "Comments"
-	, common_common: "common"
-	, common_confirm_search: "You have selected one or more rows, these will no longer be selected after your search. Are you sure you want to submit this search?"
-	, common_country: "Country"
-	, common_delete: "Delete"
-	, common_det: "details"
-	, common_edit: "edit"
-	, common_email: "E-Mail"
-	, common_email_invalid_format: "The e-mail address is not in the proper format"
-	, common_fields_required_message: "Fields in red are required"
-	, common_first_name: "First Name"
-	, common_first_name_required: "The first name is a required field."
-	, common_inv: "inv"
-	, common_last_name: "Last Name"
-	, common_last_name_required: "The last name is a required field"
-	, common_learn_about_project: "to learn the lastest information about the project"
-	, common_list_of: "List of"
-	, common_logout: "Logout"
-	, common_no_persons_to_display: "There are no people to display"
-	, common_or: "OR"
-	, common_phone_number: "Phone Number"
-	, common_please_visit_my: "Please visit my"
-	, common_powered_by: "Powered by"
-	, common_price: "Price"
-	, common_remove: "Remove"
-	, common_return_policy: "Return Policy"
-	, common_search: "Search"
-	, common_searched_for: "Searched for"
-	, common_state: "State"
-	, common_submit: "Submit"
-	, common_view_recent_sales: "View Recent Sales"
-	, common_website: "website"
-	, common_welcome: "Welcome"
-	, common_welcome_message: "Welcome to Open Source Point Of Sale, click a module below to get started!"
-	, common_you_are_using_ospos: "You are using Open Source Point Of Sale Version"
-	, common_zip: "Zip"
-	, config_address: "Company Address"
-	, config_address_required: "Company address is a required field"
-	, config_company: "Company Name"
-	, config_company_required: "Company name is a required field"
-	, config_company_website_url: "Company website is not a valid URL (http://...)"
-	, config_currency_side: "Right side"
-	, config_currency_symbol: "Currency Symbol"
-	, config_custom1: "Custom Field 1"
-	, config_custom2: "Custom Field 2"
-	, config_custom3: "Custom Field 3"
-	, config_custom4: "Custom Field 4"
-	, config_custom5: "Custom Field 5"
-	, config_custom6: "Custom Field 6"
-	, config_custom7: "Custom Field 7"
-	, config_custom8: "Custom Field 8"
-	, config_custom9: "Custom Field 9"
-	, config_custom10: "Custom Field 10"
-	, config_default_tax_rate: "Default Tax Rate %"
-	, config_default_tax_rate_1: "Tax 1 Rate"
-	, config_default_tax_rate_2: "Tax 2 Rate"
-	, config_default_tax_rate_number: "The default tax rate must be a number"
-	, config_default_tax_rate_required: "The default tax rate is a required field"
-	, config_fax: "Fax"
-	, config_info: "Store Configuration Information"
-	, config_language: "Language"
-	, config_phone: "Company Phone"
-	, config_phone_required: "Company phone is a required field"
-	, config_print_after_sale: "Print receipt after sale"
-	, config_recv_invoice_enable: "Enable Orders Invoice#"
-	, config_recv_invoice_format: "Receivings Invoice Format"
-	, config_return_policy_required: "Return policy is a required field"
-	, config_sales_invoice_enable: "Enable Sales Invoice#"
-	, config_sales_invoice_format: "Sales Invoice Format"
-	, config_saved_successfully: "Configuration saved successfully"
-	, config_saved_unsuccessfully: "Configuration saved unsuccessfully"
-	, config_stock_location: "Stock location"
-	, config_stock_location_required: "Stock location number is a required field"
-	, config_tax_included: "Tax Included"
-	, config_timezone: "Timezone"
-	, config_website: "Website"
-	, customers_account_number: "Account #"
-	, customers_basic_information: "Customer Information"
-	, customers_cannot_be_deleted: "Could not deleted selected customers, one or more of the selected customers has sales."
-	, customers_confirm_delete: "Are you sure you want to delete the selected customers?"
-	, customers_customer: "Customer"
-	, customers_error_adding_updating: "Error adding/updating customer"
-	, customers_new: "New Customer"
-	, customers_none_selected: "You have not selected any customers to delete"
-	, customers_one_or_multiple: "customer(s)"
-	, customers_successful_adding: "You have successfully added customer"
-	, customers_successful_deleted: "You have successfully deleted"
-	, customers_successful_updating: "You have successfully updated customer"
-	, customers_taxable: "Taxable"
-	, customers_update: "Update Customer"
-	, decimal: "The %s field must contain a decimal number."
-	, employees_basic_information: "Employee Basic Information"
-	, employees_cannot_be_deleted: "Could not deleted selected employees, one or more of the employees has processed sales or you are trying to delete yourself :)"
-	, employees_confirm_delete: "Are you sure you want to delete the selected employees?"
-	, employees_employee: "Employee"
-	, employees_error_adding_updating: "Error adding/updating employee"
-	, employees_error_deleting_demo_admin: "You can not delete the demo admin user"
-	, employees_error_updating_demo_admin: "You can not change the demo admin user"
-	, employees_login_info: "Employee Login Info"
-	, employees_new: "New Employee"
-	, employees_none_selected: "You have not selected any employees to delete"
-	, employees_one_or_multiple: "employee(s)"
-	, employees_password: "Password"
-	, employees_password_minlength: "Passwords must be at least 8 characters"
-	, employees_password_must_match: "Passwords do not match"
-	, employees_password_required: "Password is required"
-	, employees_permission_desc: "Check the boxes below to grant access to modules"
-	, employees_permission_info: "Employee Permissions and Access"
-	, employees_repeat_password: "Password Again"
-	, employees_successful_adding: "You have successfully added employee"
-	, employees_successful_deleted: "You have successfully deleted"
-	, employees_successful_updating: "You have successfully updated employee"
-	, employees_update: "Update Employee"
-	, employees_username: "Username"
-	, employees_username_minlength: "The username must be at least 5 characters"
-	, employees_username_required: "Username is a required field"
-	, error_no_permission_module: "You do not have permission to access the module named"
-	, error_unknown: "unknown"
-	, exact_length: "The %s field must be exactly %s characters in length."
-	, form_validation_alpha: "The {field} field may only contain alphabetical characters."
-	, form_validation_alpha_dash: "The {field} field may only contain alpha-numeric characters, underscores, and dashes."
-	, form_validation_alpha_numeric: "The {field} field may only contain alpha-numeric characters."
-	, form_validation_alpha_numeric_spaces: "The {field} field may only contain alpha-numeric characters and spaces."
-	, form_validation_decimal: "The {field} field must contain a decimal number."
-	, form_validation_differs: "The {field} field must differ from the {param} field."
-	, form_validation_error_message_not_set: "Unable to access an error message corresponding to your field name {field}."
-	, form_validation_exact_length: "The {field} field must be exactly {param} characters in length."
-	, form_validation_greater_than: "The {field} field must contain a number greater than {param}."
-	, form_validation_greater_than_equal_to: "The {field} field must contain a number greater than or equal to {param}."
-	, form_validation_in_list: "The {field} field must be one of: {param}."
-	, form_validation_integer: "The {field} field must contain an integer."
-	, form_validation_is_natural: "The {field} field must only contain digits."
-	, form_validation_is_natural_no_zero: "The {field} field must only contain digits and must be greater than zero."
-	, form_validation_is_numeric: "The {field} field must contain only numeric characters."
-	, form_validation_is_unique: "The {field} field must contain a unique value."
-	, form_validation_isset: "The {field} field must have a value."
-	, form_validation_less_than: "The {field} field must contain a number less than {param}."
-	, form_validation_less_than_equal_to: "The {field} field must contain a number less than or equal to {param}."
-	, form_validation_matches: "The {field} field does not match the {param} field."
-	, form_validation_max_length: "The {field} field cannot exceed {param} characters in length."
-	, form_validation_min_length: "The {field} field must be at least {param} characters in length."
-	, form_validation_numeric: "The {field} field must contain only numbers."
-	, form_validation_regex_match: "The {field} field is not in the correct format."
-	, form_validation_required: "The {field} field is required."
-	, form_validation_valid_email: "The {field} field must contain a valid email address."
-	, form_validation_valid_emails: "The {field} field must contain all valid email addresses."
-	, form_validation_valid_ip: "The {field} field must contain a valid IP."
-	, form_validation_valid_url: "The {field} field must contain a valid URL."
-	, giftcards_add_minus: "Inventory to add/subtract"
-	, giftcards_allow_alt_description: "Allow Alt Description"
-	, giftcards_amazon: "Amazon"
-	, giftcards_basic_information: "Giftcard Information"
-	, giftcards_bulk_edit: "Bulk Edit"
-	, giftcards_cannot_be_deleted: "Could not deleted selected giftcards, one or more of the selected giftcards has sales."
-	, giftcards_cannot_find_giftcard: "Cannot find any information about giftcard"
-	, giftcards_card_value: "Value"
-	, giftcards_category: "Category"
-	, giftcards_change_all_to_allow_alt_desc: "Allow Alt Desc For All"
-	, giftcards_change_all_to_not_allow_allow_desc: "Not Allow Alt Desc For All"
-	, giftcards_change_all_to_serialized: "Change All To Serialized"
-	, giftcards_change_all_to_unserialized: "Change All To Unserialized"
-	, giftcards_confirm_bulk_edit: "Are you sure you want to edit all the giftcards selected?"
-	, giftcards_confirm_delete: "Are you sure you want to delete the selected giftcards?"
-	, giftcards_cost_price: "Cost Price"
-	, giftcards_count: "Update Inventory"
-	, giftcards_current_quantity: "Current Quantity"
-	, giftcards_description: "Description"
-	, giftcards_details_count: "Inventory Count Details"
-	, giftcards_do_nothing: "Do Nothing"
-	, giftcards_edit_fields_you_want_to_update: "Edit the fields you want to edit for ALL selected giftcards"
-	, giftcards_edit_multiple_giftcards: "Editing Multiple Giftcards"
-	, giftcards_error_adding_updating: "Error adding/updating giftcard"
-	, giftcards_error_updating_multiple: "Error updating giftcards"
-	, giftcards_excel_import_failed: "Excel import failed"
-	, giftcards_generate_barcodes: "Generate Barcodes"
-	, giftcards_giftcard: "Giftcard"
-	, giftcards_giftcard_number: "Giftcard Number"
-	, giftcards_info_provided_by: "Info provided by"
-	, giftcards_inventory_comments: "Comments"
-	, giftcards_is_serialized: "Giftcard has Serial Number"
-	, giftcards_low_inventory_giftcards: "Low Inventory Giftcards"
-	, giftcards_manually_editing_of_quantity: "Manual Edit of Quantity"
-	, giftcards_must_select_giftcard_for_barcode: "You must select at least 1 giftcard to generate barcodes"
-	, giftcards_new: "New Giftcard"
-	, giftcards_no_description_giftcards: "No Description Giftcards"
-	, giftcards_no_giftcards_to_display: "No Giftcards to display"
-	, giftcards_none: "None"
-	, giftcards_none_selected: "You have not selected any giftcards to edit"
-	, giftcards_number: "Giftcard Number must be a number"
-	, giftcards_number_information: "Giftcard Number"
-	, giftcards_number_required: "Giftcard Number is a required field"
-	, giftcards_one_or_multiple: "giftcard(s)"
-	, giftcards_person_id: "Customer"
-	, giftcards_quantity: "Quantity"
-	, giftcards_quantity_required: "Quantity is a required field. Please Close ( X ) to cancel"
-	, giftcards_reorder_level: "Reorder Level"
-	, giftcards_retrive_giftcard_info: "Retrieve Giftcard Info"
-	, giftcards_sales_tax_1: "Sales Tax"
-	, giftcards_sales_tax_2: "Sales Tax 2"
-	, giftcards_serialized_giftcards: "Serialized Giftcards"
-	, giftcards_successful_adding: "You have successfully added giftcard"
-	, giftcards_successful_bulk_edit: "You have successfully updated the selected giftcards"
-	, giftcards_successful_deleted: "You have successfully deleted"
-	, giftcards_successful_updating: "You have successfully updated giftcard"
-	, giftcards_supplier: "Supplier"
-	, giftcards_tax_1: "Tax 1"
-	, giftcards_tax_2: "Tax 2"
-	, giftcards_tax_percent: "Tax Percent"
-	, giftcards_tax_percents: "Tax Percent(s)"
-	, giftcards_unit_price: "Unit Price"
-	, giftcards_upc_database: "UPC Database"
-	, giftcards_update: "Update Giftcard"
-	, giftcards_use_inventory_menu: "Use Inv. Menu"
-	, giftcards_value: "Giftcard Value must be a number"
-	, giftcards_value_required: "Giftcard Value is a required field"
-	, greater_than: "The %s field must contain a number greater than %s."
-	, integer: "The %s field must contain an integer."
-	, is_natural: "The %s field must contain only positive numbers."
-	, is_natural_no_zero: "The %s field must contain a number greater than zero."
-	, is_numeric: "The %s field must contain only numeric characters."
-	, is_unique: "The %s field must contain a unique value."
-	, isset: "The %s field must have a value."
-	, item_kits_add_item: "Add Item"
-	, item_kits_cannot_be_deleted: "Could not delete item kit(s)"
-	, item_kits_confirm_delete: "Are you sure you want to delete the selected item kits?"
-	, item_kits_description: "Item Kit Description"
-	, item_kits_error_adding_updating: "Error adding/updating Item Kit"
-	, item_kits_info: "Item Kit Info"
-	, item_kits_item: "Item"
-	, item_kits_items: "Items"
-	, item_kits_name: "Item Kit Name"
-	, item_kits_new: "New Item Kit"
-	, item_kits_no_item_kits_to_display: "No item kits to display"
-	, item_kits_none_selected: "You have not selected any item kits"
-	, item_kits_one_or_multiple: "Item Kit(s)"
-	, item_kits_quantity: "Quantity"
-	, item_kits_successful_adding: "You have successfully added Item Kit"
-	, item_kits_successful_deleted: "You have successfully deleted"
-	, item_kits_successful_updating: "You have successfully updated Item Kit"
-	, item_kits_update: "Update Item Kit"
-	, items_add_minus: "Inventory to add/subtract"
-	, items_allow_alt_description: "Allow Alt Description"
-	, items_amazon: "Amazon"
-	, items_basic_information: "Item Information"
-	, items_bulk_edit: "Bulk Edit"
-	, items_buy_price_required: "Purchase price is a required field"
-	, items_cannot_be_deleted: "Could not deleted selected items, one or more of the selected items has sales."
-	, items_cannot_find_item: "Cannot find any information about item"
-	, items_category: "Category"
-	, items_category_required: "Category is a required field"
-	, items_change_all_to_allow_alt_desc: " Allow Alt Desc For All"
-	, items_change_all_to_not_allow_allow_desc: "Not Allow Alt Desc For All"
-	, items_change_all_to_serialized: "Change All To Serialized"
-	, items_change_all_to_unserialized: "Change All To Unserialized"
-	, items_confirm_bulk_edit: "Are you sure you want to edit all the items selected?"
-	, items_confirm_delete: "Are you sure you want to delete the selected items?"
-	, items_cost_price: "Cost Price"
-	, items_cost_price_number: "Cost price must be a number"
-	, items_cost_price_required: "Cost Price is a required field"
-	, items_count: "Update Inv."
-	, items_current_quantity: "Current Quantity"
-	, items_description: "Description"
-	, items_details_count: "Inventory Count Details"
-	, items_do_nothing: "Do Nothing"
-	, items_edit_fields_you_want_to_update: "Edit the fields you want to edit for ALL selected items"
-	, items_edit_multiple_items: "Editing Multiple Items"
-	, items_error_adding_updating: "Error adding/updating item"
-	, items_error_updating_multiple: "Error updating items"
-	, items_excel_import_failed: "Excel import failed"
-	, items_generate_barcodes: "Generate Barcodes"
-	, items_info_provided_by: "Info provided by"
-	, items_inventory: "Inv"
-	, items_inventory_comments: "Comments"
-	, items_is_deleted: "Deleted"
-	, items_is_serialized: "Item has Serial Number"
-	, items_item: "Item"
-	, items_item_number: "Barcode"
-	, items_location: "Location"
-	, items_manually_editing_of_quantity: "Manual Edit of Quantity"
-	, items_must_select_item_for_barcode: "You must select at least 1 item to generate barcodes"
-	, items_name: "Name"
-	, items_name_required: "Item Name is a required field"
-	, items_new: "New Item"
-	, items_no_description_items: "No Description Items"
-	, items_no_items_to_display: "No Items to display"
-	, items_none: "None"
-	, items_none_selected: "You have not selected any items to edit"
-	, items_number_information: "Number"
-	, items_one_or_multiple: "item(s)"
-	, items_quantity: "Qty"
-	, items_quantity_number: "Quantity must be a number"
-	, items_quantity_required: "Quantity is a required field. Please Close ( X ) to cancel"
-	, items_receiving_quantity: "Receiving quantity"
-	, items_reorder_level: "Reorder Level"
-	, items_reorder_level_number: "Reorder level must be a number"
-	, items_reorder_level_required: "Reorder level is a required field"
-	, items_retrive_item_info: "Retrive Item Info"
-	, items_sales_tax_1: "Sales Tax"
-	, items_sales_tax_2: "Sales Tax 2"
-	, items_search_custom_items: "Search Custom Fields"
-	, items_serialized_items: "Serialized Items"
-	, items_stock_location: "Stock location"
-	, items_successful_adding: "You have successfully added item"
-	, items_successful_bulk_edit: "You have successfully updated the selected items"
-	, items_successful_deleted: "You have successfully deleted"
-	, items_successful_updating: "You have successfully updated item"
-	, items_supplier: "Supplier"
-	, items_tax_1: "Tax 1"
-	, items_tax_2: "Tax 2"
-	, items_tax_percent: "Tax"
-	, items_tax_percent_required: "Tax Percent is a required field"
-	, items_tax_percents: "Tax"
-	, items_unit_price: "Retail Price"
-	, items_unit_price_number: "Unit price must be a number"
-	, items_unit_price_required: "Retail Price is a required field"
-	, items_upc_database: "UPC Database"
-	, items_update: "Update Item"
-	, items_use_inventory_menu: "Use Inv. Menu"
-	, less_than: "The %s field must contain a number less than %s."
-	, login_go: "Go"
-	, login_invalid_username_and_password: "Invalid username/password"
-	, login_login: "Login"
-	, login_password: "Password"
-	, login_username: "Username"
-	, login_welcome_message: "Welcome to the Open Source Point of Sale System. To continue, please login using your username and password below."
-	, matches: "The %s field does not match the %s field."
-	, max_length: "The %s field can not exceed %s characters in length."
-	, min_length: "The %s field must be at least %s characters in length."
-	, module_config: "Store Config"
-	, module_config_desc: "Change the store's configuration"
-	, module_customers: "Customers"
-	, module_customers_desc: "Add, Update, Delete, and Search customers"
-	, module_users: "Users"
-	, module_users_desc: "Add, Update, Delete, and Search users"
-	, module_employees: "Employees"
-	, module_employees_desc: "Add, Update, Delete, and Search employees"
-	, module_giftcards: "Gift Cards"
-	, module_giftcards_desc: "Add, Update, Delete and Search gift cards"
-	, module_home: "Home"
-	, module_item_kits: "Item Kits"
-	, module_item_kits_desc: "Add, Update, Delete and Search Item Kits"
-	, module_items: "Items"
-	, module_items_desc: "Add, Update, Delete, and Search items"
-	, module_receivings: "Receivings"
-	, module_receivings_desc: "Process Purchase orders"
-	, module_reports: "Reports"
-	, module_reports_desc: "View and generate reports"
-	, module_sales: "Sales"
-	, module_sales_desc: "Process sales and returns"
-	, module_suppliers: "Suppliers"
-	, module_suppliers_desc: "Add, Update, Delete, and Search suppliers"
-	, numeric: "The %s field must contain only numbers."
-	, pagination_first_link: "&lsaquo; First"
-	, pagination_last_link: "Last &rsaquo;"
-	, pagination_next_link: "&gt;"
-	, pagination_prev_link: "&lt;"
-	, receivings_transaction_failed: "Receivings Transactions Failed"
-	, recvs_basic_information: "Receiving information"
-	, recvs_cancel_receiving: "Cancel"
-	, recvs_cannot_be_deleted: "Receiving(s) could not be deleted"
-	, recvs_comments: "Comments"
-	, recvs_complete_receiving: "Finish"
-	, recvs_confirm_cancel_receiving: "Are you sure you want to clear this receiving? All items will cleared."
-	, recvs_confirm_finish_receiving: "Are you sure you want to submit this receiving? This cannot be undone."
-	, recvs_cost: "Cost"
-	, recvs_date: "Receiving Date"
-	, recvs_date_required: "A correct date needs to be filled in"
-	, recvs_date_type: "Date field is required"
-	, recvs_delete_confirmation: "Are you sure you want to delete this receiving, this action cannot be undone"
-	, recvs_delete_entire_sale: "Delete entire sale"
-	, recvs_discount: "Disc %"
-	, recvs_edit: "Edit"
-	, recvs_edit_sale: "Edit Receiving"
-	, recvs_employee: "Employee"
-	, recvs_error_editing_item: "Error editing item"
-	, recvs_error_requisition: "Unable to move inventory from and to the same stock location"
-	, recvs_find_or_scan_item: "Find/Scan Item"
-	, recvs_find_or_scan_item_or_receipt: "Find/Scan Item OR Receipt"
-	, recvs_id: "Receiving ID"
-	, recvs_invoice_enable: "Create Invoice"
-	, recvs_invoice_number: "Invoice #"
-	, recvs_invoice_number_duplicate: "Please enter an unique invoice number"
-	, recvs_item_name: "Item Name"
-	, recvs_mode: "Receiving Mode"
-	, recvs_new_supplier: "New Supplier"
-	, recvs_one_or_multiple: "receiving(s)"
-	, recvs_quantity: "Qty."
-	, recvs_receipt: "Receivings Receipt"
-	, recvs_receipt_number: "Receiving #"
-	, recvs_receiving: "Receive"
-	, recvs_register: "Items Receiving"
-	, recvs_requisition: "Requisition"
-	, recvs_return: "Return"
-	, recvs_select_supplier: "Select Supplier (Optional)"
-	, recvs_start_typing_supplier_name: "Start Typing supplier's name..."
-	, recvs_stock_destination: "Stock destination"
-	, recvs_stock_locaiton: "Stock location"
-	, recvs_stock_source: "Stock source"
-	, recvs_successfully_deleted: "You have successfully deleted"
-	, recvs_successfully_updated: "Receiving successfully updated"
-	, recvs_supplier: "Supplier"
-	, recvs_total: "Total"
-	, recvs_unable_to_add_item: "Unable to add item to receiving"
-	, recvs_unsuccessfully_updated: "Receiving unsuccessfully updated"
-	, regex_match: "The %s field is not in the correct format."
-	, reports_all: "All"
-	, reports_all_time: "All Time"
-	, reports_categories: "Categories"
-	, reports_categories_summary_report: "Categories Summary Report"
-	, reports_category: "Category"
-	, reports_comments: "Comments"
-	, reports_count: "Count"
-	, reports_customer: "Customer"
-	, reports_customers: "Customers"
-	, reports_customers_summary_report: "Customers Summary Report"
-	, reports_date: "Date"
-	, reports_date_range: "Date Range"
-	, reports_description: "Description"
-	, reports_detailed_receivings_report: "Detailed Receivings Report"
-	, reports_detailed_reports: "Detailed Reports"
-	, reports_detailed_sales_report: "Detailed Sales Report"
-	, reports_discount: "Discounts"
-	, reports_discount_percent: "Discount Percent"
-	, reports_discounts: "Discounts"
-	, reports_discounts_summary_report: "Discounts Summary Report"
-	, reports_employee: "Employee"
-	, reports_employees: "Employees"
-	, reports_employees_summary_report: "Employees Summary Report"
-	, reports_graphical_reports: "Graphical Reports"
-	, reports_inventory: "Inventory"
-	, reports_inventory_low: "Low Inventory"
-	, reports_inventory_low_report: "Low Inventory Report"
-	, reports_inventory_reports: "Inventory Reports"
-	, reports_inventory_summary: " Inventory Summary"
-	, reports_inventory_summary_report: "Inventory Summary Report"
-	, reports_item: "Item"
-	, reports_item_name: "Item Name"
-	, reports_item_number: "Item Number"
-	, reports_items: "Items"
-	, reports_items_purchased: "Items Purchased"
-	, reports_items_received: "Items Received"
-	, reports_items_summary_report: "Items Summary Report"
-	, reports_last_7: "Last 7 Days"
-	, reports_last_month: "Last Month"
-	, reports_last_year: "Last Year"
-	, reports_name: "Name"
-	, reports_payment_type: "Payment Type"
-	, reports_payments: "Payments"
-	, reports_payments_summary_report: "Payments Summary Report"
-	, reports_profit: "Profit"
-	, reports_quantity_purchased: "Quantity Purchased"
-	, reports_received_by: "Received By"
-	, reports_receiving_id: "Receiving ID"
-	, reports_receiving_type: "Receiving Type"
-	, reports_receivings: "Receivings"
-	, reports_reorder_level: "Reorder Level"
-	, reports_report: "Report"
-	, reports_report_input: "Report Input"
-	, reports_reports: "Reports"
-	, reports_requisitions: "Requisitions"
-	, reports_returns: "Returns"
-	, reports_revenue: "Revenue"
-	, reports_sale_id: "Sale ID"
-	, reports_sale_type: "Sale Type"
-	, reports_sales: "Sales"
-	, reports_sales_amount: "Sales amount"
-	, reports_sales_summary_report: "Sales Summary Report"
-	, reports_serial_number: "Serial #"
-	, reports_sold_by: "Sold By"
-	, reports_sold_to: "Sold To"
-	, reports_stock_location: "Stock location"
-	, reports_subtotal: "Subtotal"
-	, reports_summary_reports: "Summary Reports"
-	, reports_supplied_by: "Supplied by"
-	, reports_supplier: "Supplier"
-	, reports_suppliers: "Suppliers"
-	, reports_suppliers_summary_report: "Suppliers Summary Report"
-	, reports_tax: "Tax"
-	, reports_tax_percent: "Tax Percent"
-	, reports_taxes: "Taxes"
-	, reports_taxes_summary_report: "Taxes Summary Report"
-	, reports_this_month: "This Month"
-	, reports_this_year: "This Year"
-	, reports_today: "Today"
-	, reports_total: "Total"
-	, reports_type: "Type"
-	, reports_welcome_message: "Welcome to the reports panel. Please select a report to view."
-	, reports_yesterday: "Yesterday"
-	, reqs_quantity: "Qty."
-	, reqs_receipt: "Requisition Receipt"
-	, reqs_related_item: "Related item"
-	, reqs_related_item_quantity: "Related item qty."
-	, reqs_transaction_failed: "Requisition Transactions Failed"
-	, reqs_unable_to_add_item: "Unable to add item to requisition"
-	, reqs_unit_quantity: "Unit qty."
-	, reqs_unit_quantity_total: "Total qty."
-	, required: "The %s field is required."
-	, sales_add_payment: "Add Payment"
-	, sales_amount_due: "Amount Due"
-	, sales_amount_tendered: "Amount Tendered"
-	, sales_basic_information: "Sale information"
-	, sales_cancel_sale: "Cancel Sale"
-	, sales_cannot_be_deleted: "Sale(s) could not be deleted"
-	, sales_cash: "Cash"
-	, sales_change_due: "Change Due"
-	, sales_check: "Check"
-	, sales_comment: "Comment"
-	, sales_comments: "Comments"
-	, sales_complete_sale: "Complete Sale"
-	, sales_confirm_cancel_sale: "Are you sure you want to clear this sale? All items will cleared."
-	, sales_confirm_finish_sale: "Are you sure you want to submit this sale? This cannot be undone."
-	, sales_confirm_suspend_sale: "Are you sure you want to suspend this sale?"
-	, sales_credit: "Credit Card"
-	, sales_customer: "Customer"
-	, sales_date: "Date"
-	, sales_date_required: "A correct date needs to be filled in"
-	, sales_date_type: "Date field is required"
-	, sales_debit: "Debit Card"
-	, sales_delete_confirmation: "Are you sure you want to delete this sale, this action cannot be undone"
-	, sales_delete_entire_sale: "Delete entire sale"
-	, sales_delete_successful: "You have successfully deleted a sale"
-	, sales_delete_unsuccessful: "You have unsuccessfully deleted a sale"
-	, sales_description_abbrv: "Desc"
-	, sales_discount: "Disc %"
-	, sales_discount_included: "% Discount"
-	, sales_discount_short: "%"
-	, sales_edit: "Edit"
-	, sales_edit_item: "Edit Item"
-	, sales_edit_sale: "Edit Sale"
-	, sales_email_receipt: "E-Mail Receipt"
-	, sales_employee: "Employee"
-	, sales_error_editing_item: "Error editing item"
-	, sales_find_or_scan_item: "Find/Scan Item"
-	, sales_find_or_scan_item_or_receipt: "Find/Scan Item OR Receipt"
-	, sales_giftcard: "Gift Card"
-	, sales_giftcard_number: "Gift Card Number"
-	, sales_id: "Sale ID"
-	, sales_invoice_enable: "Create Invoice"
-	, sales_invoice_number: "Invoice #"
-	, sales_invoice_number_duplicate: "Please enter an unique invoice number"
-	, sales_item_insufficient_of_stock: "Item is Insufficient of Stock"
-	, sales_item_name: "Item Name"
-	, sales_item_number: "Item #"
-	, sales_item_out_of_stock: "Item is Out of Stock"
-	, sales_mode: "Register Mode"
-	, sales_must_enter_numeric: "Must enter numeric value for amount tendered"
-	, sales_must_enter_numeric_giftcard: "Must enter numeric value for giftcard number"
-	, sales_new_customer: "New Customer"
-	, sales_new_item: "New Item"
-	, sales_no_items_in_cart: "There are no items in the cart"
-	, sales_one_or_multiple: "sale(s)"
-	, sales_payment: "Payment Type"
-	, sales_payment_amount: "Amount"
-	, sales_payment_not_cover_total: "Payment Amount does not cover Total"
-	, sales_payment_type: "Type"
-	, sales_payments_total: "Payments Total"
-	, sales_price: "Price"
-	, sales_quantity: "Qty."
-	, sales_quantity_less_than_zero: "Warning, Desired Quantity is Insufficient. You can still process the sale, but check your inventory"
-	, sales_receipt: "Sales Receipt"
-	, sales_receipt_number: "Sale #"
-	, sales_register: "Sales Register"
-	, sales_remove_customer: "Remove Customer"
-	, sales_return: "Return"
-	, sales_sale: "Sale"
-	, sales_sale_for_customer: "Customer:"
-	, sales_sale_time: "Time"
-	, sales_select_customer: "Select Customer (Optional)"
-	, sales_serial: "Serial"
-	, sales_start_typing_customer_name: "Start Typing customer's name..."
-	, sales_start_typing_item_name: "Start Typing item's name or scan barcode..."
-	, sales_stock_location: "Stock location"
-	, sales_sub_total: "Sub Total"
-	, sales_successfully_deleted: "You have successfully deleted"
-	, sales_successfully_suspended_sale: "Your sale has been successfully suspended"
-	, sales_successfully_updated: "Sale successfully updated"
-	, sales_suspend_sale: "Suspend Sale"
-	, sales_suspended_sale_id: "ID"
-	, sales_suspended_sales: "Suspended Sales"
-	, sales_tax: "Tax"
-	, sales_tax_percent: "Tax %"
-	, sales_total: "Total"
-	, sales_transaction_failed: "Sales Transaction Failed"
-	, sales_unable_to_add_item: "Unable to add item to sale"
-	, sales_unsuccessfully_updated: "Sale unsuccessfully updated"
-	, sales_unsuspend: "Unsuspend"
-	, sales_unsuspend_and_delete: ""
-	, suppliers_account_number: "Account #"
-	, suppliers_basic_information: "Supplier Information"
-	, suppliers_cannot_be_deleted: "Could not deleted selected suppliers, one or more of the selected suppliers has sales."
-	, suppliers_company_name: "Company Name"
-	, suppliers_company_name_required: "Company Name is a required field"
-	, suppliers_confirm_delete: "Are you sure you want to delete the selected suppliers?"
-	, suppliers_error_adding_updating: "Error adding/updating supplier"
-	, suppliers_new: "New Supplier"
-	, suppliers_none_selected: "You have not selected any suppliers to delete"
-	, suppliers_one_or_multiple: "supplier(s)"
-	, suppliers_successful_adding: "You have successfully added supplier"
-	, suppliers_successful_deleted: "You have successfully deleted"
-	, suppliers_successful_updating: "You have successfully updated supplier"
-	, suppliers_supplier: "Supplier"
-	, suppliers_update: "Update Supplier"
-	, user_new: "New User"
-	, valid_email: "The %s field must contain a valid email address."
-	, valid_emails: "The %s field must contain all valid email addresses."
-	, valid_ip: "The %s field must contain a valid IP."
-	, valid_url: "The %s field must contain a valid URL."
-	, validation_form_error: "Please fill all required fields and make sure input is in correct format."
+	alpha: "The %s field may only contain alphabetical characters.",
+	alpha_dash: "The %s field may only contain alpha-numeric characters, underscores, and dashes.",
+	alpha_numeric: "The %s field may only contain alpha-numeric characters.",
+	address_1: "Address 1",
+	address_2: "Address 2",
+	city: "City",
+	comments: "Comments",
+	common: "common",
+	confirm_search: "You have selected one or more rows, these will no longer be selected after your search. Are you sure you want to submit this search?",
+	country: "Country",
+	delete: "Delete",
+	det: "details",
+	edit: "edit",
+	email: "E-Mail",
+	email_invalid_format: "The e-mail address is not in the proper format",
+	fields_required_message: "Fields in red are required",
+	first_name: "First Name",
+	first_name_required: "The first name is a required field.",
+	inv: "inv",
+	last_name: "Last Name",
+	last_name_required: "The last name is a required field",
+	learn_about_project: "to learn the lastest information about the project",
+	list_of: "List of",
+	logout: "Logout",
+	no_persons_to_display: "There are no people to display",
+	or: "OR",
+	phone_number: "Phone",
+	please_visit_my: "Please visit my",
+	powered_by: "Powered by",
+	price: "Price",
+	remove: "Remove",
+	return_policy: "Return Policy",
+	search: "Search",
+	searched_for: "Searched for",
+	state: "State",
+	submit: "Submit",
+	view_recent_sales: "View Recent Sales",
+	website: "website",
+	welcome: "Welcome",
+	welcome_message: "Welcome to Open Source Point Of Sale, click a module below to get started!",
+	you_are_using_ospos: "You are using Open Source Point Of Sale Version",
+	zip: "Zip",
+	config_address: "Company Address",
+	config_address_required: "Company address is a required field",
+	config_company: "Company Name",
+	config_company_required: "Company name is a required field",
+	config_company_website_url: "Company website is not a valid URL (http://...)",
+	config_currency_side: "Right side",
+	config_currency_symbol: "Currency Symbol",
+	config_custom1: "Custom Field 1",
+	config_custom2: "Custom Field 2",
+	config_custom3: "Custom Field 3",
+	config_custom4: "Custom Field 4",
+	config_custom5: "Custom Field 5",
+	config_custom6: "Custom Field 6",
+	config_custom7: "Custom Field 7",
+	config_custom8: "Custom Field 8",
+	config_custom9: "Custom Field 9",
+	config_custom10: "Custom Field 10",
+	config_default_tax_rate: "Default Tax Rate %",
+	config_default_tax_rate_1: "Tax 1 Rate",
+	config_default_tax_rate_2: "Tax 2 Rate",
+	config_default_tax_rate_number: "The default tax rate must be a number",
+	config_default_tax_rate_required: "The default tax rate is a required field",
+	config_fax: "Fax",
+	config_info: "Store Configuration Information",
+	config_language: "Language",
+	config_phone: "Company Phone",
+	config_phone_required: "Company phone is a required field",
+	config_print_after_sale: "Print receipt after sale",
+	config_recv_invoice_enable: "Enable Orders Invoice#",
+	config_recv_invoice_format: "Receivings Invoice Format",
+	config_return_policy_required: "Return policy is a required field",
+	config_sales_invoice_enable: "Enable Sales Invoice#",
+	config_sales_invoice_format: "Sales Invoice Format",
+	config_saved_successfully: "Configuration saved successfully",
+	config_saved_unsuccessfully: "Configuration saved unsuccessfully",
+	config_stock_location: "Stock location",
+	config_stock_location_required: "Stock location number is a required field",
+	config_tax_included: "Tax Included",
+	config_timezone: "Timezone",
+	config_website: "Website",
+	customers_account_number: "Account #",
+	customers_basic_information: "Customer Information",
+	customers_cannot_be_deleted: "Could not deleted selected customers, one or more of the selected customers has sales.",
+	customers_confirm_delete: "Are you sure you want to delete the selected customers?",
+	customers_customer: "Customer",
+	customers_error_adding_updating: "Error adding/updating customer",
+	customers_new: "New Customer",
+	customers_none_selected: "You have not selected any customers to delete",
+	customers_one_or_multiple: "customer(s)",
+	customers_successful_adding: "You have successfully added customer",
+	customers_successful_deleted: "You have successfully deleted",
+	customers_successful_updating: "You have successfully updated customer",
+	customers_taxable: "Taxable",
+	customers_update: "Update Customer",
+	decimal: "The %s field must contain a decimal number.",
+	employees_basic_information: "Employee Basic Information",
+	employees_cannot_be_deleted: "Could not deleted selected employees, one or more of the employees has processed sales or you are trying to delete yourself :)",
+	employees_confirm_delete: "Are you sure you want to delete the selected employees?",
+	employees_employee: "Employee",
+	employees_error_adding_updating: "Error adding/updating employee",
+	employees_error_deleting_demo_admin: "You can not delete the demo admin user",
+	employees_error_updating_demo_admin: "You can not change the demo admin user",
+	employees_login_info: "Employee Login Info",
+	employees_new: "New Employee",
+	employees_none_selected: "You have not selected any employees to delete",
+	employees_one_or_multiple: "employee(s)",
+	employees_password: "Password",
+	employees_password_minlength: "Passwords must be at least 8 characters",
+	employees_password_must_match: "Passwords do not match",
+	employees_password_required: "Password is required",
+	employees_permission_desc: "Check the boxes below to grant access to modules",
+	employees_permission_info: "Employee Permissions and Access",
+	employees_repeat_password: "Password Again",
+	employees_successful_adding: "You have successfully added employee",
+	employees_successful_deleted: "You have successfully deleted",
+	employees_successful_updating: "You have successfully updated employee",
+	employees_update: "Update Employee",
+	employees_username: "Username",
+	employees_username_minlength: "The username must be at least 5 characters",
+	employees_username_required: "Username is a required field",
+	error_no_permission_module: "You do not have permission to access the module named",
+	error_unknown: "unknown",
+	exact_length: "The %s field must be exactly %s characters in length.",
+	form_validation_alpha: "The {field} field may only contain alphabetical characters.",
+	form_validation_alpha_dash: "The {field} field may only contain alpha-numeric characters, underscores, and dashes.",
+	form_validation_alpha_numeric: "The {field} field may only contain alpha-numeric characters.",
+	form_validation_alpha_numeric_spaces: "The {field} field may only contain alpha-numeric characters and spaces.",
+	form_validation_decimal: "The {field} field must contain a decimal number.",
+	form_validation_differs: "The {field} field must differ from the {param} field.",
+	form_validation_error_message_not_set: "Unable to access an error message corresponding to your field name {field}.",
+	form_validation_exact_length: "The {field} field must be exactly {param} characters in length.",
+	form_validation_greater_than: "The {field} field must contain a number greater than {param}.",
+	form_validation_greater_than_equal_to: "The {field} field must contain a number greater than or equal to {param}.",
+	form_validation_in_list: "The {field} field must be one of: {param}.",
+	form_validation_integer: "The {field} field must contain an integer.",
+	form_validation_is_natural: "The {field} field must only contain digits.",
+	form_validation_is_natural_no_zero: "The {field} field must only contain digits and must be greater than zero.",
+	form_validation_is_numeric: "The {field} field must contain only numeric characters.",
+	form_validation_is_unique: "The {field} field must contain a unique value.",
+	form_validation_isset: "The {field} field must have a value.",
+	form_validation_less_than: "The {field} field must contain a number less than {param}.",
+	form_validation_less_than_equal_to: "The {field} field must contain a number less than or equal to {param}.",
+	form_validation_matches: "The {field} field does not match the {param} field.",
+	form_validation_max_length: "The {field} field cannot exceed {param} characters in length.",
+	form_validation_min_length: "The {field} field must be at least {param} characters in length.",
+	form_validation_numeric: "The {field} field must contain only numbers.",
+	form_validation_regex_match: "The {field} field is not in the correct format.",
+	form_validation_required: "The {field} field is required.",
+	form_validation_valid_email: "The {field} field must contain a valid email address.",
+	form_validation_valid_emails: "The {field} field must contain all valid email addresses.",
+	form_validation_valid_ip: "The {field} field must contain a valid IP.",
+	form_validation_valid_url: "The {field} field must contain a valid URL.",
+	giftcards_add_minus: "Inventory to add/subtract",
+	giftcards_allow_alt_description: "Allow Alt Description",
+	giftcards_amazon: "Amazon",
+	giftcards_basic_information: "Giftcard Information",
+	giftcards_bulk_edit: "Bulk Edit",
+	giftcards_cannot_be_deleted: "Could not deleted selected giftcards, one or more of the selected giftcards has sales.",
+	giftcards_cannot_find_giftcard: "Cannot find any information about giftcard",
+	giftcards_card_value: "Value",
+	giftcards_category: "Category",
+	giftcards_change_all_to_allow_alt_desc: "Allow Alt Desc For All",
+	giftcards_change_all_to_not_allow_allow_desc: "Not Allow Alt Desc For All",
+	giftcards_change_all_to_serialized: "Change All To Serialized",
+	giftcards_change_all_to_unserialized: "Change All To Unserialized",
+	giftcards_confirm_bulk_edit: "Are you sure you want to edit all the giftcards selected?",
+	giftcards_confirm_delete: "Are you sure you want to delete the selected giftcards?",
+	giftcards_cost_price: "Cost Price",
+	giftcards_count: "Update Inventory",
+	giftcards_current_quantity: "Current Quantity",
+	giftcards_description: "Description",
+	giftcards_details_count: "Inventory Count Details",
+	giftcards_do_nothing: "Do Nothing",
+	giftcards_edit_fields_you_want_to_update: "Edit the fields you want to edit for ALL selected giftcards",
+	giftcards_edit_multiple_giftcards: "Editing Multiple Giftcards",
+	giftcards_error_adding_updating: "Error adding/updating giftcard",
+	giftcards_error_updating_multiple: "Error updating giftcards",
+	giftcards_excel_import_failed: "Excel import failed",
+	giftcards_generate_barcodes: "Generate Barcodes",
+	giftcards_giftcard: "Giftcard",
+	giftcards_giftcard_number: "Giftcard Number",
+	giftcards_info_provided_by: "Info provided by",
+	giftcards_inventory_comments: "Comments",
+	giftcards_is_serialized: "Giftcard has Serial Number",
+	giftcards_low_inventory_giftcards: "Low Inventory Giftcards",
+	giftcards_manually_editing_of_quantity: "Manual Edit of Quantity",
+	giftcards_must_select_giftcard_for_barcode: "You must select at least 1 giftcard to generate barcodes",
+	giftcards_new: "New Giftcard",
+	giftcards_no_description_giftcards: "No Description Giftcards",
+	giftcards_no_giftcards_to_display: "No Giftcards to display",
+	giftcards_none: "None",
+	giftcards_none_selected: "You have not selected any giftcards to edit",
+	giftcards_number: "Giftcard Number must be a number",
+	giftcards_number_information: "Giftcard Number",
+	giftcards_number_required: "Giftcard Number is a required field",
+	giftcards_one_or_multiple: "giftcard(s)",
+	giftcards_person_id: "Customer",
+	giftcards_quantity: "Quantity",
+	giftcards_quantity_required: "Quantity is a required field. Please Close ( X ) to cancel",
+	giftcards_reorder_level: "Reorder Level",
+	giftcards_retrive_giftcard_info: "Retrieve Giftcard Info",
+	giftcards_sales_tax_1: "Sales Tax",
+	giftcards_sales_tax_2: "Sales Tax 2",
+	giftcards_serialized_giftcards: "Serialized Giftcards",
+	giftcards_successful_adding: "You have successfully added giftcard",
+	giftcards_successful_bulk_edit: "You have successfully updated the selected giftcards",
+	giftcards_successful_deleted: "You have successfully deleted",
+	giftcards_successful_updating: "You have successfully updated giftcard",
+	giftcards_supplier: "Supplier",
+	giftcards_tax_1: "Tax 1",
+	giftcards_tax_2: "Tax 2",
+	giftcards_tax_percent: "Tax Percent",
+	giftcards_tax_percents: "Tax Percent(s)",
+	giftcards_unit_price: "Unit Price",
+	giftcards_upc_database: "UPC Database",
+	giftcards_update: "Update Giftcard",
+	giftcards_use_inventory_menu: "Use Inv. Menu",
+	giftcards_value: "Giftcard Value must be a number",
+	giftcards_value_required: "Giftcard Value is a required field",
+	greater_than: "The %s field must contain a number greater than %s.",
+	integer: "The %s field must contain an integer.",
+	is_natural: "The %s field must contain only positive numbers.",
+	is_natural_no_zero: "The %s field must contain a number greater than zero.",
+	is_numeric: "The %s field must contain only numeric characters.",
+	is_unique: "The %s field must contain a unique value.",
+	isset: "The %s field must have a value.",
+	item_kits_add_item: "Add Item",
+	item_kits_cannot_be_deleted: "Could not delete item kit(s)",
+	item_kits_confirm_delete: "Are you sure you want to delete the selected item kits?",
+	item_kits_description: "Item Kit Description",
+	item_kits_error_adding_updating: "Error adding/updating Item Kit",
+	item_kits_info: "Item Kit Info",
+	item_kits_item: "Item",
+	item_kits_items: "Items",
+	item_kits_name: "Item Kit Name",
+	item_kits_new: "New Item Kit",
+	item_kits_no_item_kits_to_display: "No item kits to display",
+	item_kits_none_selected: "You have not selected any item kits",
+	item_kits_one_or_multiple: "Item Kit(s)",
+	item_kits_quantity: "Quantity",
+	item_kits_successful_adding: "You have successfully added Item Kit",
+	item_kits_successful_deleted: "You have successfully deleted",
+	item_kits_successful_updating: "You have successfully updated Item Kit",
+	item_kits_update: "Update Item Kit",
+	items_add_minus: "Inventory to add/subtract",
+	items_allow_alt_description: "Allow Alt Description",
+	items_amazon: "Amazon",
+	items_basic_information: "Item Information",
+	items_bulk_edit: "Bulk Edit",
+	items_buy_price_required: "Purchase price is a required field",
+	items_cannot_be_deleted: "Could not deleted selected items, one or more of the selected items has sales.",
+	items_cannot_find_item: "Cannot find any information about item",
+	items_category: "Category",
+	items_category_required: "Category is a required field",
+	items_change_all_to_allow_alt_desc: " Allow Alt Desc For All",
+	items_change_all_to_not_allow_allow_desc: "Not Allow Alt Desc For All",
+	items_change_all_to_serialized: "Change All To Serialized",
+	items_change_all_to_unserialized: "Change All To Unserialized",
+	items_confirm_bulk_edit: "Are you sure you want to edit all the items selected?",
+	items_confirm_delete: "Are you sure you want to delete the selected items?",
+	items_cost_price: "Cost Price",
+	items_cost_price_number: "Cost price must be a number",
+	items_cost_price_required: "Cost Price is a required field",
+	items_count: "Update Inv.",
+	items_current_quantity: "Current Quantity",
+	items_description: "Description",
+	items_details_count: "Inventory Count Details",
+	items_do_nothing: "Do Nothing",
+	items_edit_fields_you_want_to_update: "Edit the fields you want to edit for ALL selected items",
+	items_edit_multiple_items: "Editing Multiple Items",
+	items_error_adding_updating: "Error adding/updating item",
+	items_error_updating_multiple: "Error updating items",
+	items_excel_import_failed: "Excel import failed",
+	items_generate_barcodes: "Generate Barcodes",
+	items_info_provided_by: "Info provided by",
+	items_inventory: "Inv",
+	items_inventory_comments: "Comments",
+	items_is_deleted: "Deleted",
+	items_is_serialized: "Item has Serial Number",
+	items_item: "Item",
+	items_item_number: "Barcode",
+	items_location: "Location",
+	items_manually_editing_of_quantity: "Manual Edit of Quantity",
+	items_must_select_item_for_barcode: "You must select at least 1 item to generate barcodes",
+	items_name: "Name",
+	items_name_required: "Item Name is a required field",
+	items_new: "New Item",
+	items_no_description_items: "No Description Items",
+	items_no_items_to_display: "No Items to display",
+	items_none: "None",
+	items_none_selected: "You have not selected any items to edit",
+	items_number_information: "Number",
+	items_one_or_multiple: "item(s)",
+	items_quantity: "Qty",
+	items_quantity_number: "Quantity must be a number",
+	items_quantity_required: "Quantity is a required field. Please Close ( X ) to cancel",
+	items_receiving_quantity: "Receiving quantity",
+	items_reorder_level: "Reorder Level",
+	items_reorder_level_number: "Reorder level must be a number",
+	items_reorder_level_required: "Reorder level is a required field",
+	items_retrive_item_info: "Retrive Item Info",
+	items_sales_tax_1: "Sales Tax",
+	items_sales_tax_2: "Sales Tax 2",
+	items_search_custom_items: "Search Custom Fields",
+	items_serialized_items: "Serialized Items",
+	items_stock_location: "Stock location",
+	items_successful_adding: "You have successfully added item",
+	items_successful_bulk_edit: "You have successfully updated the selected items",
+	items_successful_deleted: "You have successfully deleted",
+	items_successful_updating: "You have successfully updated item",
+	items_supplier: "Supplier",
+	items_tax_1: "Tax 1",
+	items_tax_2: "Tax 2",
+	items_tax_percent: "Tax",
+	items_tax_percent_required: "Tax Percent is a required field",
+	items_tax_percents: "Tax",
+	items_unit_price: "Retail Price",
+	items_unit_price_number: "Unit price must be a number",
+	items_unit_price_required: "Retail Price is a required field",
+	items_upc_database: "UPC Database",
+	items_update: "Update Item",
+	items_use_inventory_menu: "Use Inv. Menu",
+	less_than: "The %s field must contain a number less than %s.",
+	login_go: "Go",
+	login_invalid_username_and_password: "Invalid username/password",
+	login_login: "Login",
+	login_password: "Password",
+	login_username: "Username",
+	login_welcome_message: "Welcome to the Open Source Point of Sale System. To continue, please login using your username and password below.",
+	matches: "The %s field does not match the %s field.",
+	max_length: "The %s field can not exceed %s characters in length.",
+	min_length: "The %s field must be at least %s characters in length.",
+	module_config: "Store Config",
+	module_config_desc: "Change the store's configuration",
+	module_customers: "Customers",
+	module_customers_desc: "Add, Update, Delete, and Search customers",
+	module_users: "Users",
+	module_users_desc: "Add, Update, Delete, and Search users",
+	module_employees: "Employees",
+	module_employees_desc: "Add, Update, Delete, and Search employees",
+	module_giftcards: "Gift Cards",
+	module_giftcards_desc: "Add, Update, Delete and Search gift cards",
+	module_home: "Home",
+	module_item_kits: "Item Kits",
+	module_item_kits_desc: "Add, Update, Delete and Search Item Kits",
+	module_items: "Items",
+	module_items_desc: "Add, Update, Delete, and Search items",
+	module_receivings: "Receivings",
+	module_receivings_desc: "Process Purchase orders",
+	module_reports: "Reports",
+	module_reports_desc: "View and generate reports",
+	module_sales: "Sales",
+	module_sales_desc: "Process sales and returns",
+	module_suppliers: "Suppliers",
+	module_suppliers_desc: "Add, Update, Delete, and Search suppliers",
+	numeric: "The %s field must contain only numbers.",
+	pagination_first_link: "&lsaquo; First",
+	pagination_last_link: "Last &rsaquo;",
+	pagination_next_link: "&gt;",
+	pagination_prev_link: "&lt;",
+	receivings_transaction_failed: "Receivings Transactions Failed",
+	recvs_basic_information: "Receiving information",
+	recvs_cancel_receiving: "Cancel",
+	recvs_cannot_be_deleted: "Receiving(s) could not be deleted",
+	recvs_comments: "Comments",
+	recvs_complete_receiving: "Finish",
+	recvs_confirm_cancel_receiving: "Are you sure you want to clear this receiving? All items will cleared.",
+	recvs_confirm_finish_receiving: "Are you sure you want to submit this receiving? This cannot be undone.",
+	recvs_cost: "Cost",
+	recvs_date: "Receiving Date",
+	recvs_date_required: "A correct date needs to be filled in",
+	recvs_date_type: "Date field is required",
+	recvs_delete_confirmation: "Are you sure you want to delete this receiving, this action cannot be undone",
+	recvs_delete_entire_sale: "Delete entire sale",
+	recvs_discount: "Disc %",
+	recvs_edit: "Edit",
+	recvs_edit_sale: "Edit Receiving",
+	recvs_employee: "Employee",
+	recvs_error_editing_item: "Error editing item",
+	recvs_error_requisition: "Unable to move inventory from and to the same stock location",
+	recvs_find_or_scan_item: "Find/Scan Item",
+	recvs_find_or_scan_item_or_receipt: "Find/Scan Item OR Receipt",
+	recvs_id: "Receiving ID",
+	recvs_invoice_enable: "Create Invoice",
+	recvs_invoice_number: "Invoice #",
+	recvs_invoice_number_duplicate: "Please enter an unique invoice number",
+	recvs_item_name: "Item Name",
+	recvs_mode: "Receiving Mode",
+	recvs_new_supplier: "New Supplier",
+	recvs_one_or_multiple: "receiving(s)",
+	recvs_quantity: "Qty.",
+	recvs_receipt: "Receivings Receipt",
+	recvs_receipt_number: "Receiving #",
+	recvs_receiving: "Receive",
+	recvs_register: "Items Receiving",
+	recvs_requisition: "Requisition",
+	recvs_return: "Return",
+	recvs_select_supplier: "Select Supplier (Optional)",
+	recvs_start_typing_supplier_name: "Start Typing supplier's name...",
+	recvs_stock_destination: "Stock destination",
+	recvs_stock_locaiton: "Stock location",
+	recvs_stock_source: "Stock source",
+	recvs_successfully_deleted: "You have successfully deleted",
+	recvs_successfully_updated: "Receiving successfully updated",
+	recvs_supplier: "Supplier",
+	recvs_total: "Total",
+	recvs_unable_to_add_item: "Unable to add item to receiving",
+	recvs_unsuccessfully_updated: "Receiving unsuccessfully updated",
+	regex_match: "The %s field is not in the correct format.",
+	reports_all: "All",
+	reports_all_time: "All Time",
+	reports_categories: "Categories",
+	reports_categories_summary_report: "Categories Summary Report",
+	reports_category: "Category",
+	reports_comments: "Comments",
+	reports_count: "Count",
+	reports_customer: "Customer",
+	reports_customers: "Customers",
+	reports_customers_summary_report: "Customers Summary Report",
+	reports_date: "Date",
+	reports_date_range: "Date Range",
+	reports_description: "Description",
+	reports_detailed_receivings_report: "Detailed Receivings Report",
+	reports_detailed_reports: "Detailed Reports",
+	reports_detailed_sales_report: "Detailed Sales Report",
+	reports_discount: "Discounts",
+	reports_discount_percent: "Discount Percent",
+	reports_discounts: "Discounts",
+	reports_discounts_summary_report: "Discounts Summary Report",
+	reports_employee: "Employee",
+	reports_employees: "Employees",
+	reports_employees_summary_report: "Employees Summary Report",
+	reports_graphical_reports: "Graphical Reports",
+	reports_inventory: "Inventory",
+	reports_inventory_low: "Low Inventory",
+	reports_inventory_low_report: "Low Inventory Report",
+	reports_inventory_reports: "Inventory Reports",
+	reports_inventory_summary: " Inventory Summary",
+	reports_inventory_summary_report: "Inventory Summary Report",
+	reports_item: "Item",
+	reports_item_name: "Item Name",
+	reports_item_number: "Item Number",
+	reports_items: "Items",
+	reports_items_purchased: "Items Purchased",
+	reports_items_received: "Items Received",
+	reports_items_summary_report: "Items Summary Report",
+	reports_last_7: "Last 7 Days",
+	reports_last_month: "Last Month",
+	reports_last_year: "Last Year",
+	reports_name: "Name",
+	reports_payment_type: "Payment Type",
+	reports_payments: "Payments",
+	reports_payments_summary_report: "Payments Summary Report",
+	reports_profit: "Profit",
+	reports_quantity_purchased: "Quantity Purchased",
+	reports_received_by: "Received By",
+	reports_receiving_id: "Receiving ID",
+	reports_receiving_type: "Receiving Type",
+	reports_receivings: "Receivings",
+	reports_reorder_level: "Reorder Level",
+	reports_report: "Report",
+	reports_report_input: "Report Input",
+	reports_reports: "Reports",
+	reports_requisitions: "Requisitions",
+	reports_returns: "Returns",
+	reports_revenue: "Revenue",
+	reports_sale_id: "Sale ID",
+	reports_sale_type: "Sale Type",
+	reports_sales: "Sales",
+	reports_sales_amount: "Sales amount",
+	reports_sales_summary_report: "Sales Summary Report",
+	reports_serial_number: "Serial #",
+	reports_sold_by: "Sold By",
+	reports_sold_to: "Sold To",
+	reports_stock_location: "Stock location",
+	reports_subtotal: "Subtotal",
+	reports_summary_reports: "Summary Reports",
+	reports_supplied_by: "Supplied by",
+	reports_supplier: "Supplier",
+	reports_suppliers: "Suppliers",
+	reports_suppliers_summary_report: "Suppliers Summary Report",
+	reports_tax: "Tax",
+	reports_tax_percent: "Tax Percent",
+	reports_taxes: "Taxes",
+	reports_taxes_summary_report: "Taxes Summary Report",
+	reports_this_month: "This Month",
+	reports_this_year: "This Year",
+	reports_today: "Today",
+	reports_total: "Total",
+	reports_type: "Type",
+	reports_welcome_message: "Welcome to the reports panel. Please select a report to view.",
+	reports_yesterday: "Yesterday",
+	reqs_quantity: "Qty.",
+	reqs_receipt: "Requisition Receipt",
+	reqs_related_item: "Related item",
+	reqs_related_item_quantity: "Related item qty.",
+	reqs_transaction_failed: "Requisition Transactions Failed",
+	reqs_unable_to_add_item: "Unable to add item to requisition",
+	reqs_unit_quantity: "Unit qty.",
+	reqs_unit_quantity_total: "Total qty.",
+	required: "The %s field is required.",
+	sales_add_payment: "Add Payment",
+	sales_amount_due: "Amount Due",
+	sales_amount_tendered: "Amount Tendered",
+	sales_basic_information: "Sale information",
+	sales_cancel_sale: "Cancel Sale",
+	sales_cannot_be_deleted: "Sale(s) could not be deleted",
+	sales_cash: "Cash",
+	sales_change_due: "Change Due",
+	sales_check: "Check",
+	sales_comment: "Comment",
+	sales_comments: "Comments",
+	sales_complete_sale: "Complete Sale",
+	sales_confirm_cancel_sale: "Are you sure you want to clear this sale? All items will cleared.",
+	sales_confirm_finish_sale: "Are you sure you want to submit this sale? This cannot be undone.",
+	sales_confirm_suspend_sale: "Are you sure you want to suspend this sale?",
+	sales_credit: "Credit Card",
+	sales_customer: "Customer",
+	sales_date: "Date",
+	sales_date_required: "A correct date needs to be filled in",
+	sales_date_type: "Date field is required",
+	sales_debit: "Debit Card",
+	sales_delete_confirmation: "Are you sure you want to delete this sale, this action cannot be undone",
+	sales_delete_entire_sale: "Delete entire sale",
+	sales_delete_successful: "You have successfully deleted a sale",
+	sales_delete_unsuccessful: "You have unsuccessfully deleted a sale",
+	sales_description_abbrv: "Desc",
+	sales_discount: "Disc %",
+	sales_discount_included: "% Discount",
+	sales_discount_short: "%",
+	sales_edit: "Edit",
+	sales_edit_item: "Edit Item",
+	sales_edit_sale: "Edit Sale",
+	sales_email_receipt: "E-Mail Receipt",
+	sales_employee: "Employee",
+	sales_error_editing_item: "Error editing item",
+	sales_find_or_scan_item: "Find/Scan Item",
+	sales_find_or_scan_item_or_receipt: "Find/Scan Item OR Receipt",
+	sales_giftcard: "Gift Card",
+	sales_giftcard_number: "Gift Card Number",
+	sales_id: "Sale ID",
+	sales_invoice_enable: "Create Invoice",
+	sales_invoice_number: "Invoice #",
+	sales_invoice_number_duplicate: "Please enter an unique invoice number",
+	sales_item_insufficient_of_stock: "Item is Insufficient of Stock",
+	sales_item_name: "Item Name",
+	sales_item_number: "Item #",
+	sales_item_out_of_stock: "Item is Out of Stock",
+	sales_mode: "Register Mode",
+	sales_must_enter_numeric: "Must enter numeric value for amount tendered",
+	sales_must_enter_numeric_giftcard: "Must enter numeric value for giftcard number",
+	sales_new_customer: "New Customer",
+	sales_new_item: "New Item",
+	sales_no_items_in_cart: "There are no items in the cart",
+	sales_one_or_multiple: "sale(s)",
+	sales_payment: "Payment Type",
+	sales_payment_amount: "Amount",
+	sales_payment_not_cover_total: "Payment Amount does not cover Total",
+	sales_payment_type: "Type",
+	sales_payments_total: "Payments Total",
+	sales_price: "Price",
+	sales_quantity: "Qty.",
+	sales_quantity_less_than_zero: "Warning, Desired Quantity is Insufficient. You can still process the sale, but check your inventory",
+	sales_receipt: "Sales Receipt",
+	sales_receipt_number: "Sale #",
+	sales_register: "Sales Register",
+	sales_remove_customer: "Remove Customer",
+	sales_return: "Return",
+	sales_sale: "Sale",
+	sales_sale_for_customer: "Customer:",
+	sales_sale_time: "Time",
+	sales_select_customer: "Select Customer (Optional)",
+	sales_serial: "Serial",
+	sales_start_typing_customer_name: "Start Typing customer's name...",
+	sales_start_typing_item_name: "Start Typing item's name or scan barcode...",
+	sales_stock_location: "Stock location",
+	sales_sub_total: "Sub Total",
+	sales_successfully_deleted: "You have successfully deleted",
+	sales_successfully_suspended_sale: "Your sale has been successfully suspended",
+	sales_successfully_updated: "Sale successfully updated",
+	sales_suspend_sale: "Suspend Sale",
+	sales_suspended_sale_id: "ID",
+	sales_suspended_sales: "Suspended Sales",
+	sales_tax: "Tax",
+	sales_tax_percent: "Tax %",
+	sales_total: "Total",
+	sales_transaction_failed: "Sales Transaction Failed",
+	sales_unable_to_add_item: "Unable to add item to sale",
+	sales_unsuccessfully_updated: "Sale unsuccessfully updated",
+	sales_unsuspend: "Unsuspend",
+	sales_unsuspend_and_delete: "",
+	suppliers_account_number: "Account #",
+	suppliers_basic_information: "Supplier Information",
+	suppliers_cannot_be_deleted: "Could not deleted selected suppliers, one or more of the selected suppliers has sales.",
+	suppliers_company_name: "Company Name",
+	suppliers_company_name_required: "Company Name is a required field",
+	suppliers_confirm_delete: "Are you sure you want to delete the selected suppliers?",
+	suppliers_error_adding_updating: "Error adding/updating supplier",
+	suppliers_new: "New Supplier",
+	suppliers_none_selected: "You have not selected any suppliers to delete",
+	suppliers_one_or_multiple: "supplier(s)",
+	suppliers_successful_adding: "You have successfully added supplier",
+	suppliers_successful_deleted: "You have successfully deleted",
+	suppliers_successful_updating: "You have successfully updated supplier",
+	suppliers_supplier: "Supplier",
+	suppliers_update: "Update Supplier",
+	user_new: "New User",
+	valid_email: "The %s field must contain a valid email address.",
+	valid_emails: "The %s field must contain all valid email addresses.",
+	valid_ip: "The %s field must contain a valid IP.",
+	valid_url: "The %s field must contain a valid URL.",
+	validation_form_error: "Please fill all required fields and make sure input is in correct format."
 };

@@ -1,7 +1,5 @@
 var $ = jQuery;
 
-// TODO: Update Token
-
 function httpModule() {
 
     var self = {
@@ -9,18 +7,15 @@ function httpModule() {
         post: post,
         get: get
     };
-    
+
     //TODO: Get token first before doing any request
-    self.token = {};// app.http.get('../token');
+    self.token = {}; // app.http.get('../token');
     self.cachedScriptPromises = {};
-
-    return self;
-
-    var deferFactory = function (requestFunction) {
+    self.deferFactory = function(requestFunction) {
         var cache = {};
-        return function (key, callback) {
+        return function(key, callback) {
             if (!cache[key]) {
-                cache[key] = $.Deferred(function (defer) {
+                cache[key] = $.Deferred(function(defer) {
                     requestFunction(defer, key);
                 }).promise();
             }
@@ -29,22 +24,27 @@ function httpModule() {
     };
 
     function get(url) {
-        deferFactory(function (defer, url) {
+        self.deferFactory(function(defer, url) {
             $.get(url, self.http.token).then(
                 defer.resolve,
                 defer.reject)
         });
     };
 
-    function post(url, data) {
-        deferFactory(function (defer, url) {
-            // TODO: MERGE DATA WITH TOKEN
-            $.post(url, data, function (response) {
-                defer.resolve(response)
-            }).then(defer.resolve,
-                defer.reject);
-        });
+    function post(url, data, callback) {
+        var postData = {
+            data: data,
+            token: ""
+        };
+        
+        $.post(url, postData, function(response) {
+            callback(response), "json"
+        }).fail(function(error) {
+            $app.$notify.danger("Post Failed to: <b>" + url + "</b> " + error.responseText);
+        })
     };
+
+    return self;
 };
 
 module.exports = httpModule();

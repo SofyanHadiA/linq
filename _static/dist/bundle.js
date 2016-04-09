@@ -325,7 +325,6 @@ process.umask = function() { return 0; };
 'use strict'
 
 var config = {
-    // Routes
     route: {
         default: 'home'
     }
@@ -342,64 +341,7 @@ var config = {
 
 module.exports = config;
 },{}],6:[function(require,module,exports){
-/*
- * Application Form Core Module 
- */
-
 var $ = jQuery;
-require('../../node_modules/jquery-validation/dist/jquery.validate.js');
-
-var formModule = function () {
-
-    var self = {
-        create: create,
-        config: config,
-        validation: {},
-        onSubmit: onSubmit
-    };
-
-    return self;
-
-    function create(formId) {
-        self.container = formId
-        self.validatin = $(self.container).validate({
-            errorClass: "error text-red",
-            errorPlacement: function (error, element) {
-                error.insertBefore(element);
-            },
-            highlight: function (element) {
-                $(element).closest('.control-group').removeClass('success').addClass('error');
-            },
-            success: function (element) {
-                element.addClass('valid').closest('.control-group').removeClass('error').addClass('success');
-            },
-        })
-
-        return self;
-    };
-
-    function config(config) {
-        $.extend(self.validation.settings, config);
-        return self;
-    };
-
-    function onSubmit(submitFunc) {
-        self.validation.settings.submitHandler = submitFunc;
-        return self;
-    };
-};
-
-
-module.exports = formModule();
-
-},{"../../node_modules/jquery-validation/dist/jquery.validate.js":96}],7:[function(require,module,exports){
-/*
- * 
- */
-
-var $ = jQuery;
-
-// TODO: Update Token
 
 function httpModule() {
 
@@ -408,18 +350,15 @@ function httpModule() {
         post: post,
         get: get
     };
-    
+
     //TODO: Get token first before doing any request
-    self.token = {};// app.http.get('../token');
+    self.token = {}; // app.http.get('../token');
     self.cachedScriptPromises = {};
-
-    return self;
-
-    var deferFactory = function (requestFunction) {
+    self.deferFactory = function(requestFunction) {
         var cache = {};
-        return function (key, callback) {
+        return function(key, callback) {
             if (!cache[key]) {
-                cache[key] = $.Deferred(function (defer) {
+                cache[key] = $.Deferred(function(defer) {
                     requestFunction(defer, key);
                 }).promise();
             }
@@ -428,26 +367,31 @@ function httpModule() {
     };
 
     function get(url) {
-        deferFactory(function (defer, url) {
+        self.deferFactory(function(defer, url) {
             $.get(url, self.http.token).then(
                 defer.resolve,
                 defer.reject)
         });
     };
 
-    function post(url, data) {
-        deferFactory(function (defer, url) {
-            // TODO: MERGE DATA WITH TOKEN
-            $.post(url, data, function (response) {
-                defer.resolve(response)
-            }).then(defer.resolve,
-                defer.reject);
-        });
+    function post(url, data, callback) {
+        var postData = {
+            data: data,
+            token: ""
+        };
+        
+        $.post(url, postData, function(response) {
+            callback(response), "json"
+        }).fail(function(error) {
+            $app.$notify.danger("Post Failed to: <b>" + url + "</b> " + error.responseText);
+        })
     };
+
+    return self;
 };
 
 module.exports = httpModule();
-},{}],8:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 (function (global){
 /*
 * Application core object
@@ -459,9 +403,8 @@ require('bootstrap');
 
 // Load core modules
 var $config = require('./app.config_default.js');
-var $form = require('./app.form.js');
 var $loader = require('./app.loader.js');
-var $modal = require('./app.modal.js');
+var $view  = require('./views/app.view.js');
 var $tablegrid = require('./app.tablegrid.js');
 var $notify = require('./app.notify.js');
 var $http = require('./app.http.js');
@@ -472,12 +415,10 @@ var $handlebars = require('handlebars');
 
 // Core application instance
 var $app = {
-    // register module
     $:$,
     $config: $config,
     $handlebars: $handlebars,
-    $form: $form,
-    $modal: $modal,
+    $view: $view,
     $loader: $loader,
     $tablegrid: $tablegrid,
     $notify: $notify,
@@ -502,7 +443,7 @@ var $app = {
 
 module.exports = $app;
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./../language/en.js":28,"./app.config_default.js":5,"./app.form.js":6,"./app.http.js":7,"./app.loader.js":9,"./app.modal.js":10,"./app.module.js":11,"./app.notify.js":12,"./app.tablegrid.js":13,"bootstrap":38,"handlebars":81,"jquery":97}],9:[function(require,module,exports){
+},{"./../language/en.js":29,"./app.config_default.js":5,"./app.http.js":6,"./app.loader.js":8,"./app.module.js":9,"./app.notify.js":10,"./app.tablegrid.js":11,"./views/app.view.js":15,"bootstrap":39,"handlebars":82,"jquery":98}],8:[function(require,module,exports){
 /*
  * Page loader core module 
  */
@@ -544,48 +485,7 @@ function loaderModule() {
 };
 
 module.exports = loaderModule();
-},{"./app.http.js":7,"./app.module.js":11,"./app.notify.js":12,"./app.view.js":14,"handlebars":81}],10:[function(require,module,exports){
-var $ = jQuery;
-var $view = $view || require('./app.view.js');
-
-function modalModule() {
-
-    var modal = {
-        show: show
-    };
-
-    return modal;
-
-    function show(template, model, config) {
-        var defer = $.Deferred();
-
-        var modalId = config.modalId || "modal-container-" + (Math.random() + 1).toString(36).substring(7);
-
-        $('body').append('<div class="modal fade" id="' + modalId + '" tabindex="-1" role="dialog">'
-            + '<div class="modal-dialog modal-' + config.size + '">'
-            + '<div class="modal-content">'
-            // load template
-            + $view.render(template)
-            + '</div></div></div>');
-
-        $('#' + modalId).removeData('modal')
-            .modal({
-                show: true
-            });
-
-        $(document).on('hidden.bs.modal', '#' + modalId, function () {
-            console.log('hide ' + modalId);
-            $('#' + modalId).remove();
-
-            defer.done();
-        });
-
-        return defer.promise();
-    };
-};
-
-module.exports = modalModule();
-},{"./app.view.js":14}],11:[function(require,module,exports){
+},{"./app.http.js":6,"./app.module.js":9,"./app.notify.js":10,"./app.view.js":12,"handlebars":82}],9:[function(require,module,exports){
 /*
  *
  */
@@ -609,7 +509,7 @@ function moduleModule() {
 };
 
 module.exports = moduleModule();
-},{}],12:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 
 var $ = jQuery;
 require('bootstrap-notify');
@@ -644,7 +544,7 @@ function notifyModule() {
 }
 
 module.exports = notifyModule(); 
-},{"bootstrap-notify":37}],13:[function(require,module,exports){
+},{"bootstrap-notify":38}],11:[function(require,module,exports){
 var bootbox = require('bootbox');
 
 // load from bower since npm datatables package version does not include dataTables.bootstrap.js
@@ -783,29 +683,185 @@ function tableGridModule($modal, $http) {
 
 
 module.exports = tableGridModule();
-},{"./../../vendors/datatables/media/js/dataTables.bootstrap.js":98,"./../../vendors/datatables/media/js/jquery.dataTables.js":99,"bootbox":36}],14:[function(require,module,exports){
+},{"./../../vendors/datatables/media/js/dataTables.bootstrap.js":99,"./../../vendors/datatables/media/js/jquery.dataTables.js":100,"bootbox":37}],12:[function(require,module,exports){
 var $ = jQuery;
 var $handlebars = $handlebars || require('handlebars');
 var $language = $language || require('./../language/en.js');
 
 function viewModule() {
-        return { render: render };
-        
+        return {
+                render: render
+        };
+
         function render(template, model, viewContainer) {
                 model = model || {};
                 model.lang = $language;
-        
+
                 var rendered = template(model);
-        
+
                 if (viewContainer) {
                         $(viewContainer).html(rendered);
                 }
                 return rendered;
         }
+
+        function renderInput(name, value="", type = "input") {
+                return '<div class="col-sm-6"><div class="form-group">' +
+                        '<label for="'+name+'" class="col-sm-4 control-label">'+$app.lang[name]+'</label>' +
+                        '<div class="col-sm-8">' +
+                        '<input name="'+name+'" id="'+name+'" class="form-control" value="'+value+'" />' +
+                        '</div></div></div>'
+        }
 }
 
 module.exports = viewModule();
-},{"./../language/en.js":28,"handlebars":81}],15:[function(require,module,exports){
+},{"./../language/en.js":29,"handlebars":82}],13:[function(require,module,exports){
+var $ = jQuery;
+require('../../../node_modules/jquery-validation/dist/jquery.validate.js');
+
+var formModule = function() {
+
+    var self = {
+        create: create,
+        config: config,
+        validation: {},
+        onSubmit: onSubmit,
+        input: input
+    };
+
+    return self;
+
+    function create(formId) {
+        self.container = formId
+        self.validation = $(self.container).validate({
+            errorClass: "error text-red",
+            errorPlacement: function(error, element) {
+                error.insertBefore(element);
+            },
+            highlight: function(element) {
+                $(element).closest('.control-group').removeClass('success').addClass('error');
+            },
+            success: function(element) {
+                element.addClass('valid').closest('.control-group').removeClass('error').addClass('success');
+            },
+        })
+
+        return self;
+    };
+
+    function config(config) {
+        $.extend(self.validation.settings, config);
+        return self;
+    };
+
+    function onSubmit(submitFunc) {
+        self.validation.settings.submitHandler = submitFunc;
+        return self;
+    };
+
+    function input(name, inputType = "text", className = "", value = "") {
+        
+        var self = {
+            name: name,
+            inputType: inputType,
+            value: value,
+            className: className,
+            setValue: setValue,
+            setClass: setClass,
+            render: render,
+        }
+
+        return self;
+
+        function setValue(val) {
+            self.value = val;
+            return self;
+        }
+
+        function setClass(className) {
+            self.className = className;
+            return self;
+        }
+
+        function render() {
+            return '<div class="form-group">' +
+                '<label for="' + self.name + '" class="col-sm-4 control-label ' + self.className + '">' + $app.$language[self.name] + '</label>' +
+                '<div class="col-sm-8">' +
+                '<input type="' + self.inputType + '" name="' + self.name + '" id="' + self.name + '" class="form-control" value="' + self.value + '" />' +
+                '</div></div>'
+        }
+    }
+};
+
+
+module.exports = formModule();
+
+},{"../../../node_modules/jquery-validation/dist/jquery.validate.js":97}],14:[function(require,module,exports){
+var $ = jQuery;
+
+function modalModule() {
+
+    var modal = {
+        show: show
+    };
+
+    return modal;
+
+    function show(template, model, config) {
+        var defer = $.Deferred();
+        var modalId = config.modalId || "modal-container-" + (Math.random() + 1).toString(36).substring(7);
+        var renderedTemplate = $app.$view.render(template, model);
+
+        $('body').append('<div class="modal fade" id="' + modalId + '" tabindex="-1" role="dialog">' 
+            + '<div class="modal-dialog modal-' + config.size + '">' + '<div class="modal-content">'
+            + renderedTemplate + '</div></div></div>');
+
+        $('#' + modalId).removeData('modal')
+            .modal({
+                show: true
+            });
+
+        $(document).on('hidden.bs.modal', '#' + modalId, function() {
+            console.log('hide ' + modalId);
+            $('#' + modalId).remove();
+
+            defer.done();
+        });
+
+        return defer.promise();
+    };
+};
+
+module.exports = modalModule();
+},{}],15:[function(require,module,exports){
+var $ = jQuery;
+var $handlebars = $handlebars || require('handlebars');
+var $language = $language || require('./../../language/en.js');
+var $form = require('./app.form.js');
+var $modal = require('./app.modal.js');
+
+function viewModule() {
+    return {
+        $form: $form,
+        $modal: $modal,
+        render: render
+    };
+
+    function render(template, model, viewContainer) {
+        model = model || {};
+        model.lang = $language;
+
+        var rendered = template(model);
+
+        if (viewContainer) {
+            $(viewContainer).html(rendered);
+        }
+        return rendered;
+    }
+}
+
+module.exports = viewModule();
+},{"./../../language/en.js":29,"./app.form.js":13,"./app.modal.js":14,"handlebars":82}],16:[function(require,module,exports){
 function customerController() {
 
     var $ = $app.$;
@@ -848,7 +904,7 @@ function customerController() {
 };
 
 module.exports = customerController;
-},{"./form/customer.form.js":20}],16:[function(require,module,exports){
+},{"./form/customer.form.js":21}],17:[function(require,module,exports){
 (function (global){
 
 function customerModule ($app) {
@@ -864,14 +920,14 @@ function customerModule ($app) {
 
 module.exports = customerModule; 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./customer.controller.js":15,"./customer.model.js":17,"./customer.template.hbs":18}],17:[function(require,module,exports){
+},{"./customer.controller.js":16,"./customer.model.js":18,"./customer.template.hbs":19}],18:[function(require,module,exports){
 function customerModel() {
 	return {		
 	};
 };
 
 module.exports = customerModel();
-},{}],18:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
@@ -892,7 +948,7 @@ module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":f
     + "\n                            </button>\n\n                            <a class=\"btn btn-success\" id=\"import-excel\" href=\"../customers/excel_import\" data-target=\"#modal-container\">\n                                <i class=\"fa fa-file-excel-o\"></i> Excel Import\n                            </a>\n                        </div>\n                    </div>\n                </div>\n\n                <div class=\"box-body \">\n                    <table id=\"customer-table\" class=\"table table-bordered table-hover\">\n                        <thead>\n                            <tr>\n                                <th width=\"10px\">\n                                    <input type=\"checkbox\" id=\"select-all\" />\n                                </th>\n                                <th>Last Name</th>\n                                <th>First Name</th>\n                                <th>Email</th>\n                                <th>Phone</th>\n                                <th width=\"50px\">Action</th>\n                            </tr>\n                        </thead>\n                    </table>\n                </div>\n\n                <div id=\"feedback_bar\"></div>\n            </div>\n        </div>\n    </div>\n</section>";
 },"useData":true});
 
-},{"hbsfy/runtime":95}],19:[function(require,module,exports){
+},{"hbsfy/runtime":96}],20:[function(require,module,exports){
 function customerFormController() {
 
     var $modal = $app.$modal;
@@ -946,7 +1002,7 @@ function customerFormController() {
 };
 
 module.exports = customerFormController;
-},{"./customer.form.template.hbs":21}],20:[function(require,module,exports){
+},{"./customer.form.template.hbs":22}],21:[function(require,module,exports){
 (function (global){
 
 function customerFormModule ($app) {
@@ -961,7 +1017,7 @@ function customerFormModule ($app) {
 
 module.exports = customerFormModule; 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./customer.form.controller.js":19,"./customer.form.template.hbs":21}],21:[function(require,module,exports){
+},{"./customer.form.controller.js":20,"./customer.form.template.hbs":22}],22:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
@@ -978,13 +1034,13 @@ module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":f
     + "\" />                        \n                    </div>\n                </div>\n            </div>\n\n            <?php $this->load->view(\"people/form_basic_info\"); ?>\n\n            <div class=\"col-sm-6\">\n                <div class=\"form-group\">\n                    <?php echo form_label($this->lang->line('customers_taxable'), 'taxable', array('class' => 'col-sm-4 control-label')); ?>\n                    <div class='col-sm-8'>\n                        <div class=\"checkbox\">\n                            <label>\n                                <?php echo form_checkbox('taxable', '1', $person_info->taxable == '' ? TRUE : (boolean)$person_info->taxable); ?>\n                            </label>\n                        </div>\n                    </div>\n                </div>\n            </div>\n        </div>\n\n    </fieldset>    \n    </form>    \n</div>\n\n<div class=\"modal-footer\">\n    <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">Close</button>\n    <button type=\"submit\" form=\"customer_form\" class=\"btn btn-primary\">Save changes</button>\n</div>\n\n";
 },"useData":true});
 
-},{"hbsfy/runtime":95}],22:[function(require,module,exports){
+},{"hbsfy/runtime":96}],23:[function(require,module,exports){
 module.exports = {
 	controller: {},
 	model:{},
 	template: require('./dashboard.template.js')
 }
-},{"./dashboard.template.js":23}],23:[function(require,module,exports){
+},{"./dashboard.template.js":24}],24:[function(require,module,exports){
 module.exports = '{{#each data}}'+
         '<div class="col-md-6 col-sm-6 col-xs-12" >' +
             '<div id="module-icon-{{this.module_id}}>"  class="info-box">' +
@@ -1002,7 +1058,7 @@ module.exports = '{{#each data}}'+
             '</div>' +
         '</div>'+
         '{{/each}}';
-},{}],24:[function(require,module,exports){
+},{}],25:[function(require,module,exports){
 function homeController () {
 	
 	var $ = $app.$; 
@@ -1042,7 +1098,7 @@ function homeController () {
 };
 
 module.exports = homeController;
-},{"./dashboard/dashboard.js":22}],25:[function(require,module,exports){
+},{"./dashboard/dashboard.js":23}],26:[function(require,module,exports){
 (function (global){
 function home($app) {	
 		
@@ -1057,7 +1113,7 @@ function home($app) {
 
 module.exports = home;
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./home.controller.js":24,"./home.model.js":26,"./home.template.hbs":27}],26:[function(require,module,exports){
+},{"./home.controller.js":25,"./home.model.js":27,"./home.template.hbs":28}],27:[function(require,module,exports){
 function homeModel(){
 	return {
 		title: $app.$language.module_home,
@@ -1065,632 +1121,631 @@ function homeModel(){
 };
 
 module.exports = homeModel();
-},{}],27:[function(require,module,exports){
+},{}],28:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
     return "<section class=\"content-header\"></section> \n<section class=\"content\"> \n    <div class=\"row\"> \n        <div class=\"col-md-12\"> \n            <div class=\"box\"> \n                <div class=\"box-body\"> \n                    <dashboard-content/> \n                </div> \n            </div> \n        </div> \n    </div> \n</section>";
 },"useData":true});
 
-},{"hbsfy/runtime":95}],28:[function(require,module,exports){
-
+},{"hbsfy/runtime":96}],29:[function(require,module,exports){
 module.exports = {
-	alpha: "The %s field may only contain alphabetical characters."
-	, alpha_dash: "The %s field may only contain alpha-numeric characters, underscores, and dashes."
-	, alpha_numeric: "The %s field may only contain alpha-numeric characters."
-	, common_address_1: "Address 1"
-	, common_address_2: "Address 2"
-	, common_city: "City"
-	, common_comments: "Comments"
-	, common_common: "common"
-	, common_confirm_search: "You have selected one or more rows, these will no longer be selected after your search. Are you sure you want to submit this search?"
-	, common_country: "Country"
-	, common_delete: "Delete"
-	, common_det: "details"
-	, common_edit: "edit"
-	, common_email: "E-Mail"
-	, common_email_invalid_format: "The e-mail address is not in the proper format"
-	, common_fields_required_message: "Fields in red are required"
-	, common_first_name: "First Name"
-	, common_first_name_required: "The first name is a required field."
-	, common_inv: "inv"
-	, common_last_name: "Last Name"
-	, common_last_name_required: "The last name is a required field"
-	, common_learn_about_project: "to learn the lastest information about the project"
-	, common_list_of: "List of"
-	, common_logout: "Logout"
-	, common_no_persons_to_display: "There are no people to display"
-	, common_or: "OR"
-	, common_phone_number: "Phone Number"
-	, common_please_visit_my: "Please visit my"
-	, common_powered_by: "Powered by"
-	, common_price: "Price"
-	, common_remove: "Remove"
-	, common_return_policy: "Return Policy"
-	, common_search: "Search"
-	, common_searched_for: "Searched for"
-	, common_state: "State"
-	, common_submit: "Submit"
-	, common_view_recent_sales: "View Recent Sales"
-	, common_website: "website"
-	, common_welcome: "Welcome"
-	, common_welcome_message: "Welcome to Open Source Point Of Sale, click a module below to get started!"
-	, common_you_are_using_ospos: "You are using Open Source Point Of Sale Version"
-	, common_zip: "Zip"
-	, config_address: "Company Address"
-	, config_address_required: "Company address is a required field"
-	, config_company: "Company Name"
-	, config_company_required: "Company name is a required field"
-	, config_company_website_url: "Company website is not a valid URL (http://...)"
-	, config_currency_side: "Right side"
-	, config_currency_symbol: "Currency Symbol"
-	, config_custom1: "Custom Field 1"
-	, config_custom2: "Custom Field 2"
-	, config_custom3: "Custom Field 3"
-	, config_custom4: "Custom Field 4"
-	, config_custom5: "Custom Field 5"
-	, config_custom6: "Custom Field 6"
-	, config_custom7: "Custom Field 7"
-	, config_custom8: "Custom Field 8"
-	, config_custom9: "Custom Field 9"
-	, config_custom10: "Custom Field 10"
-	, config_default_tax_rate: "Default Tax Rate %"
-	, config_default_tax_rate_1: "Tax 1 Rate"
-	, config_default_tax_rate_2: "Tax 2 Rate"
-	, config_default_tax_rate_number: "The default tax rate must be a number"
-	, config_default_tax_rate_required: "The default tax rate is a required field"
-	, config_fax: "Fax"
-	, config_info: "Store Configuration Information"
-	, config_language: "Language"
-	, config_phone: "Company Phone"
-	, config_phone_required: "Company phone is a required field"
-	, config_print_after_sale: "Print receipt after sale"
-	, config_recv_invoice_enable: "Enable Orders Invoice#"
-	, config_recv_invoice_format: "Receivings Invoice Format"
-	, config_return_policy_required: "Return policy is a required field"
-	, config_sales_invoice_enable: "Enable Sales Invoice#"
-	, config_sales_invoice_format: "Sales Invoice Format"
-	, config_saved_successfully: "Configuration saved successfully"
-	, config_saved_unsuccessfully: "Configuration saved unsuccessfully"
-	, config_stock_location: "Stock location"
-	, config_stock_location_required: "Stock location number is a required field"
-	, config_tax_included: "Tax Included"
-	, config_timezone: "Timezone"
-	, config_website: "Website"
-	, customers_account_number: "Account #"
-	, customers_basic_information: "Customer Information"
-	, customers_cannot_be_deleted: "Could not deleted selected customers, one or more of the selected customers has sales."
-	, customers_confirm_delete: "Are you sure you want to delete the selected customers?"
-	, customers_customer: "Customer"
-	, customers_error_adding_updating: "Error adding/updating customer"
-	, customers_new: "New Customer"
-	, customers_none_selected: "You have not selected any customers to delete"
-	, customers_one_or_multiple: "customer(s)"
-	, customers_successful_adding: "You have successfully added customer"
-	, customers_successful_deleted: "You have successfully deleted"
-	, customers_successful_updating: "You have successfully updated customer"
-	, customers_taxable: "Taxable"
-	, customers_update: "Update Customer"
-	, decimal: "The %s field must contain a decimal number."
-	, employees_basic_information: "Employee Basic Information"
-	, employees_cannot_be_deleted: "Could not deleted selected employees, one or more of the employees has processed sales or you are trying to delete yourself :)"
-	, employees_confirm_delete: "Are you sure you want to delete the selected employees?"
-	, employees_employee: "Employee"
-	, employees_error_adding_updating: "Error adding/updating employee"
-	, employees_error_deleting_demo_admin: "You can not delete the demo admin user"
-	, employees_error_updating_demo_admin: "You can not change the demo admin user"
-	, employees_login_info: "Employee Login Info"
-	, employees_new: "New Employee"
-	, employees_none_selected: "You have not selected any employees to delete"
-	, employees_one_or_multiple: "employee(s)"
-	, employees_password: "Password"
-	, employees_password_minlength: "Passwords must be at least 8 characters"
-	, employees_password_must_match: "Passwords do not match"
-	, employees_password_required: "Password is required"
-	, employees_permission_desc: "Check the boxes below to grant access to modules"
-	, employees_permission_info: "Employee Permissions and Access"
-	, employees_repeat_password: "Password Again"
-	, employees_successful_adding: "You have successfully added employee"
-	, employees_successful_deleted: "You have successfully deleted"
-	, employees_successful_updating: "You have successfully updated employee"
-	, employees_update: "Update Employee"
-	, employees_username: "Username"
-	, employees_username_minlength: "The username must be at least 5 characters"
-	, employees_username_required: "Username is a required field"
-	, error_no_permission_module: "You do not have permission to access the module named"
-	, error_unknown: "unknown"
-	, exact_length: "The %s field must be exactly %s characters in length."
-	, form_validation_alpha: "The {field} field may only contain alphabetical characters."
-	, form_validation_alpha_dash: "The {field} field may only contain alpha-numeric characters, underscores, and dashes."
-	, form_validation_alpha_numeric: "The {field} field may only contain alpha-numeric characters."
-	, form_validation_alpha_numeric_spaces: "The {field} field may only contain alpha-numeric characters and spaces."
-	, form_validation_decimal: "The {field} field must contain a decimal number."
-	, form_validation_differs: "The {field} field must differ from the {param} field."
-	, form_validation_error_message_not_set: "Unable to access an error message corresponding to your field name {field}."
-	, form_validation_exact_length: "The {field} field must be exactly {param} characters in length."
-	, form_validation_greater_than: "The {field} field must contain a number greater than {param}."
-	, form_validation_greater_than_equal_to: "The {field} field must contain a number greater than or equal to {param}."
-	, form_validation_in_list: "The {field} field must be one of: {param}."
-	, form_validation_integer: "The {field} field must contain an integer."
-	, form_validation_is_natural: "The {field} field must only contain digits."
-	, form_validation_is_natural_no_zero: "The {field} field must only contain digits and must be greater than zero."
-	, form_validation_is_numeric: "The {field} field must contain only numeric characters."
-	, form_validation_is_unique: "The {field} field must contain a unique value."
-	, form_validation_isset: "The {field} field must have a value."
-	, form_validation_less_than: "The {field} field must contain a number less than {param}."
-	, form_validation_less_than_equal_to: "The {field} field must contain a number less than or equal to {param}."
-	, form_validation_matches: "The {field} field does not match the {param} field."
-	, form_validation_max_length: "The {field} field cannot exceed {param} characters in length."
-	, form_validation_min_length: "The {field} field must be at least {param} characters in length."
-	, form_validation_numeric: "The {field} field must contain only numbers."
-	, form_validation_regex_match: "The {field} field is not in the correct format."
-	, form_validation_required: "The {field} field is required."
-	, form_validation_valid_email: "The {field} field must contain a valid email address."
-	, form_validation_valid_emails: "The {field} field must contain all valid email addresses."
-	, form_validation_valid_ip: "The {field} field must contain a valid IP."
-	, form_validation_valid_url: "The {field} field must contain a valid URL."
-	, giftcards_add_minus: "Inventory to add/subtract"
-	, giftcards_allow_alt_description: "Allow Alt Description"
-	, giftcards_amazon: "Amazon"
-	, giftcards_basic_information: "Giftcard Information"
-	, giftcards_bulk_edit: "Bulk Edit"
-	, giftcards_cannot_be_deleted: "Could not deleted selected giftcards, one or more of the selected giftcards has sales."
-	, giftcards_cannot_find_giftcard: "Cannot find any information about giftcard"
-	, giftcards_card_value: "Value"
-	, giftcards_category: "Category"
-	, giftcards_change_all_to_allow_alt_desc: "Allow Alt Desc For All"
-	, giftcards_change_all_to_not_allow_allow_desc: "Not Allow Alt Desc For All"
-	, giftcards_change_all_to_serialized: "Change All To Serialized"
-	, giftcards_change_all_to_unserialized: "Change All To Unserialized"
-	, giftcards_confirm_bulk_edit: "Are you sure you want to edit all the giftcards selected?"
-	, giftcards_confirm_delete: "Are you sure you want to delete the selected giftcards?"
-	, giftcards_cost_price: "Cost Price"
-	, giftcards_count: "Update Inventory"
-	, giftcards_current_quantity: "Current Quantity"
-	, giftcards_description: "Description"
-	, giftcards_details_count: "Inventory Count Details"
-	, giftcards_do_nothing: "Do Nothing"
-	, giftcards_edit_fields_you_want_to_update: "Edit the fields you want to edit for ALL selected giftcards"
-	, giftcards_edit_multiple_giftcards: "Editing Multiple Giftcards"
-	, giftcards_error_adding_updating: "Error adding/updating giftcard"
-	, giftcards_error_updating_multiple: "Error updating giftcards"
-	, giftcards_excel_import_failed: "Excel import failed"
-	, giftcards_generate_barcodes: "Generate Barcodes"
-	, giftcards_giftcard: "Giftcard"
-	, giftcards_giftcard_number: "Giftcard Number"
-	, giftcards_info_provided_by: "Info provided by"
-	, giftcards_inventory_comments: "Comments"
-	, giftcards_is_serialized: "Giftcard has Serial Number"
-	, giftcards_low_inventory_giftcards: "Low Inventory Giftcards"
-	, giftcards_manually_editing_of_quantity: "Manual Edit of Quantity"
-	, giftcards_must_select_giftcard_for_barcode: "You must select at least 1 giftcard to generate barcodes"
-	, giftcards_new: "New Giftcard"
-	, giftcards_no_description_giftcards: "No Description Giftcards"
-	, giftcards_no_giftcards_to_display: "No Giftcards to display"
-	, giftcards_none: "None"
-	, giftcards_none_selected: "You have not selected any giftcards to edit"
-	, giftcards_number: "Giftcard Number must be a number"
-	, giftcards_number_information: "Giftcard Number"
-	, giftcards_number_required: "Giftcard Number is a required field"
-	, giftcards_one_or_multiple: "giftcard(s)"
-	, giftcards_person_id: "Customer"
-	, giftcards_quantity: "Quantity"
-	, giftcards_quantity_required: "Quantity is a required field. Please Close ( X ) to cancel"
-	, giftcards_reorder_level: "Reorder Level"
-	, giftcards_retrive_giftcard_info: "Retrieve Giftcard Info"
-	, giftcards_sales_tax_1: "Sales Tax"
-	, giftcards_sales_tax_2: "Sales Tax 2"
-	, giftcards_serialized_giftcards: "Serialized Giftcards"
-	, giftcards_successful_adding: "You have successfully added giftcard"
-	, giftcards_successful_bulk_edit: "You have successfully updated the selected giftcards"
-	, giftcards_successful_deleted: "You have successfully deleted"
-	, giftcards_successful_updating: "You have successfully updated giftcard"
-	, giftcards_supplier: "Supplier"
-	, giftcards_tax_1: "Tax 1"
-	, giftcards_tax_2: "Tax 2"
-	, giftcards_tax_percent: "Tax Percent"
-	, giftcards_tax_percents: "Tax Percent(s)"
-	, giftcards_unit_price: "Unit Price"
-	, giftcards_upc_database: "UPC Database"
-	, giftcards_update: "Update Giftcard"
-	, giftcards_use_inventory_menu: "Use Inv. Menu"
-	, giftcards_value: "Giftcard Value must be a number"
-	, giftcards_value_required: "Giftcard Value is a required field"
-	, greater_than: "The %s field must contain a number greater than %s."
-	, integer: "The %s field must contain an integer."
-	, is_natural: "The %s field must contain only positive numbers."
-	, is_natural_no_zero: "The %s field must contain a number greater than zero."
-	, is_numeric: "The %s field must contain only numeric characters."
-	, is_unique: "The %s field must contain a unique value."
-	, isset: "The %s field must have a value."
-	, item_kits_add_item: "Add Item"
-	, item_kits_cannot_be_deleted: "Could not delete item kit(s)"
-	, item_kits_confirm_delete: "Are you sure you want to delete the selected item kits?"
-	, item_kits_description: "Item Kit Description"
-	, item_kits_error_adding_updating: "Error adding/updating Item Kit"
-	, item_kits_info: "Item Kit Info"
-	, item_kits_item: "Item"
-	, item_kits_items: "Items"
-	, item_kits_name: "Item Kit Name"
-	, item_kits_new: "New Item Kit"
-	, item_kits_no_item_kits_to_display: "No item kits to display"
-	, item_kits_none_selected: "You have not selected any item kits"
-	, item_kits_one_or_multiple: "Item Kit(s)"
-	, item_kits_quantity: "Quantity"
-	, item_kits_successful_adding: "You have successfully added Item Kit"
-	, item_kits_successful_deleted: "You have successfully deleted"
-	, item_kits_successful_updating: "You have successfully updated Item Kit"
-	, item_kits_update: "Update Item Kit"
-	, items_add_minus: "Inventory to add/subtract"
-	, items_allow_alt_description: "Allow Alt Description"
-	, items_amazon: "Amazon"
-	, items_basic_information: "Item Information"
-	, items_bulk_edit: "Bulk Edit"
-	, items_buy_price_required: "Purchase price is a required field"
-	, items_cannot_be_deleted: "Could not deleted selected items, one or more of the selected items has sales."
-	, items_cannot_find_item: "Cannot find any information about item"
-	, items_category: "Category"
-	, items_category_required: "Category is a required field"
-	, items_change_all_to_allow_alt_desc: " Allow Alt Desc For All"
-	, items_change_all_to_not_allow_allow_desc: "Not Allow Alt Desc For All"
-	, items_change_all_to_serialized: "Change All To Serialized"
-	, items_change_all_to_unserialized: "Change All To Unserialized"
-	, items_confirm_bulk_edit: "Are you sure you want to edit all the items selected?"
-	, items_confirm_delete: "Are you sure you want to delete the selected items?"
-	, items_cost_price: "Cost Price"
-	, items_cost_price_number: "Cost price must be a number"
-	, items_cost_price_required: "Cost Price is a required field"
-	, items_count: "Update Inv."
-	, items_current_quantity: "Current Quantity"
-	, items_description: "Description"
-	, items_details_count: "Inventory Count Details"
-	, items_do_nothing: "Do Nothing"
-	, items_edit_fields_you_want_to_update: "Edit the fields you want to edit for ALL selected items"
-	, items_edit_multiple_items: "Editing Multiple Items"
-	, items_error_adding_updating: "Error adding/updating item"
-	, items_error_updating_multiple: "Error updating items"
-	, items_excel_import_failed: "Excel import failed"
-	, items_generate_barcodes: "Generate Barcodes"
-	, items_info_provided_by: "Info provided by"
-	, items_inventory: "Inv"
-	, items_inventory_comments: "Comments"
-	, items_is_deleted: "Deleted"
-	, items_is_serialized: "Item has Serial Number"
-	, items_item: "Item"
-	, items_item_number: "Barcode"
-	, items_location: "Location"
-	, items_manually_editing_of_quantity: "Manual Edit of Quantity"
-	, items_must_select_item_for_barcode: "You must select at least 1 item to generate barcodes"
-	, items_name: "Name"
-	, items_name_required: "Item Name is a required field"
-	, items_new: "New Item"
-	, items_no_description_items: "No Description Items"
-	, items_no_items_to_display: "No Items to display"
-	, items_none: "None"
-	, items_none_selected: "You have not selected any items to edit"
-	, items_number_information: "Number"
-	, items_one_or_multiple: "item(s)"
-	, items_quantity: "Qty"
-	, items_quantity_number: "Quantity must be a number"
-	, items_quantity_required: "Quantity is a required field. Please Close ( X ) to cancel"
-	, items_receiving_quantity: "Receiving quantity"
-	, items_reorder_level: "Reorder Level"
-	, items_reorder_level_number: "Reorder level must be a number"
-	, items_reorder_level_required: "Reorder level is a required field"
-	, items_retrive_item_info: "Retrive Item Info"
-	, items_sales_tax_1: "Sales Tax"
-	, items_sales_tax_2: "Sales Tax 2"
-	, items_search_custom_items: "Search Custom Fields"
-	, items_serialized_items: "Serialized Items"
-	, items_stock_location: "Stock location"
-	, items_successful_adding: "You have successfully added item"
-	, items_successful_bulk_edit: "You have successfully updated the selected items"
-	, items_successful_deleted: "You have successfully deleted"
-	, items_successful_updating: "You have successfully updated item"
-	, items_supplier: "Supplier"
-	, items_tax_1: "Tax 1"
-	, items_tax_2: "Tax 2"
-	, items_tax_percent: "Tax"
-	, items_tax_percent_required: "Tax Percent is a required field"
-	, items_tax_percents: "Tax"
-	, items_unit_price: "Retail Price"
-	, items_unit_price_number: "Unit price must be a number"
-	, items_unit_price_required: "Retail Price is a required field"
-	, items_upc_database: "UPC Database"
-	, items_update: "Update Item"
-	, items_use_inventory_menu: "Use Inv. Menu"
-	, less_than: "The %s field must contain a number less than %s."
-	, login_go: "Go"
-	, login_invalid_username_and_password: "Invalid username/password"
-	, login_login: "Login"
-	, login_password: "Password"
-	, login_username: "Username"
-	, login_welcome_message: "Welcome to the Open Source Point of Sale System. To continue, please login using your username and password below."
-	, matches: "The %s field does not match the %s field."
-	, max_length: "The %s field can not exceed %s characters in length."
-	, min_length: "The %s field must be at least %s characters in length."
-	, module_config: "Store Config"
-	, module_config_desc: "Change the store's configuration"
-	, module_customers: "Customers"
-	, module_customers_desc: "Add, Update, Delete, and Search customers"
-	, module_users: "Users"
-	, module_users_desc: "Add, Update, Delete, and Search users"
-	, module_employees: "Employees"
-	, module_employees_desc: "Add, Update, Delete, and Search employees"
-	, module_giftcards: "Gift Cards"
-	, module_giftcards_desc: "Add, Update, Delete and Search gift cards"
-	, module_home: "Home"
-	, module_item_kits: "Item Kits"
-	, module_item_kits_desc: "Add, Update, Delete and Search Item Kits"
-	, module_items: "Items"
-	, module_items_desc: "Add, Update, Delete, and Search items"
-	, module_receivings: "Receivings"
-	, module_receivings_desc: "Process Purchase orders"
-	, module_reports: "Reports"
-	, module_reports_desc: "View and generate reports"
-	, module_sales: "Sales"
-	, module_sales_desc: "Process sales and returns"
-	, module_suppliers: "Suppliers"
-	, module_suppliers_desc: "Add, Update, Delete, and Search suppliers"
-	, numeric: "The %s field must contain only numbers."
-	, pagination_first_link: "&lsaquo; First"
-	, pagination_last_link: "Last &rsaquo;"
-	, pagination_next_link: "&gt;"
-	, pagination_prev_link: "&lt;"
-	, receivings_transaction_failed: "Receivings Transactions Failed"
-	, recvs_basic_information: "Receiving information"
-	, recvs_cancel_receiving: "Cancel"
-	, recvs_cannot_be_deleted: "Receiving(s) could not be deleted"
-	, recvs_comments: "Comments"
-	, recvs_complete_receiving: "Finish"
-	, recvs_confirm_cancel_receiving: "Are you sure you want to clear this receiving? All items will cleared."
-	, recvs_confirm_finish_receiving: "Are you sure you want to submit this receiving? This cannot be undone."
-	, recvs_cost: "Cost"
-	, recvs_date: "Receiving Date"
-	, recvs_date_required: "A correct date needs to be filled in"
-	, recvs_date_type: "Date field is required"
-	, recvs_delete_confirmation: "Are you sure you want to delete this receiving, this action cannot be undone"
-	, recvs_delete_entire_sale: "Delete entire sale"
-	, recvs_discount: "Disc %"
-	, recvs_edit: "Edit"
-	, recvs_edit_sale: "Edit Receiving"
-	, recvs_employee: "Employee"
-	, recvs_error_editing_item: "Error editing item"
-	, recvs_error_requisition: "Unable to move inventory from and to the same stock location"
-	, recvs_find_or_scan_item: "Find/Scan Item"
-	, recvs_find_or_scan_item_or_receipt: "Find/Scan Item OR Receipt"
-	, recvs_id: "Receiving ID"
-	, recvs_invoice_enable: "Create Invoice"
-	, recvs_invoice_number: "Invoice #"
-	, recvs_invoice_number_duplicate: "Please enter an unique invoice number"
-	, recvs_item_name: "Item Name"
-	, recvs_mode: "Receiving Mode"
-	, recvs_new_supplier: "New Supplier"
-	, recvs_one_or_multiple: "receiving(s)"
-	, recvs_quantity: "Qty."
-	, recvs_receipt: "Receivings Receipt"
-	, recvs_receipt_number: "Receiving #"
-	, recvs_receiving: "Receive"
-	, recvs_register: "Items Receiving"
-	, recvs_requisition: "Requisition"
-	, recvs_return: "Return"
-	, recvs_select_supplier: "Select Supplier (Optional)"
-	, recvs_start_typing_supplier_name: "Start Typing supplier's name..."
-	, recvs_stock_destination: "Stock destination"
-	, recvs_stock_locaiton: "Stock location"
-	, recvs_stock_source: "Stock source"
-	, recvs_successfully_deleted: "You have successfully deleted"
-	, recvs_successfully_updated: "Receiving successfully updated"
-	, recvs_supplier: "Supplier"
-	, recvs_total: "Total"
-	, recvs_unable_to_add_item: "Unable to add item to receiving"
-	, recvs_unsuccessfully_updated: "Receiving unsuccessfully updated"
-	, regex_match: "The %s field is not in the correct format."
-	, reports_all: "All"
-	, reports_all_time: "All Time"
-	, reports_categories: "Categories"
-	, reports_categories_summary_report: "Categories Summary Report"
-	, reports_category: "Category"
-	, reports_comments: "Comments"
-	, reports_count: "Count"
-	, reports_customer: "Customer"
-	, reports_customers: "Customers"
-	, reports_customers_summary_report: "Customers Summary Report"
-	, reports_date: "Date"
-	, reports_date_range: "Date Range"
-	, reports_description: "Description"
-	, reports_detailed_receivings_report: "Detailed Receivings Report"
-	, reports_detailed_reports: "Detailed Reports"
-	, reports_detailed_sales_report: "Detailed Sales Report"
-	, reports_discount: "Discounts"
-	, reports_discount_percent: "Discount Percent"
-	, reports_discounts: "Discounts"
-	, reports_discounts_summary_report: "Discounts Summary Report"
-	, reports_employee: "Employee"
-	, reports_employees: "Employees"
-	, reports_employees_summary_report: "Employees Summary Report"
-	, reports_graphical_reports: "Graphical Reports"
-	, reports_inventory: "Inventory"
-	, reports_inventory_low: "Low Inventory"
-	, reports_inventory_low_report: "Low Inventory Report"
-	, reports_inventory_reports: "Inventory Reports"
-	, reports_inventory_summary: " Inventory Summary"
-	, reports_inventory_summary_report: "Inventory Summary Report"
-	, reports_item: "Item"
-	, reports_item_name: "Item Name"
-	, reports_item_number: "Item Number"
-	, reports_items: "Items"
-	, reports_items_purchased: "Items Purchased"
-	, reports_items_received: "Items Received"
-	, reports_items_summary_report: "Items Summary Report"
-	, reports_last_7: "Last 7 Days"
-	, reports_last_month: "Last Month"
-	, reports_last_year: "Last Year"
-	, reports_name: "Name"
-	, reports_payment_type: "Payment Type"
-	, reports_payments: "Payments"
-	, reports_payments_summary_report: "Payments Summary Report"
-	, reports_profit: "Profit"
-	, reports_quantity_purchased: "Quantity Purchased"
-	, reports_received_by: "Received By"
-	, reports_receiving_id: "Receiving ID"
-	, reports_receiving_type: "Receiving Type"
-	, reports_receivings: "Receivings"
-	, reports_reorder_level: "Reorder Level"
-	, reports_report: "Report"
-	, reports_report_input: "Report Input"
-	, reports_reports: "Reports"
-	, reports_requisitions: "Requisitions"
-	, reports_returns: "Returns"
-	, reports_revenue: "Revenue"
-	, reports_sale_id: "Sale ID"
-	, reports_sale_type: "Sale Type"
-	, reports_sales: "Sales"
-	, reports_sales_amount: "Sales amount"
-	, reports_sales_summary_report: "Sales Summary Report"
-	, reports_serial_number: "Serial #"
-	, reports_sold_by: "Sold By"
-	, reports_sold_to: "Sold To"
-	, reports_stock_location: "Stock location"
-	, reports_subtotal: "Subtotal"
-	, reports_summary_reports: "Summary Reports"
-	, reports_supplied_by: "Supplied by"
-	, reports_supplier: "Supplier"
-	, reports_suppliers: "Suppliers"
-	, reports_suppliers_summary_report: "Suppliers Summary Report"
-	, reports_tax: "Tax"
-	, reports_tax_percent: "Tax Percent"
-	, reports_taxes: "Taxes"
-	, reports_taxes_summary_report: "Taxes Summary Report"
-	, reports_this_month: "This Month"
-	, reports_this_year: "This Year"
-	, reports_today: "Today"
-	, reports_total: "Total"
-	, reports_type: "Type"
-	, reports_welcome_message: "Welcome to the reports panel. Please select a report to view."
-	, reports_yesterday: "Yesterday"
-	, reqs_quantity: "Qty."
-	, reqs_receipt: "Requisition Receipt"
-	, reqs_related_item: "Related item"
-	, reqs_related_item_quantity: "Related item qty."
-	, reqs_transaction_failed: "Requisition Transactions Failed"
-	, reqs_unable_to_add_item: "Unable to add item to requisition"
-	, reqs_unit_quantity: "Unit qty."
-	, reqs_unit_quantity_total: "Total qty."
-	, required: "The %s field is required."
-	, sales_add_payment: "Add Payment"
-	, sales_amount_due: "Amount Due"
-	, sales_amount_tendered: "Amount Tendered"
-	, sales_basic_information: "Sale information"
-	, sales_cancel_sale: "Cancel Sale"
-	, sales_cannot_be_deleted: "Sale(s) could not be deleted"
-	, sales_cash: "Cash"
-	, sales_change_due: "Change Due"
-	, sales_check: "Check"
-	, sales_comment: "Comment"
-	, sales_comments: "Comments"
-	, sales_complete_sale: "Complete Sale"
-	, sales_confirm_cancel_sale: "Are you sure you want to clear this sale? All items will cleared."
-	, sales_confirm_finish_sale: "Are you sure you want to submit this sale? This cannot be undone."
-	, sales_confirm_suspend_sale: "Are you sure you want to suspend this sale?"
-	, sales_credit: "Credit Card"
-	, sales_customer: "Customer"
-	, sales_date: "Date"
-	, sales_date_required: "A correct date needs to be filled in"
-	, sales_date_type: "Date field is required"
-	, sales_debit: "Debit Card"
-	, sales_delete_confirmation: "Are you sure you want to delete this sale, this action cannot be undone"
-	, sales_delete_entire_sale: "Delete entire sale"
-	, sales_delete_successful: "You have successfully deleted a sale"
-	, sales_delete_unsuccessful: "You have unsuccessfully deleted a sale"
-	, sales_description_abbrv: "Desc"
-	, sales_discount: "Disc %"
-	, sales_discount_included: "% Discount"
-	, sales_discount_short: "%"
-	, sales_edit: "Edit"
-	, sales_edit_item: "Edit Item"
-	, sales_edit_sale: "Edit Sale"
-	, sales_email_receipt: "E-Mail Receipt"
-	, sales_employee: "Employee"
-	, sales_error_editing_item: "Error editing item"
-	, sales_find_or_scan_item: "Find/Scan Item"
-	, sales_find_or_scan_item_or_receipt: "Find/Scan Item OR Receipt"
-	, sales_giftcard: "Gift Card"
-	, sales_giftcard_number: "Gift Card Number"
-	, sales_id: "Sale ID"
-	, sales_invoice_enable: "Create Invoice"
-	, sales_invoice_number: "Invoice #"
-	, sales_invoice_number_duplicate: "Please enter an unique invoice number"
-	, sales_item_insufficient_of_stock: "Item is Insufficient of Stock"
-	, sales_item_name: "Item Name"
-	, sales_item_number: "Item #"
-	, sales_item_out_of_stock: "Item is Out of Stock"
-	, sales_mode: "Register Mode"
-	, sales_must_enter_numeric: "Must enter numeric value for amount tendered"
-	, sales_must_enter_numeric_giftcard: "Must enter numeric value for giftcard number"
-	, sales_new_customer: "New Customer"
-	, sales_new_item: "New Item"
-	, sales_no_items_in_cart: "There are no items in the cart"
-	, sales_one_or_multiple: "sale(s)"
-	, sales_payment: "Payment Type"
-	, sales_payment_amount: "Amount"
-	, sales_payment_not_cover_total: "Payment Amount does not cover Total"
-	, sales_payment_type: "Type"
-	, sales_payments_total: "Payments Total"
-	, sales_price: "Price"
-	, sales_quantity: "Qty."
-	, sales_quantity_less_than_zero: "Warning, Desired Quantity is Insufficient. You can still process the sale, but check your inventory"
-	, sales_receipt: "Sales Receipt"
-	, sales_receipt_number: "Sale #"
-	, sales_register: "Sales Register"
-	, sales_remove_customer: "Remove Customer"
-	, sales_return: "Return"
-	, sales_sale: "Sale"
-	, sales_sale_for_customer: "Customer:"
-	, sales_sale_time: "Time"
-	, sales_select_customer: "Select Customer (Optional)"
-	, sales_serial: "Serial"
-	, sales_start_typing_customer_name: "Start Typing customer's name..."
-	, sales_start_typing_item_name: "Start Typing item's name or scan barcode..."
-	, sales_stock_location: "Stock location"
-	, sales_sub_total: "Sub Total"
-	, sales_successfully_deleted: "You have successfully deleted"
-	, sales_successfully_suspended_sale: "Your sale has been successfully suspended"
-	, sales_successfully_updated: "Sale successfully updated"
-	, sales_suspend_sale: "Suspend Sale"
-	, sales_suspended_sale_id: "ID"
-	, sales_suspended_sales: "Suspended Sales"
-	, sales_tax: "Tax"
-	, sales_tax_percent: "Tax %"
-	, sales_total: "Total"
-	, sales_transaction_failed: "Sales Transaction Failed"
-	, sales_unable_to_add_item: "Unable to add item to sale"
-	, sales_unsuccessfully_updated: "Sale unsuccessfully updated"
-	, sales_unsuspend: "Unsuspend"
-	, sales_unsuspend_and_delete: ""
-	, suppliers_account_number: "Account #"
-	, suppliers_basic_information: "Supplier Information"
-	, suppliers_cannot_be_deleted: "Could not deleted selected suppliers, one or more of the selected suppliers has sales."
-	, suppliers_company_name: "Company Name"
-	, suppliers_company_name_required: "Company Name is a required field"
-	, suppliers_confirm_delete: "Are you sure you want to delete the selected suppliers?"
-	, suppliers_error_adding_updating: "Error adding/updating supplier"
-	, suppliers_new: "New Supplier"
-	, suppliers_none_selected: "You have not selected any suppliers to delete"
-	, suppliers_one_or_multiple: "supplier(s)"
-	, suppliers_successful_adding: "You have successfully added supplier"
-	, suppliers_successful_deleted: "You have successfully deleted"
-	, suppliers_successful_updating: "You have successfully updated supplier"
-	, suppliers_supplier: "Supplier"
-	, suppliers_update: "Update Supplier"
-	, user_new: "New User"
-	, valid_email: "The %s field must contain a valid email address."
-	, valid_emails: "The %s field must contain all valid email addresses."
-	, valid_ip: "The %s field must contain a valid IP."
-	, valid_url: "The %s field must contain a valid URL."
-	, validation_form_error: "Please fill all required fields and make sure input is in correct format."
+	alpha: "The %s field may only contain alphabetical characters.",
+	alpha_dash: "The %s field may only contain alpha-numeric characters, underscores, and dashes.",
+	alpha_numeric: "The %s field may only contain alpha-numeric characters.",
+	address_1: "Address 1",
+	address_2: "Address 2",
+	city: "City",
+	comments: "Comments",
+	common: "common",
+	confirm_search: "You have selected one or more rows, these will no longer be selected after your search. Are you sure you want to submit this search?",
+	country: "Country",
+	delete: "Delete",
+	det: "details",
+	edit: "edit",
+	email: "E-Mail",
+	email_invalid_format: "The e-mail address is not in the proper format",
+	fields_required_message: "Fields in red are required",
+	first_name: "First Name",
+	first_name_required: "The first name is a required field.",
+	inv: "inv",
+	last_name: "Last Name",
+	last_name_required: "The last name is a required field",
+	learn_about_project: "to learn the lastest information about the project",
+	list_of: "List of",
+	logout: "Logout",
+	no_persons_to_display: "There are no people to display",
+	or: "OR",
+	phone_number: "Phone",
+	please_visit_my: "Please visit my",
+	powered_by: "Powered by",
+	price: "Price",
+	remove: "Remove",
+	return_policy: "Return Policy",
+	search: "Search",
+	searched_for: "Searched for",
+	state: "State",
+	submit: "Submit",
+	view_recent_sales: "View Recent Sales",
+	website: "website",
+	welcome: "Welcome",
+	welcome_message: "Welcome to Open Source Point Of Sale, click a module below to get started!",
+	you_are_using_ospos: "You are using Open Source Point Of Sale Version",
+	zip: "Zip",
+	config_address: "Company Address",
+	config_address_required: "Company address is a required field",
+	config_company: "Company Name",
+	config_company_required: "Company name is a required field",
+	config_company_website_url: "Company website is not a valid URL (http://...)",
+	config_currency_side: "Right side",
+	config_currency_symbol: "Currency Symbol",
+	config_custom1: "Custom Field 1",
+	config_custom2: "Custom Field 2",
+	config_custom3: "Custom Field 3",
+	config_custom4: "Custom Field 4",
+	config_custom5: "Custom Field 5",
+	config_custom6: "Custom Field 6",
+	config_custom7: "Custom Field 7",
+	config_custom8: "Custom Field 8",
+	config_custom9: "Custom Field 9",
+	config_custom10: "Custom Field 10",
+	config_default_tax_rate: "Default Tax Rate %",
+	config_default_tax_rate_1: "Tax 1 Rate",
+	config_default_tax_rate_2: "Tax 2 Rate",
+	config_default_tax_rate_number: "The default tax rate must be a number",
+	config_default_tax_rate_required: "The default tax rate is a required field",
+	config_fax: "Fax",
+	config_info: "Store Configuration Information",
+	config_language: "Language",
+	config_phone: "Company Phone",
+	config_phone_required: "Company phone is a required field",
+	config_print_after_sale: "Print receipt after sale",
+	config_recv_invoice_enable: "Enable Orders Invoice#",
+	config_recv_invoice_format: "Receivings Invoice Format",
+	config_return_policy_required: "Return policy is a required field",
+	config_sales_invoice_enable: "Enable Sales Invoice#",
+	config_sales_invoice_format: "Sales Invoice Format",
+	config_saved_successfully: "Configuration saved successfully",
+	config_saved_unsuccessfully: "Configuration saved unsuccessfully",
+	config_stock_location: "Stock location",
+	config_stock_location_required: "Stock location number is a required field",
+	config_tax_included: "Tax Included",
+	config_timezone: "Timezone",
+	config_website: "Website",
+	customers_account_number: "Account #",
+	customers_basic_information: "Customer Information",
+	customers_cannot_be_deleted: "Could not deleted selected customers, one or more of the selected customers has sales.",
+	customers_confirm_delete: "Are you sure you want to delete the selected customers?",
+	customers_customer: "Customer",
+	customers_error_adding_updating: "Error adding/updating customer",
+	customers_new: "New Customer",
+	customers_none_selected: "You have not selected any customers to delete",
+	customers_one_or_multiple: "customer(s)",
+	customers_successful_adding: "You have successfully added customer",
+	customers_successful_deleted: "You have successfully deleted",
+	customers_successful_updating: "You have successfully updated customer",
+	customers_taxable: "Taxable",
+	customers_update: "Update Customer",
+	decimal: "The %s field must contain a decimal number.",
+	employees_basic_information: "Employee Basic Information",
+	employees_cannot_be_deleted: "Could not deleted selected employees, one or more of the employees has processed sales or you are trying to delete yourself :)",
+	employees_confirm_delete: "Are you sure you want to delete the selected employees?",
+	employees_employee: "Employee",
+	employees_error_adding_updating: "Error adding/updating employee",
+	employees_error_deleting_demo_admin: "You can not delete the demo admin user",
+	employees_error_updating_demo_admin: "You can not change the demo admin user",
+	employees_login_info: "Employee Login Info",
+	employees_new: "New Employee",
+	employees_none_selected: "You have not selected any employees to delete",
+	employees_one_or_multiple: "employee(s)",
+	employees_password: "Password",
+	employees_password_minlength: "Passwords must be at least 8 characters",
+	employees_password_must_match: "Passwords do not match",
+	employees_password_required: "Password is required",
+	employees_permission_desc: "Check the boxes below to grant access to modules",
+	employees_permission_info: "Employee Permissions and Access",
+	employees_repeat_password: "Password Again",
+	employees_successful_adding: "You have successfully added employee",
+	employees_successful_deleted: "You have successfully deleted",
+	employees_successful_updating: "You have successfully updated employee",
+	employees_update: "Update Employee",
+	employees_username: "Username",
+	employees_username_minlength: "The username must be at least 5 characters",
+	employees_username_required: "Username is a required field",
+	error_no_permission_module: "You do not have permission to access the module named",
+	error_unknown: "unknown",
+	exact_length: "The %s field must be exactly %s characters in length.",
+	form_validation_alpha: "The {field} field may only contain alphabetical characters.",
+	form_validation_alpha_dash: "The {field} field may only contain alpha-numeric characters, underscores, and dashes.",
+	form_validation_alpha_numeric: "The {field} field may only contain alpha-numeric characters.",
+	form_validation_alpha_numeric_spaces: "The {field} field may only contain alpha-numeric characters and spaces.",
+	form_validation_decimal: "The {field} field must contain a decimal number.",
+	form_validation_differs: "The {field} field must differ from the {param} field.",
+	form_validation_error_message_not_set: "Unable to access an error message corresponding to your field name {field}.",
+	form_validation_exact_length: "The {field} field must be exactly {param} characters in length.",
+	form_validation_greater_than: "The {field} field must contain a number greater than {param}.",
+	form_validation_greater_than_equal_to: "The {field} field must contain a number greater than or equal to {param}.",
+	form_validation_in_list: "The {field} field must be one of: {param}.",
+	form_validation_integer: "The {field} field must contain an integer.",
+	form_validation_is_natural: "The {field} field must only contain digits.",
+	form_validation_is_natural_no_zero: "The {field} field must only contain digits and must be greater than zero.",
+	form_validation_is_numeric: "The {field} field must contain only numeric characters.",
+	form_validation_is_unique: "The {field} field must contain a unique value.",
+	form_validation_isset: "The {field} field must have a value.",
+	form_validation_less_than: "The {field} field must contain a number less than {param}.",
+	form_validation_less_than_equal_to: "The {field} field must contain a number less than or equal to {param}.",
+	form_validation_matches: "The {field} field does not match the {param} field.",
+	form_validation_max_length: "The {field} field cannot exceed {param} characters in length.",
+	form_validation_min_length: "The {field} field must be at least {param} characters in length.",
+	form_validation_numeric: "The {field} field must contain only numbers.",
+	form_validation_regex_match: "The {field} field is not in the correct format.",
+	form_validation_required: "The {field} field is required.",
+	form_validation_valid_email: "The {field} field must contain a valid email address.",
+	form_validation_valid_emails: "The {field} field must contain all valid email addresses.",
+	form_validation_valid_ip: "The {field} field must contain a valid IP.",
+	form_validation_valid_url: "The {field} field must contain a valid URL.",
+	giftcards_add_minus: "Inventory to add/subtract",
+	giftcards_allow_alt_description: "Allow Alt Description",
+	giftcards_amazon: "Amazon",
+	giftcards_basic_information: "Giftcard Information",
+	giftcards_bulk_edit: "Bulk Edit",
+	giftcards_cannot_be_deleted: "Could not deleted selected giftcards, one or more of the selected giftcards has sales.",
+	giftcards_cannot_find_giftcard: "Cannot find any information about giftcard",
+	giftcards_card_value: "Value",
+	giftcards_category: "Category",
+	giftcards_change_all_to_allow_alt_desc: "Allow Alt Desc For All",
+	giftcards_change_all_to_not_allow_allow_desc: "Not Allow Alt Desc For All",
+	giftcards_change_all_to_serialized: "Change All To Serialized",
+	giftcards_change_all_to_unserialized: "Change All To Unserialized",
+	giftcards_confirm_bulk_edit: "Are you sure you want to edit all the giftcards selected?",
+	giftcards_confirm_delete: "Are you sure you want to delete the selected giftcards?",
+	giftcards_cost_price: "Cost Price",
+	giftcards_count: "Update Inventory",
+	giftcards_current_quantity: "Current Quantity",
+	giftcards_description: "Description",
+	giftcards_details_count: "Inventory Count Details",
+	giftcards_do_nothing: "Do Nothing",
+	giftcards_edit_fields_you_want_to_update: "Edit the fields you want to edit for ALL selected giftcards",
+	giftcards_edit_multiple_giftcards: "Editing Multiple Giftcards",
+	giftcards_error_adding_updating: "Error adding/updating giftcard",
+	giftcards_error_updating_multiple: "Error updating giftcards",
+	giftcards_excel_import_failed: "Excel import failed",
+	giftcards_generate_barcodes: "Generate Barcodes",
+	giftcards_giftcard: "Giftcard",
+	giftcards_giftcard_number: "Giftcard Number",
+	giftcards_info_provided_by: "Info provided by",
+	giftcards_inventory_comments: "Comments",
+	giftcards_is_serialized: "Giftcard has Serial Number",
+	giftcards_low_inventory_giftcards: "Low Inventory Giftcards",
+	giftcards_manually_editing_of_quantity: "Manual Edit of Quantity",
+	giftcards_must_select_giftcard_for_barcode: "You must select at least 1 giftcard to generate barcodes",
+	giftcards_new: "New Giftcard",
+	giftcards_no_description_giftcards: "No Description Giftcards",
+	giftcards_no_giftcards_to_display: "No Giftcards to display",
+	giftcards_none: "None",
+	giftcards_none_selected: "You have not selected any giftcards to edit",
+	giftcards_number: "Giftcard Number must be a number",
+	giftcards_number_information: "Giftcard Number",
+	giftcards_number_required: "Giftcard Number is a required field",
+	giftcards_one_or_multiple: "giftcard(s)",
+	giftcards_person_id: "Customer",
+	giftcards_quantity: "Quantity",
+	giftcards_quantity_required: "Quantity is a required field. Please Close ( X ) to cancel",
+	giftcards_reorder_level: "Reorder Level",
+	giftcards_retrive_giftcard_info: "Retrieve Giftcard Info",
+	giftcards_sales_tax_1: "Sales Tax",
+	giftcards_sales_tax_2: "Sales Tax 2",
+	giftcards_serialized_giftcards: "Serialized Giftcards",
+	giftcards_successful_adding: "You have successfully added giftcard",
+	giftcards_successful_bulk_edit: "You have successfully updated the selected giftcards",
+	giftcards_successful_deleted: "You have successfully deleted",
+	giftcards_successful_updating: "You have successfully updated giftcard",
+	giftcards_supplier: "Supplier",
+	giftcards_tax_1: "Tax 1",
+	giftcards_tax_2: "Tax 2",
+	giftcards_tax_percent: "Tax Percent",
+	giftcards_tax_percents: "Tax Percent(s)",
+	giftcards_unit_price: "Unit Price",
+	giftcards_upc_database: "UPC Database",
+	giftcards_update: "Update Giftcard",
+	giftcards_use_inventory_menu: "Use Inv. Menu",
+	giftcards_value: "Giftcard Value must be a number",
+	giftcards_value_required: "Giftcard Value is a required field",
+	greater_than: "The %s field must contain a number greater than %s.",
+	integer: "The %s field must contain an integer.",
+	is_natural: "The %s field must contain only positive numbers.",
+	is_natural_no_zero: "The %s field must contain a number greater than zero.",
+	is_numeric: "The %s field must contain only numeric characters.",
+	is_unique: "The %s field must contain a unique value.",
+	isset: "The %s field must have a value.",
+	item_kits_add_item: "Add Item",
+	item_kits_cannot_be_deleted: "Could not delete item kit(s)",
+	item_kits_confirm_delete: "Are you sure you want to delete the selected item kits?",
+	item_kits_description: "Item Kit Description",
+	item_kits_error_adding_updating: "Error adding/updating Item Kit",
+	item_kits_info: "Item Kit Info",
+	item_kits_item: "Item",
+	item_kits_items: "Items",
+	item_kits_name: "Item Kit Name",
+	item_kits_new: "New Item Kit",
+	item_kits_no_item_kits_to_display: "No item kits to display",
+	item_kits_none_selected: "You have not selected any item kits",
+	item_kits_one_or_multiple: "Item Kit(s)",
+	item_kits_quantity: "Quantity",
+	item_kits_successful_adding: "You have successfully added Item Kit",
+	item_kits_successful_deleted: "You have successfully deleted",
+	item_kits_successful_updating: "You have successfully updated Item Kit",
+	item_kits_update: "Update Item Kit",
+	items_add_minus: "Inventory to add/subtract",
+	items_allow_alt_description: "Allow Alt Description",
+	items_amazon: "Amazon",
+	items_basic_information: "Item Information",
+	items_bulk_edit: "Bulk Edit",
+	items_buy_price_required: "Purchase price is a required field",
+	items_cannot_be_deleted: "Could not deleted selected items, one or more of the selected items has sales.",
+	items_cannot_find_item: "Cannot find any information about item",
+	items_category: "Category",
+	items_category_required: "Category is a required field",
+	items_change_all_to_allow_alt_desc: " Allow Alt Desc For All",
+	items_change_all_to_not_allow_allow_desc: "Not Allow Alt Desc For All",
+	items_change_all_to_serialized: "Change All To Serialized",
+	items_change_all_to_unserialized: "Change All To Unserialized",
+	items_confirm_bulk_edit: "Are you sure you want to edit all the items selected?",
+	items_confirm_delete: "Are you sure you want to delete the selected items?",
+	items_cost_price: "Cost Price",
+	items_cost_price_number: "Cost price must be a number",
+	items_cost_price_required: "Cost Price is a required field",
+	items_count: "Update Inv.",
+	items_current_quantity: "Current Quantity",
+	items_description: "Description",
+	items_details_count: "Inventory Count Details",
+	items_do_nothing: "Do Nothing",
+	items_edit_fields_you_want_to_update: "Edit the fields you want to edit for ALL selected items",
+	items_edit_multiple_items: "Editing Multiple Items",
+	items_error_adding_updating: "Error adding/updating item",
+	items_error_updating_multiple: "Error updating items",
+	items_excel_import_failed: "Excel import failed",
+	items_generate_barcodes: "Generate Barcodes",
+	items_info_provided_by: "Info provided by",
+	items_inventory: "Inv",
+	items_inventory_comments: "Comments",
+	items_is_deleted: "Deleted",
+	items_is_serialized: "Item has Serial Number",
+	items_item: "Item",
+	items_item_number: "Barcode",
+	items_location: "Location",
+	items_manually_editing_of_quantity: "Manual Edit of Quantity",
+	items_must_select_item_for_barcode: "You must select at least 1 item to generate barcodes",
+	items_name: "Name",
+	items_name_required: "Item Name is a required field",
+	items_new: "New Item",
+	items_no_description_items: "No Description Items",
+	items_no_items_to_display: "No Items to display",
+	items_none: "None",
+	items_none_selected: "You have not selected any items to edit",
+	items_number_information: "Number",
+	items_one_or_multiple: "item(s)",
+	items_quantity: "Qty",
+	items_quantity_number: "Quantity must be a number",
+	items_quantity_required: "Quantity is a required field. Please Close ( X ) to cancel",
+	items_receiving_quantity: "Receiving quantity",
+	items_reorder_level: "Reorder Level",
+	items_reorder_level_number: "Reorder level must be a number",
+	items_reorder_level_required: "Reorder level is a required field",
+	items_retrive_item_info: "Retrive Item Info",
+	items_sales_tax_1: "Sales Tax",
+	items_sales_tax_2: "Sales Tax 2",
+	items_search_custom_items: "Search Custom Fields",
+	items_serialized_items: "Serialized Items",
+	items_stock_location: "Stock location",
+	items_successful_adding: "You have successfully added item",
+	items_successful_bulk_edit: "You have successfully updated the selected items",
+	items_successful_deleted: "You have successfully deleted",
+	items_successful_updating: "You have successfully updated item",
+	items_supplier: "Supplier",
+	items_tax_1: "Tax 1",
+	items_tax_2: "Tax 2",
+	items_tax_percent: "Tax",
+	items_tax_percent_required: "Tax Percent is a required field",
+	items_tax_percents: "Tax",
+	items_unit_price: "Retail Price",
+	items_unit_price_number: "Unit price must be a number",
+	items_unit_price_required: "Retail Price is a required field",
+	items_upc_database: "UPC Database",
+	items_update: "Update Item",
+	items_use_inventory_menu: "Use Inv. Menu",
+	less_than: "The %s field must contain a number less than %s.",
+	login_go: "Go",
+	login_invalid_username_and_password: "Invalid username/password",
+	login_login: "Login",
+	login_password: "Password",
+	login_username: "Username",
+	login_welcome_message: "Welcome to the Open Source Point of Sale System. To continue, please login using your username and password below.",
+	matches: "The %s field does not match the %s field.",
+	max_length: "The %s field can not exceed %s characters in length.",
+	min_length: "The %s field must be at least %s characters in length.",
+	module_config: "Store Config",
+	module_config_desc: "Change the store's configuration",
+	module_customers: "Customers",
+	module_customers_desc: "Add, Update, Delete, and Search customers",
+	module_users: "Users",
+	module_users_desc: "Add, Update, Delete, and Search users",
+	module_employees: "Employees",
+	module_employees_desc: "Add, Update, Delete, and Search employees",
+	module_giftcards: "Gift Cards",
+	module_giftcards_desc: "Add, Update, Delete and Search gift cards",
+	module_home: "Home",
+	module_item_kits: "Item Kits",
+	module_item_kits_desc: "Add, Update, Delete and Search Item Kits",
+	module_items: "Items",
+	module_items_desc: "Add, Update, Delete, and Search items",
+	module_receivings: "Receivings",
+	module_receivings_desc: "Process Purchase orders",
+	module_reports: "Reports",
+	module_reports_desc: "View and generate reports",
+	module_sales: "Sales",
+	module_sales_desc: "Process sales and returns",
+	module_suppliers: "Suppliers",
+	module_suppliers_desc: "Add, Update, Delete, and Search suppliers",
+	numeric: "The %s field must contain only numbers.",
+	pagination_first_link: "&lsaquo; First",
+	pagination_last_link: "Last &rsaquo;",
+	pagination_next_link: "&gt;",
+	pagination_prev_link: "&lt;",
+	receivings_transaction_failed: "Receivings Transactions Failed",
+	recvs_basic_information: "Receiving information",
+	recvs_cancel_receiving: "Cancel",
+	recvs_cannot_be_deleted: "Receiving(s) could not be deleted",
+	recvs_comments: "Comments",
+	recvs_complete_receiving: "Finish",
+	recvs_confirm_cancel_receiving: "Are you sure you want to clear this receiving? All items will cleared.",
+	recvs_confirm_finish_receiving: "Are you sure you want to submit this receiving? This cannot be undone.",
+	recvs_cost: "Cost",
+	recvs_date: "Receiving Date",
+	recvs_date_required: "A correct date needs to be filled in",
+	recvs_date_type: "Date field is required",
+	recvs_delete_confirmation: "Are you sure you want to delete this receiving, this action cannot be undone",
+	recvs_delete_entire_sale: "Delete entire sale",
+	recvs_discount: "Disc %",
+	recvs_edit: "Edit",
+	recvs_edit_sale: "Edit Receiving",
+	recvs_employee: "Employee",
+	recvs_error_editing_item: "Error editing item",
+	recvs_error_requisition: "Unable to move inventory from and to the same stock location",
+	recvs_find_or_scan_item: "Find/Scan Item",
+	recvs_find_or_scan_item_or_receipt: "Find/Scan Item OR Receipt",
+	recvs_id: "Receiving ID",
+	recvs_invoice_enable: "Create Invoice",
+	recvs_invoice_number: "Invoice #",
+	recvs_invoice_number_duplicate: "Please enter an unique invoice number",
+	recvs_item_name: "Item Name",
+	recvs_mode: "Receiving Mode",
+	recvs_new_supplier: "New Supplier",
+	recvs_one_or_multiple: "receiving(s)",
+	recvs_quantity: "Qty.",
+	recvs_receipt: "Receivings Receipt",
+	recvs_receipt_number: "Receiving #",
+	recvs_receiving: "Receive",
+	recvs_register: "Items Receiving",
+	recvs_requisition: "Requisition",
+	recvs_return: "Return",
+	recvs_select_supplier: "Select Supplier (Optional)",
+	recvs_start_typing_supplier_name: "Start Typing supplier's name...",
+	recvs_stock_destination: "Stock destination",
+	recvs_stock_locaiton: "Stock location",
+	recvs_stock_source: "Stock source",
+	recvs_successfully_deleted: "You have successfully deleted",
+	recvs_successfully_updated: "Receiving successfully updated",
+	recvs_supplier: "Supplier",
+	recvs_total: "Total",
+	recvs_unable_to_add_item: "Unable to add item to receiving",
+	recvs_unsuccessfully_updated: "Receiving unsuccessfully updated",
+	regex_match: "The %s field is not in the correct format.",
+	reports_all: "All",
+	reports_all_time: "All Time",
+	reports_categories: "Categories",
+	reports_categories_summary_report: "Categories Summary Report",
+	reports_category: "Category",
+	reports_comments: "Comments",
+	reports_count: "Count",
+	reports_customer: "Customer",
+	reports_customers: "Customers",
+	reports_customers_summary_report: "Customers Summary Report",
+	reports_date: "Date",
+	reports_date_range: "Date Range",
+	reports_description: "Description",
+	reports_detailed_receivings_report: "Detailed Receivings Report",
+	reports_detailed_reports: "Detailed Reports",
+	reports_detailed_sales_report: "Detailed Sales Report",
+	reports_discount: "Discounts",
+	reports_discount_percent: "Discount Percent",
+	reports_discounts: "Discounts",
+	reports_discounts_summary_report: "Discounts Summary Report",
+	reports_employee: "Employee",
+	reports_employees: "Employees",
+	reports_employees_summary_report: "Employees Summary Report",
+	reports_graphical_reports: "Graphical Reports",
+	reports_inventory: "Inventory",
+	reports_inventory_low: "Low Inventory",
+	reports_inventory_low_report: "Low Inventory Report",
+	reports_inventory_reports: "Inventory Reports",
+	reports_inventory_summary: " Inventory Summary",
+	reports_inventory_summary_report: "Inventory Summary Report",
+	reports_item: "Item",
+	reports_item_name: "Item Name",
+	reports_item_number: "Item Number",
+	reports_items: "Items",
+	reports_items_purchased: "Items Purchased",
+	reports_items_received: "Items Received",
+	reports_items_summary_report: "Items Summary Report",
+	reports_last_7: "Last 7 Days",
+	reports_last_month: "Last Month",
+	reports_last_year: "Last Year",
+	reports_name: "Name",
+	reports_payment_type: "Payment Type",
+	reports_payments: "Payments",
+	reports_payments_summary_report: "Payments Summary Report",
+	reports_profit: "Profit",
+	reports_quantity_purchased: "Quantity Purchased",
+	reports_received_by: "Received By",
+	reports_receiving_id: "Receiving ID",
+	reports_receiving_type: "Receiving Type",
+	reports_receivings: "Receivings",
+	reports_reorder_level: "Reorder Level",
+	reports_report: "Report",
+	reports_report_input: "Report Input",
+	reports_reports: "Reports",
+	reports_requisitions: "Requisitions",
+	reports_returns: "Returns",
+	reports_revenue: "Revenue",
+	reports_sale_id: "Sale ID",
+	reports_sale_type: "Sale Type",
+	reports_sales: "Sales",
+	reports_sales_amount: "Sales amount",
+	reports_sales_summary_report: "Sales Summary Report",
+	reports_serial_number: "Serial #",
+	reports_sold_by: "Sold By",
+	reports_sold_to: "Sold To",
+	reports_stock_location: "Stock location",
+	reports_subtotal: "Subtotal",
+	reports_summary_reports: "Summary Reports",
+	reports_supplied_by: "Supplied by",
+	reports_supplier: "Supplier",
+	reports_suppliers: "Suppliers",
+	reports_suppliers_summary_report: "Suppliers Summary Report",
+	reports_tax: "Tax",
+	reports_tax_percent: "Tax Percent",
+	reports_taxes: "Taxes",
+	reports_taxes_summary_report: "Taxes Summary Report",
+	reports_this_month: "This Month",
+	reports_this_year: "This Year",
+	reports_today: "Today",
+	reports_total: "Total",
+	reports_type: "Type",
+	reports_welcome_message: "Welcome to the reports panel. Please select a report to view.",
+	reports_yesterday: "Yesterday",
+	reqs_quantity: "Qty.",
+	reqs_receipt: "Requisition Receipt",
+	reqs_related_item: "Related item",
+	reqs_related_item_quantity: "Related item qty.",
+	reqs_transaction_failed: "Requisition Transactions Failed",
+	reqs_unable_to_add_item: "Unable to add item to requisition",
+	reqs_unit_quantity: "Unit qty.",
+	reqs_unit_quantity_total: "Total qty.",
+	required: "The %s field is required.",
+	sales_add_payment: "Add Payment",
+	sales_amount_due: "Amount Due",
+	sales_amount_tendered: "Amount Tendered",
+	sales_basic_information: "Sale information",
+	sales_cancel_sale: "Cancel Sale",
+	sales_cannot_be_deleted: "Sale(s) could not be deleted",
+	sales_cash: "Cash",
+	sales_change_due: "Change Due",
+	sales_check: "Check",
+	sales_comment: "Comment",
+	sales_comments: "Comments",
+	sales_complete_sale: "Complete Sale",
+	sales_confirm_cancel_sale: "Are you sure you want to clear this sale? All items will cleared.",
+	sales_confirm_finish_sale: "Are you sure you want to submit this sale? This cannot be undone.",
+	sales_confirm_suspend_sale: "Are you sure you want to suspend this sale?",
+	sales_credit: "Credit Card",
+	sales_customer: "Customer",
+	sales_date: "Date",
+	sales_date_required: "A correct date needs to be filled in",
+	sales_date_type: "Date field is required",
+	sales_debit: "Debit Card",
+	sales_delete_confirmation: "Are you sure you want to delete this sale, this action cannot be undone",
+	sales_delete_entire_sale: "Delete entire sale",
+	sales_delete_successful: "You have successfully deleted a sale",
+	sales_delete_unsuccessful: "You have unsuccessfully deleted a sale",
+	sales_description_abbrv: "Desc",
+	sales_discount: "Disc %",
+	sales_discount_included: "% Discount",
+	sales_discount_short: "%",
+	sales_edit: "Edit",
+	sales_edit_item: "Edit Item",
+	sales_edit_sale: "Edit Sale",
+	sales_email_receipt: "E-Mail Receipt",
+	sales_employee: "Employee",
+	sales_error_editing_item: "Error editing item",
+	sales_find_or_scan_item: "Find/Scan Item",
+	sales_find_or_scan_item_or_receipt: "Find/Scan Item OR Receipt",
+	sales_giftcard: "Gift Card",
+	sales_giftcard_number: "Gift Card Number",
+	sales_id: "Sale ID",
+	sales_invoice_enable: "Create Invoice",
+	sales_invoice_number: "Invoice #",
+	sales_invoice_number_duplicate: "Please enter an unique invoice number",
+	sales_item_insufficient_of_stock: "Item is Insufficient of Stock",
+	sales_item_name: "Item Name",
+	sales_item_number: "Item #",
+	sales_item_out_of_stock: "Item is Out of Stock",
+	sales_mode: "Register Mode",
+	sales_must_enter_numeric: "Must enter numeric value for amount tendered",
+	sales_must_enter_numeric_giftcard: "Must enter numeric value for giftcard number",
+	sales_new_customer: "New Customer",
+	sales_new_item: "New Item",
+	sales_no_items_in_cart: "There are no items in the cart",
+	sales_one_or_multiple: "sale(s)",
+	sales_payment: "Payment Type",
+	sales_payment_amount: "Amount",
+	sales_payment_not_cover_total: "Payment Amount does not cover Total",
+	sales_payment_type: "Type",
+	sales_payments_total: "Payments Total",
+	sales_price: "Price",
+	sales_quantity: "Qty.",
+	sales_quantity_less_than_zero: "Warning, Desired Quantity is Insufficient. You can still process the sale, but check your inventory",
+	sales_receipt: "Sales Receipt",
+	sales_receipt_number: "Sale #",
+	sales_register: "Sales Register",
+	sales_remove_customer: "Remove Customer",
+	sales_return: "Return",
+	sales_sale: "Sale",
+	sales_sale_for_customer: "Customer:",
+	sales_sale_time: "Time",
+	sales_select_customer: "Select Customer (Optional)",
+	sales_serial: "Serial",
+	sales_start_typing_customer_name: "Start Typing customer's name...",
+	sales_start_typing_item_name: "Start Typing item's name or scan barcode...",
+	sales_stock_location: "Stock location",
+	sales_sub_total: "Sub Total",
+	sales_successfully_deleted: "You have successfully deleted",
+	sales_successfully_suspended_sale: "Your sale has been successfully suspended",
+	sales_successfully_updated: "Sale successfully updated",
+	sales_suspend_sale: "Suspend Sale",
+	sales_suspended_sale_id: "ID",
+	sales_suspended_sales: "Suspended Sales",
+	sales_tax: "Tax",
+	sales_tax_percent: "Tax %",
+	sales_total: "Total",
+	sales_transaction_failed: "Sales Transaction Failed",
+	sales_unable_to_add_item: "Unable to add item to sale",
+	sales_unsuccessfully_updated: "Sale unsuccessfully updated",
+	sales_unsuspend: "Unsuspend",
+	sales_unsuspend_and_delete: "",
+	suppliers_account_number: "Account #",
+	suppliers_basic_information: "Supplier Information",
+	suppliers_cannot_be_deleted: "Could not deleted selected suppliers, one or more of the selected suppliers has sales.",
+	suppliers_company_name: "Company Name",
+	suppliers_company_name_required: "Company Name is a required field",
+	suppliers_confirm_delete: "Are you sure you want to delete the selected suppliers?",
+	suppliers_error_adding_updating: "Error adding/updating supplier",
+	suppliers_new: "New Supplier",
+	suppliers_none_selected: "You have not selected any suppliers to delete",
+	suppliers_one_or_multiple: "supplier(s)",
+	suppliers_successful_adding: "You have successfully added supplier",
+	suppliers_successful_deleted: "You have successfully deleted",
+	suppliers_successful_updating: "You have successfully updated supplier",
+	suppliers_supplier: "Supplier",
+	suppliers_update: "Update Supplier",
+	user_new: "New User",
+	valid_email: "The %s field must contain a valid email address.",
+	valid_emails: "The %s field must contain all valid email addresses.",
+	valid_ip: "The %s field must contain a valid IP.",
+	valid_url: "The %s field must contain a valid URL.",
+	validation_form_error: "Please fill all required fields and make sure input is in correct format."
 };
-},{}],29:[function(require,module,exports){
+},{}],30:[function(require,module,exports){
 'use strict'
 
 var $app = require('./core/app.js');
@@ -1705,11 +1760,12 @@ var config = require('./config.js');
 
 // start the application
 $app.start(config);
-},{"./config.js":4,"./core/app.js":8,"./customer/customer.js":16,"./home/home.js":25,"./user/user.js":34}],30:[function(require,module,exports){
-function userFormController() {
+},{"./config.js":4,"./core/app.js":7,"./customer/customer.js":17,"./home/home.js":26,"./user/user.js":35}],31:[function(require,module,exports){
+/*global $app*/
 
-    var $modal = $app.$modal;
-    var $form = $app.$form;
+function userFormController(endpoint, model) {
+    var $modal = $app.$view.$modal;
+    var $form = $app.$view.$form;
     var $http = $app.$http;
 
     var self = {
@@ -1736,30 +1792,43 @@ function userFormController() {
     return self;
 
     function onLoad() {
-
         var modalConfig = {
             size: 'lg'
         }
+        var input = {
+            accountNumberInput: $form.input("customers_account_number").setValue(model.accountNumber),
+            emailInput: $form.input("email"),
+            firstNameInput: $form.input("first_name").setClass("required"),
+            lastNameInput: $form.input("last_name").setClass("required"),
+            phoneNumberInput: $form.input("phone_number", "number"),
+            address1Input: $form.input("address_1"),
+            address2Input: $form.input("address_2"),
+            countryInput: $form.input("country"),
+            stateInput: $form.input("state"),
+            cityInput: $form.input("city"),
+            zipInput: $form.input("zip", "number"),
+        }
 
-        var template = require('./user.form.template.hbs');
-
-        $modal.show(template, null, modalConfig);
-
-        $form.create()
+        $modal.show(require('./user.form.template.hbs'), input, modalConfig);
+        
+        var formUser = "#user-form";
+        
+        $form.create("#user-form")
             .config(self.formConfig)
-            .onSubmit(function () {
-                var url = $(form).attr('action');
-                var data = $(form).serialize();
-                $http.post(url, data, function () {
+            .onSubmit(function() {
+                event.preventDefault();
+                var url = endpoint;
+                var data = $(formUser).serializeObject();
+                $http.post(url, data, function() {
                     $('#modal-container').modal('hide');
-                    //app.controller.customerController.tableGrid.ajax.reload();
+                    $app.controller.customerController.tableGrid.ajax.reload();
                 });
             });
     }
 };
 
 module.exports = userFormController;
-},{"./user.form.template.hbs":32}],31:[function(require,module,exports){
+},{"./user.form.template.hbs":33}],32:[function(require,module,exports){
 (function (global){
 
 function customerFormModule ($app) {
@@ -1774,24 +1843,46 @@ function customerFormModule ($app) {
 
 module.exports = customerFormModule; 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./user.form.controller.js":30,"./user.form.template.hbs":32}],32:[function(require,module,exports){
+},{"./user.form.controller.js":31,"./user.form.template.hbs":33}],33:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
-    var stack1, alias1=container.lambda, alias2=container.escapeExpression;
+    var stack1, alias1=container.lambda;
 
-  return "<div class=\"modal-header\">\n    <button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-hidden=\"true\">&times;</button>\n    <h4 class=\"modal-title\">Users</h4>\n</div>\n\n<div class=\"modal-body\">\n    <form id=\"customer-form\" name=\"customer-form\"  action=\"../user/save\" method=\"post\" class =\"form-horizontal\">\n    <!--<?php echo form_open('customers/save/' . $person_info->person_id,\n        array('name' => 'customer_form', 'id' => 'customer_form', \"class\" => 'form-horizontal')); ?>-->\n    <span class=\"small\">"
-    + alias2(alias1(((stack1 = (depth0 != null ? depth0.lang : depth0)) != null ? stack1.common_fields_required_message : stack1), depth0))
-    + "</span>\n\n    <ul id=\"error_message_box\" class=\"warning\"></ul>\n\n    <fieldset id=\"customer_basic_info\">\n\n        <div class=\"row\">\n            <div class=\"col-sm-6\">\n                <div class=\"form-group\">\n                    <label for=\"account_number\" class=\"col-sm-4 control-label\">"
-    + alias2(alias1(((stack1 = (depth0 != null ? depth0.lang : depth0)) != null ? stack1.customers_account_number : stack1), depth0))
-    + "</label>                                        \n                    <div class='col-sm-8'>\n                        <input name=\"account_number\" id=\"account_number\" class=\"form-control\" value=\""
-    + alias2(alias1(((stack1 = (depth0 != null ? depth0.person_info : depth0)) != null ? stack1.account_number : stack1), depth0))
-    + "\" />                        \n                    </div>\n                </div>\n            </div>\n\n            <?php $this->load->view(\"people/form_basic_info\"); ?>\n\n            <div class=\"col-sm-6\">\n                <div class=\"form-group\">\n                    <?php echo form_label($this->lang->line('customers_taxable'), 'taxable', array('class' => 'col-sm-4 control-label')); ?>\n                    <div class='col-sm-8'>\n                        <div class=\"checkbox\">\n                            <label>\n                                <?php echo form_checkbox('taxable', '1', $person_info->taxable == '' ? TRUE : (boolean)$person_info->taxable); ?>\n                            </label>\n                        </div>\n                    </div>\n                </div>\n            </div>\n        </div>\n\n    </fieldset>    \n    </form>    \n</div>\n\n<div class=\"modal-footer\">\n    <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">Close</button>\n    <button type=\"submit\" form=\"customer_form\" class=\"btn btn-primary\">Save changes</button>\n</div>\n\n";
+  return "<div class=\"modal-header\">\n    <button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-hidden=\"true\">&times;</button>\n    <h4 class=\"modal-title\">User Form</h4>\n</div>\n\n<div class=\"modal-body\">\n    <form id=\"user-form\" name=\"user-form\" class=\"form-horizontal\">\n        <span class=\"small\">"
+    + container.escapeExpression(alias1(((stack1 = (depth0 != null ? depth0.lang : depth0)) != null ? stack1.fields_required_message : stack1), depth0))
+    + "</span>\n        <ul id=\"error_message_box\" class=\"warning\"></ul>\n        <fieldset id=\"user_basic_info\">\n            <div class=\"row\">\n                <div class=\"col-sm-6\">"
+    + ((stack1 = alias1(((stack1 = (depth0 != null ? depth0.accountNumberInput : depth0)) != null ? stack1.render : stack1), depth0)) != null ? stack1 : "")
+    + "</div>\n                <div class=\"col-sm-6\">"
+    + ((stack1 = alias1(((stack1 = (depth0 != null ? depth0.emailInput : depth0)) != null ? stack1.render : stack1), depth0)) != null ? stack1 : "")
+    + "</div>\n                <div class=\"col-sm-6\">"
+    + ((stack1 = alias1(((stack1 = (depth0 != null ? depth0.firstNameInput : depth0)) != null ? stack1.render : stack1), depth0)) != null ? stack1 : "")
+    + "</div>\n                <div class=\"col-sm-6\">"
+    + ((stack1 = alias1(((stack1 = (depth0 != null ? depth0.lastNameInput : depth0)) != null ? stack1.render : stack1), depth0)) != null ? stack1 : "")
+    + "</div>\n                <div class=\"col-sm-6\">"
+    + ((stack1 = alias1(((stack1 = (depth0 != null ? depth0.phoneNumberInput : depth0)) != null ? stack1.render : stack1), depth0)) != null ? stack1 : "")
+    + "</div>\n                <div class=\"col-sm-6\">"
+    + ((stack1 = alias1(((stack1 = (depth0 != null ? depth0.address1Input : depth0)) != null ? stack1.render : stack1), depth0)) != null ? stack1 : "")
+    + "</div>\n                <div class=\"col-sm-6\">"
+    + ((stack1 = alias1(((stack1 = (depth0 != null ? depth0.address2Input : depth0)) != null ? stack1.render : stack1), depth0)) != null ? stack1 : "")
+    + "</div>\n                <div class=\"col-sm-6\">"
+    + ((stack1 = alias1(((stack1 = (depth0 != null ? depth0.countryInput : depth0)) != null ? stack1.render : stack1), depth0)) != null ? stack1 : "")
+    + "</div>\n                <div class=\"col-sm-6\">"
+    + ((stack1 = alias1(((stack1 = (depth0 != null ? depth0.cityInput : depth0)) != null ? stack1.render : stack1), depth0)) != null ? stack1 : "")
+    + "</div>\n                <div class=\"col-sm-6\">"
+    + ((stack1 = alias1(((stack1 = (depth0 != null ? depth0.stateInput : depth0)) != null ? stack1.render : stack1), depth0)) != null ? stack1 : "")
+    + "</div>\n                <div class=\"col-sm-6\">"
+    + ((stack1 = alias1(((stack1 = (depth0 != null ? depth0.zipInput : depth0)) != null ? stack1.render : stack1), depth0)) != null ? stack1 : "")
+    + "</div>\n                <div class=\"col-sm-6\">"
+    + ((stack1 = alias1(((stack1 = (depth0 != null ? depth0.notesInput : depth0)) != null ? stack1.render : stack1), depth0)) != null ? stack1 : "")
+    + "</div>\n            </div>\n        </fieldset>\n    </form>\n</div>\n\n<div class=\"modal-footer\">\n    <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">Close</button>\n    <button type=\"submit\" form=\"user-form\" class=\"btn btn-primary\">Save changes</button>\n</div>\n";
 },"useData":true});
 
-},{"hbsfy/runtime":95}],33:[function(require,module,exports){
-function userController() {
+},{"hbsfy/runtime":96}],34:[function(require,module,exports){
+'use strict'
+/* global $app */
 
+function userController() {
     var $ = $app.$;
     var $notify = $app.$notify;
     var $tablegrid = $app.$tablegrid;
@@ -1804,7 +1895,8 @@ function userController() {
         table: '#manage-table ',
         userForm: userForm,
         load: onLoad,
-        showForm: showForm,
+        showForm: showFormCreate,
+        endpoint: 'api/v1/users'
     };
 
     self.load();
@@ -1812,44 +1904,51 @@ function userController() {
     return self;
 
     function onLoad() {
-        self.tableGrid = $tablegrid.render("#user-table", 'api/v1/users',
-            [
-                { data: 'username' },
-                { data: 'email' }
-            ], 'uid');
+        self.tableGrid = $tablegrid.render("#user-table", self.endpoint, [{
+            data: 'username'
+        }, {
+            data: 'email'
+        }], 'id');
 
-        $('body').on('click', '#user-add', function () {
+        $('body').on('click', '#user-add', function() {
             self.showForm();
         });
     };
 
-    function showForm() {
-        self.userForm.controller();
+    function showFormCreate() {
+        var model = {
+            accountNumber: "",
+        };
+        self.userForm.controller(self.endpoint, model);
+    };
+
+    function showFormEdit() {
+        self.userForm.controller(self.endpoint, model);
     };
 };
 
 module.exports = userController;
-},{"./form/user.form.js":31}],34:[function(require,module,exports){
+},{"./form/user.form.js":32}],35:[function(require,module,exports){
 (function (global){
-function userModule ($app) {
-	
+function userModule($app) {
+
 	global.$app = $app;
-	
+
 	return {
-		'controller': require('./user.controller.js'),		
+		'controller': require('./user.controller.js'),
 		'template': require('./user.template.hbs'),
 	}
 };
 
-module.exports = userModule; 
+module.exports = userModule;
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./user.controller.js":33,"./user.template.hbs":35}],35:[function(require,module,exports){
+},{"./user.controller.js":34,"./user.template.hbs":36}],36:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
     var stack1, alias1=container.lambda, alias2=container.escapeExpression;
 
-  return "\n<section class=\"content-header\">\n    <h1>\n        "
+  return "<section class=\"content-header\">\n    <h1>\n        "
     + alias2(alias1(((stack1 = (depth0 != null ? depth0.lang : depth0)) != null ? stack1.module_users : stack1), depth0))
     + "\n        <small>\n            "
     + alias2(alias1(((stack1 = (depth0 != null ? depth0.lang : depth0)) != null ? stack1.module_users_desc : stack1), depth0))
@@ -1864,7 +1963,7 @@ module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":f
     + "\n                            </button>\n\n                            <a class=\"btn btn-success\" id=\"import-excel\" href=\"../customers/excel_import\" data-target=\"#modal-container\">\n                                <i class=\"fa fa-file-excel-o\"></i> Excel Import\n                            </a>\n                        </div>\n                    </div>\n                </div>\n\n                <div class=\"box-body \">\n                    <table id=\"user-table\" class=\"table table-bordered table-hover\">\n                        <thead>\n                            <tr>\n                                <th width=\"10px\">\n                                    <input type=\"checkbox\" id=\"select-all\" />\n                                </th>\n                                <th>Username</th>\n                                <th>Email</th>\n                                <th width=\"50px\">Action</th>\n                            </tr>\n                        </thead>\n                    </table>\n                </div>\n\n                <div id=\"feedback_bar\"></div>\n            </div>\n        </div>\n    </div>\n</section>";
 },"useData":true});
 
-},{"hbsfy/runtime":95}],36:[function(require,module,exports){
+},{"hbsfy/runtime":96}],37:[function(require,module,exports){
 /**
  * bootbox.js [v4.4.0]
  *
@@ -2851,7 +2950,7 @@ module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":f
   return exports;
 }));
 
-},{"jquery":97}],37:[function(require,module,exports){
+},{"jquery":98}],38:[function(require,module,exports){
 /*
 * Project: Bootstrap Notify = v3.1.3
 * Description: Turns standard Bootstrap alerts into "Growl-like" notifications.
@@ -3206,7 +3305,7 @@ module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":f
 
 }));
 
-},{"jquery":97}],38:[function(require,module,exports){
+},{"jquery":98}],39:[function(require,module,exports){
 // This file is autogenerated via the `commonjs` Grunt task. You can require() this file in a CommonJS environment.
 require('../../js/transition.js')
 require('../../js/alert.js')
@@ -3220,7 +3319,7 @@ require('../../js/popover.js')
 require('../../js/scrollspy.js')
 require('../../js/tab.js')
 require('../../js/affix.js')
-},{"../../js/affix.js":39,"../../js/alert.js":40,"../../js/button.js":41,"../../js/carousel.js":42,"../../js/collapse.js":43,"../../js/dropdown.js":44,"../../js/modal.js":45,"../../js/popover.js":46,"../../js/scrollspy.js":47,"../../js/tab.js":48,"../../js/tooltip.js":49,"../../js/transition.js":50}],39:[function(require,module,exports){
+},{"../../js/affix.js":40,"../../js/alert.js":41,"../../js/button.js":42,"../../js/carousel.js":43,"../../js/collapse.js":44,"../../js/dropdown.js":45,"../../js/modal.js":46,"../../js/popover.js":47,"../../js/scrollspy.js":48,"../../js/tab.js":49,"../../js/tooltip.js":50,"../../js/transition.js":51}],40:[function(require,module,exports){
 /* ========================================================================
  * Bootstrap: affix.js v3.3.6
  * http://getbootstrap.com/javascript/#affix
@@ -3384,7 +3483,7 @@ require('../../js/affix.js')
 
 }(jQuery);
 
-},{}],40:[function(require,module,exports){
+},{}],41:[function(require,module,exports){
 /* ========================================================================
  * Bootstrap: alert.js v3.3.6
  * http://getbootstrap.com/javascript/#alerts
@@ -3480,7 +3579,7 @@ require('../../js/affix.js')
 
 }(jQuery);
 
-},{}],41:[function(require,module,exports){
+},{}],42:[function(require,module,exports){
 /* ========================================================================
  * Bootstrap: button.js v3.3.6
  * http://getbootstrap.com/javascript/#buttons
@@ -3602,7 +3701,7 @@ require('../../js/affix.js')
 
 }(jQuery);
 
-},{}],42:[function(require,module,exports){
+},{}],43:[function(require,module,exports){
 /* ========================================================================
  * Bootstrap: carousel.js v3.3.6
  * http://getbootstrap.com/javascript/#carousel
@@ -3841,7 +3940,7 @@ require('../../js/affix.js')
 
 }(jQuery);
 
-},{}],43:[function(require,module,exports){
+},{}],44:[function(require,module,exports){
 /* ========================================================================
  * Bootstrap: collapse.js v3.3.6
  * http://getbootstrap.com/javascript/#collapse
@@ -4054,7 +4153,7 @@ require('../../js/affix.js')
 
 }(jQuery);
 
-},{}],44:[function(require,module,exports){
+},{}],45:[function(require,module,exports){
 /* ========================================================================
  * Bootstrap: dropdown.js v3.3.6
  * http://getbootstrap.com/javascript/#dropdowns
@@ -4221,7 +4320,7 @@ require('../../js/affix.js')
 
 }(jQuery);
 
-},{}],45:[function(require,module,exports){
+},{}],46:[function(require,module,exports){
 /* ========================================================================
  * Bootstrap: modal.js v3.3.6
  * http://getbootstrap.com/javascript/#modals
@@ -4560,7 +4659,7 @@ require('../../js/affix.js')
 
 }(jQuery);
 
-},{}],46:[function(require,module,exports){
+},{}],47:[function(require,module,exports){
 /* ========================================================================
  * Bootstrap: popover.js v3.3.6
  * http://getbootstrap.com/javascript/#popovers
@@ -4670,7 +4769,7 @@ require('../../js/affix.js')
 
 }(jQuery);
 
-},{}],47:[function(require,module,exports){
+},{}],48:[function(require,module,exports){
 /* ========================================================================
  * Bootstrap: scrollspy.js v3.3.6
  * http://getbootstrap.com/javascript/#scrollspy
@@ -4844,7 +4943,7 @@ require('../../js/affix.js')
 
 }(jQuery);
 
-},{}],48:[function(require,module,exports){
+},{}],49:[function(require,module,exports){
 /* ========================================================================
  * Bootstrap: tab.js v3.3.6
  * http://getbootstrap.com/javascript/#tabs
@@ -5001,7 +5100,7 @@ require('../../js/affix.js')
 
 }(jQuery);
 
-},{}],49:[function(require,module,exports){
+},{}],50:[function(require,module,exports){
 /* ========================================================================
  * Bootstrap: tooltip.js v3.3.6
  * http://getbootstrap.com/javascript/#tooltip
@@ -5517,7 +5616,7 @@ require('../../js/affix.js')
 
 }(jQuery);
 
-},{}],50:[function(require,module,exports){
+},{}],51:[function(require,module,exports){
 /* ========================================================================
  * Bootstrap: transition.js v3.3.6
  * http://getbootstrap.com/javascript/#transitions
@@ -5578,7 +5677,7 @@ require('../../js/affix.js')
 
 }(jQuery);
 
-},{}],51:[function(require,module,exports){
+},{}],52:[function(require,module,exports){
 /*! DataTables 1.10.11
  * ©2008-2015 SpryMedia Ltd - datatables.net/license
  */
@@ -20847,7 +20946,7 @@ require('../../js/affix.js')
 	return $.fn.dataTable;
 }));
 
-},{"jquery":97}],52:[function(require,module,exports){
+},{"jquery":98}],53:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -20914,7 +21013,7 @@ exports['default'] = inst;
 module.exports = exports['default'];
 
 
-},{"./handlebars.runtime":53,"./handlebars/compiler/ast":55,"./handlebars/compiler/base":56,"./handlebars/compiler/compiler":58,"./handlebars/compiler/javascript-compiler":60,"./handlebars/compiler/visitor":63,"./handlebars/no-conflict":77}],53:[function(require,module,exports){
+},{"./handlebars.runtime":54,"./handlebars/compiler/ast":56,"./handlebars/compiler/base":57,"./handlebars/compiler/compiler":59,"./handlebars/compiler/javascript-compiler":61,"./handlebars/compiler/visitor":64,"./handlebars/no-conflict":78}],54:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -20982,7 +21081,7 @@ exports['default'] = inst;
 module.exports = exports['default'];
 
 
-},{"./handlebars/base":54,"./handlebars/exception":67,"./handlebars/no-conflict":77,"./handlebars/runtime":78,"./handlebars/safe-string":79,"./handlebars/utils":80}],54:[function(require,module,exports){
+},{"./handlebars/base":55,"./handlebars/exception":68,"./handlebars/no-conflict":78,"./handlebars/runtime":79,"./handlebars/safe-string":80,"./handlebars/utils":81}],55:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -21088,7 +21187,7 @@ exports.createFrame = _utils.createFrame;
 exports.logger = _logger2['default'];
 
 
-},{"./decorators":65,"./exception":67,"./helpers":68,"./logger":76,"./utils":80}],55:[function(require,module,exports){
+},{"./decorators":66,"./exception":68,"./helpers":69,"./logger":77,"./utils":81}],56:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -21121,7 +21220,7 @@ exports['default'] = AST;
 module.exports = exports['default'];
 
 
-},{}],56:[function(require,module,exports){
+},{}],57:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -21171,7 +21270,7 @@ function parse(input, options) {
 }
 
 
-},{"../utils":80,"./helpers":59,"./parser":61,"./whitespace-control":64}],57:[function(require,module,exports){
+},{"../utils":81,"./helpers":60,"./parser":62,"./whitespace-control":65}],58:[function(require,module,exports){
 /* global define */
 'use strict';
 
@@ -21339,7 +21438,7 @@ exports['default'] = CodeGen;
 module.exports = exports['default'];
 
 
-},{"../utils":80,"source-map":82}],58:[function(require,module,exports){
+},{"../utils":81,"source-map":83}],59:[function(require,module,exports){
 /* eslint-disable new-cap */
 
 'use strict';
@@ -21913,7 +22012,7 @@ function transformLiteralToPath(sexpr) {
 }
 
 
-},{"../exception":67,"../utils":80,"./ast":55}],59:[function(require,module,exports){
+},{"../exception":68,"../utils":81,"./ast":56}],60:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -22145,7 +22244,7 @@ function preparePartialBlock(open, program, close, locInfo) {
 }
 
 
-},{"../exception":67}],60:[function(require,module,exports){
+},{"../exception":68}],61:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -23273,7 +23372,7 @@ exports['default'] = JavaScriptCompiler;
 module.exports = exports['default'];
 
 
-},{"../base":54,"../exception":67,"../utils":80,"./code-gen":57}],61:[function(require,module,exports){
+},{"../base":55,"../exception":68,"../utils":81,"./code-gen":58}],62:[function(require,module,exports){
 /* istanbul ignore next */
 /* Jison generated parser */
 "use strict";
@@ -24013,7 +24112,7 @@ var handlebars = (function () {
 exports['default'] = handlebars;
 
 
-},{}],62:[function(require,module,exports){
+},{}],63:[function(require,module,exports){
 /* eslint-disable new-cap */
 'use strict';
 
@@ -24201,7 +24300,7 @@ PrintVisitor.prototype.HashPair = function (pair) {
 /* eslint-enable new-cap */
 
 
-},{"./visitor":63}],63:[function(require,module,exports){
+},{"./visitor":64}],64:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -24343,7 +24442,7 @@ exports['default'] = Visitor;
 module.exports = exports['default'];
 
 
-},{"../exception":67}],64:[function(require,module,exports){
+},{"../exception":68}],65:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -24566,7 +24665,7 @@ exports['default'] = WhitespaceControl;
 module.exports = exports['default'];
 
 
-},{"./visitor":63}],65:[function(require,module,exports){
+},{"./visitor":64}],66:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -24584,7 +24683,7 @@ function registerDefaultDecorators(instance) {
 }
 
 
-},{"./decorators/inline":66}],66:[function(require,module,exports){
+},{"./decorators/inline":67}],67:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -24615,7 +24714,7 @@ exports['default'] = function (instance) {
 module.exports = exports['default'];
 
 
-},{"../utils":80}],67:[function(require,module,exports){
+},{"../utils":81}],68:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -24657,7 +24756,7 @@ exports['default'] = Exception;
 module.exports = exports['default'];
 
 
-},{}],68:[function(require,module,exports){
+},{}],69:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -24705,7 +24804,7 @@ function registerDefaultHelpers(instance) {
 }
 
 
-},{"./helpers/block-helper-missing":69,"./helpers/each":70,"./helpers/helper-missing":71,"./helpers/if":72,"./helpers/log":73,"./helpers/lookup":74,"./helpers/with":75}],69:[function(require,module,exports){
+},{"./helpers/block-helper-missing":70,"./helpers/each":71,"./helpers/helper-missing":72,"./helpers/if":73,"./helpers/log":74,"./helpers/lookup":75,"./helpers/with":76}],70:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -24746,7 +24845,7 @@ exports['default'] = function (instance) {
 module.exports = exports['default'];
 
 
-},{"../utils":80}],70:[function(require,module,exports){
+},{"../utils":81}],71:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -24842,7 +24941,7 @@ exports['default'] = function (instance) {
 module.exports = exports['default'];
 
 
-},{"../exception":67,"../utils":80}],71:[function(require,module,exports){
+},{"../exception":68,"../utils":81}],72:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -24869,7 +24968,7 @@ exports['default'] = function (instance) {
 module.exports = exports['default'];
 
 
-},{"../exception":67}],72:[function(require,module,exports){
+},{"../exception":68}],73:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -24900,7 +24999,7 @@ exports['default'] = function (instance) {
 module.exports = exports['default'];
 
 
-},{"../utils":80}],73:[function(require,module,exports){
+},{"../utils":81}],74:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -24928,7 +25027,7 @@ exports['default'] = function (instance) {
 module.exports = exports['default'];
 
 
-},{}],74:[function(require,module,exports){
+},{}],75:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -24942,7 +25041,7 @@ exports['default'] = function (instance) {
 module.exports = exports['default'];
 
 
-},{}],75:[function(require,module,exports){
+},{}],76:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -24977,7 +25076,7 @@ exports['default'] = function (instance) {
 module.exports = exports['default'];
 
 
-},{"../utils":80}],76:[function(require,module,exports){
+},{"../utils":81}],77:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -25026,7 +25125,7 @@ exports['default'] = logger;
 module.exports = exports['default'];
 
 
-},{"./utils":80}],77:[function(require,module,exports){
+},{"./utils":81}],78:[function(require,module,exports){
 (function (global){
 /* global window */
 'use strict';
@@ -25050,7 +25149,7 @@ module.exports = exports['default'];
 
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],78:[function(require,module,exports){
+},{}],79:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -25344,7 +25443,7 @@ function executeDecorators(fn, prog, container, depths, data, blockParams) {
 }
 
 
-},{"./base":54,"./exception":67,"./utils":80}],79:[function(require,module,exports){
+},{"./base":55,"./exception":68,"./utils":81}],80:[function(require,module,exports){
 // Build out our basic SafeString type
 'use strict';
 
@@ -25361,7 +25460,7 @@ exports['default'] = SafeString;
 module.exports = exports['default'];
 
 
-},{}],80:[function(require,module,exports){
+},{}],81:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -25487,7 +25586,7 @@ function appendContextPath(contextPath, id) {
 }
 
 
-},{}],81:[function(require,module,exports){
+},{}],82:[function(require,module,exports){
 // USAGE:
 // var handlebars = require('handlebars');
 /* eslint-disable no-var */
@@ -25514,7 +25613,7 @@ if (typeof require !== 'undefined' && require.extensions) {
   require.extensions['.hbs'] = extension;
 }
 
-},{"../dist/cjs/handlebars":52,"../dist/cjs/handlebars/compiler/printer":62,"fs":1}],82:[function(require,module,exports){
+},{"../dist/cjs/handlebars":53,"../dist/cjs/handlebars/compiler/printer":63,"fs":1}],83:[function(require,module,exports){
 /*
  * Copyright 2009-2011 Mozilla Foundation and contributors
  * Licensed under the New BSD license. See LICENSE.txt or:
@@ -25524,7 +25623,7 @@ exports.SourceMapGenerator = require('./source-map/source-map-generator').Source
 exports.SourceMapConsumer = require('./source-map/source-map-consumer').SourceMapConsumer;
 exports.SourceNode = require('./source-map/source-node').SourceNode;
 
-},{"./source-map/source-map-consumer":89,"./source-map/source-map-generator":90,"./source-map/source-node":91}],83:[function(require,module,exports){
+},{"./source-map/source-map-consumer":90,"./source-map/source-map-generator":91,"./source-map/source-node":92}],84:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2011 Mozilla Foundation and contributors
@@ -25633,7 +25732,7 @@ define(function (require, exports, module) {
 
 });
 
-},{"./util":92,"amdefine":93}],84:[function(require,module,exports){
+},{"./util":93,"amdefine":94}],85:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2011 Mozilla Foundation and contributors
@@ -25781,7 +25880,7 @@ define(function (require, exports, module) {
 
 });
 
-},{"./base64":85,"amdefine":93}],85:[function(require,module,exports){
+},{"./base64":86,"amdefine":94}],86:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2011 Mozilla Foundation and contributors
@@ -25856,7 +25955,7 @@ define(function (require, exports, module) {
 
 });
 
-},{"amdefine":93}],86:[function(require,module,exports){
+},{"amdefine":94}],87:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2011 Mozilla Foundation and contributors
@@ -25975,7 +26074,7 @@ define(function (require, exports, module) {
 
 });
 
-},{"amdefine":93}],87:[function(require,module,exports){
+},{"amdefine":94}],88:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2014 Mozilla Foundation and contributors
@@ -26063,7 +26162,7 @@ define(function (require, exports, module) {
 
 });
 
-},{"./util":92,"amdefine":93}],88:[function(require,module,exports){
+},{"./util":93,"amdefine":94}],89:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2011 Mozilla Foundation and contributors
@@ -26185,7 +26284,7 @@ define(function (require, exports, module) {
 
 });
 
-},{"amdefine":93}],89:[function(require,module,exports){
+},{"amdefine":94}],90:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2011 Mozilla Foundation and contributors
@@ -27264,7 +27363,7 @@ define(function (require, exports, module) {
 
 });
 
-},{"./array-set":83,"./base64-vlq":84,"./binary-search":86,"./quick-sort":88,"./util":92,"amdefine":93}],90:[function(require,module,exports){
+},{"./array-set":84,"./base64-vlq":85,"./binary-search":87,"./quick-sort":89,"./util":93,"amdefine":94}],91:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2011 Mozilla Foundation and contributors
@@ -27665,7 +27764,7 @@ define(function (require, exports, module) {
 
 });
 
-},{"./array-set":83,"./base64-vlq":84,"./mapping-list":87,"./util":92,"amdefine":93}],91:[function(require,module,exports){
+},{"./array-set":84,"./base64-vlq":85,"./mapping-list":88,"./util":93,"amdefine":94}],92:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2011 Mozilla Foundation and contributors
@@ -28081,7 +28180,7 @@ define(function (require, exports, module) {
 
 });
 
-},{"./source-map-generator":90,"./util":92,"amdefine":93}],92:[function(require,module,exports){
+},{"./source-map-generator":91,"./util":93,"amdefine":94}],93:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2011 Mozilla Foundation and contributors
@@ -28453,7 +28552,7 @@ define(function (require, exports, module) {
 
 });
 
-},{"amdefine":93}],93:[function(require,module,exports){
+},{"amdefine":94}],94:[function(require,module,exports){
 (function (process,__filename){
 /** vim: et:ts=4:sw=4:sts=4
  * @license amdefine 1.0.0 Copyright (c) 2011-2015, The Dojo Foundation All Rights Reserved.
@@ -28758,15 +28857,15 @@ function amdefine(module, requireFn) {
 module.exports = amdefine;
 
 }).call(this,require('_process'),"/node_modules/handlebars/node_modules/source-map/node_modules/amdefine/amdefine.js")
-},{"_process":3,"path":2}],94:[function(require,module,exports){
+},{"_process":3,"path":2}],95:[function(require,module,exports){
 // Create a simple path alias to allow browserify to resolve
 // the runtime on a supported path.
 module.exports = require('./dist/cjs/handlebars.runtime')['default'];
 
-},{"./dist/cjs/handlebars.runtime":53}],95:[function(require,module,exports){
+},{"./dist/cjs/handlebars.runtime":54}],96:[function(require,module,exports){
 module.exports = require("handlebars/runtime")["default"];
 
-},{"handlebars/runtime":94}],96:[function(require,module,exports){
+},{"handlebars/runtime":95}],97:[function(require,module,exports){
 /*!
  * jQuery Validation Plugin v1.15.0
  *
@@ -30299,7 +30398,7 @@ if ( $.ajaxPrefilter ) {
 }
 
 }));
-},{"jquery":97}],97:[function(require,module,exports){
+},{"jquery":98}],98:[function(require,module,exports){
 /*!
  * jQuery JavaScript Library v2.2.2
  * http://jquery.com/
@@ -40143,7 +40242,7 @@ if ( !noGlobal ) {
 return jQuery;
 }));
 
-},{}],98:[function(require,module,exports){
+},{}],99:[function(require,module,exports){
 /*! DataTables Bootstrap 3 integration
  * ©2011-2015 SpryMedia Ltd - datatables.net/license
  */
@@ -40326,7 +40425,7 @@ DataTable.ext.renderer.pageButton.bootstrap = function ( settings, host, idx, bu
 
 return DataTable;
 }));
-},{"datatables.net":51}],99:[function(require,module,exports){
+},{"datatables.net":52}],100:[function(require,module,exports){
 /*! DataTables 1.10.11
  * ©2008-2015 SpryMedia Ltd - datatables.net/license
  */
@@ -55596,4 +55695,4 @@ return DataTable;
 	return $.fn.dataTable;
 }));
 
-},{"jquery":97}]},{},[29]);
+},{"jquery":98}]},{},[30]);

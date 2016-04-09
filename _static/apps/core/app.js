@@ -8,9 +8,8 @@ require('bootstrap');
 
 // Load core modules
 var $config = require('./app.config_default.js');
-var $form = require('./app.form.js');
 var $loader = require('./app.loader.js');
-var $modal = require('./app.modal.js');
+var $view  = require('./views/app.view.js');
 var $tablegrid = require('./app.tablegrid.js');
 var $notify = require('./app.notify.js');
 var $http = require('./app.http.js');
@@ -21,12 +20,10 @@ var $handlebars = require('handlebars');
 
 // Core application instance
 var $app = {
-    // register module
     $:$,
     $config: $config,
     $handlebars: $handlebars,
-    $form: $form,
-    $modal: $modal,
+    $view: $view,
     $loader: $loader,
     $tablegrid: $tablegrid,
     $notify: $notify,

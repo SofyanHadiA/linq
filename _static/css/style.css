@@ -3,6 +3,10 @@
     margin-bottom: 0px !important;
 }
 
+.form-group .control-label.required {
+    color: #D33724;
+}
+
 .form-group .control-label.required:after {
     content:"*";
 }
