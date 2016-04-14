@@ -15,7 +15,7 @@ function tableGridModule($modal, $http) {
 
     return tablegrid;
 
-    function render(tableContainer, serviceUrl, tableConfig, columnId) {
+    function render(tableContainer, serviceUrl, tableConfig, columnId = "id") {
         tablegrid.table = tableContainer;
 
         tableConfig = [{
@@ -30,7 +30,7 @@ function tableGridModule($modal, $http) {
             sortable: false,
             data: columnId,
             render: function (data, type, row) {
-                return '<div class="btn-group"><a class="btn btn-xs btn-default edit-data" href="' + serviceUrl + '/view/' + data + '">'
+                return '<div class="btn-group"><a class="btn btn-xs btn-default edit-data" data-key="'+data+'" >'
                     + '<i class="fa fa-edit"></i></a> '
                     + '<a class="btn btn-xs btn-default btn-delete" href="' + serviceUrl + '/delete/' + data
                     + '"><i class="fa fa-trash"></i></a></div>';
@@ -52,18 +52,6 @@ function tableGridModule($modal, $http) {
                     $.notify({icon: 'fa fa-info-circle', message: error.message}, { type: "info" });
                 }
             }
-        });
-
-        $('#add-data').click(function () {
-            event.preventDefault();
-            var url = $(this).attr('href');
-            app.modalForm(url, 'lg');
-        });
-
-        $(tableContainer + ' tbody').on('click', '.edit-data', function () {
-            event.preventDefault();
-            var url = $(this).attr('href');
-            app.modalForm(url, 'lg');
         });
 
         $(tableContainer + ' #select-all').click(function () {

@@ -14,7 +14,8 @@ function userController() {
         table: '#manage-table ',
         userForm: userForm,
         load: onLoad,
-        showForm: showFormCreate,
+        showFormCreate: showFormCreate,
+        showFormEdit : showFormEdit,
         endpoint: 'api/v1/users'
     };
 
@@ -27,22 +28,25 @@ function userController() {
             data: 'username'
         }, {
             data: 'email'
-        }], 'id');
+        }], 'uid');
 
         $('body').on('click', '#user-add', function() {
-            self.showForm();
+            self.showFormCreate();
+        });
+        
+        $('#user-table').on('click', '.edit-data', function() {
+            self.showFormEdit();
         });
     };
 
     function showFormCreate() {
-        var model = {
-            accountNumber: "",
-        };
-        self.userForm.controller(self.endpoint, model);
+        self.userForm.controller(self.endpoint);
     };
 
     function showFormEdit() {
-        self.userForm.controller(self.endpoint, model);
+        var form = self.userForm.controller(self.endpoint);
+        $(form.formId).find("#email").val("Email lho");
+        // Todo: Ajax here, populate updated user data
     };
 };
 

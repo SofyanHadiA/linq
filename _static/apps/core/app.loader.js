@@ -7,7 +7,6 @@ var $notify = require('./app.notify.js');
 var $http = require('./app.http.js');
 var $module = require('./app.module.js');
 var $handlebars = require('handlebars');
-var $view = require('./app.view.js');
 
 function loaderModule() {
 
@@ -32,7 +31,7 @@ function loaderModule() {
             });
         }
         else {
-            $view.render(module.template, module.model, appView);
+            $app.$view.render(module.template, module.model, appView);
             module.controller();
         }
     };

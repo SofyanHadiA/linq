@@ -4,17 +4,26 @@ import (
 	"net/http"
 	"strconv"
 
-	"linq/core"
+	. "linq/core"
+	"linq/core/database"
 	"linq/core/utils"
 )
 
 func main() {
-	utils.NewLogger(core.GetIntConfig("app.logLevel"))
+	utils.SetLogLevel(GetIntConfig("app.logLevel"))
+	server := GetStrConfig("app.server") + ":" + strconv.Itoa(GetIntConfig("app.port"))
 
-	server := core.GetStrConfig("app.server") + ":" + strconv.Itoa(core.GetIntConfig("app.port"))
+	var db = database.MySqlDB(
+		GetStrConfig("db.host"),
+		GetStrConfig("db.username"),
+		GetStrConfig("db.password"),
+		GetStrConfig("db.database"),
+		GetIntConfig("db.port"),
+	)
 
-	router := core.NewRouter(GetRoutes())
-	staticDir := core.GetStrConfig("app.staticDir")
+	router := NewRouter(GetRoutes(db))
+	
+	staticDir := GetStrConfig("app.staticDir")
 	router.PathPrefix("/").Handler(http.FileServer(http.Dir(staticDir)))
 
 	http.Handle("/", router)

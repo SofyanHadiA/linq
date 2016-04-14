@@ -3,7 +3,7 @@ package core
 import (
 	"net/http"
 	"text/template"
-	
+
 	"linq/core/utils"
 )
 

@@ -6,11 +6,11 @@ import (
 	"io/ioutil"
 	"linq/core"
 	"net/http"
-	
+
 	"linq/core/utils"
 
-	"golang.org/x/oauth2"
 	"github.com/astaxie/beego/session"
+	"golang.org/x/oauth2"
 )
 
 const profileInfoURL = "https://www.googleapis.com/oauth2/v1/userinfo?alt=json"
@@ -18,7 +18,7 @@ const profileInfoURL = "https://www.googleapis.com/oauth2/v1/userinfo?alt=json"
 var OauthCfg = &oauth2.Config{
 	ClientID:     "851353003211-r6eh4t1e1tnhbfgrsb4er2fv2uoivk7b.apps.googleusercontent.com",
 	ClientSecret: "-z_zhq7Y997jp6GF8YlH80yh",
-	RedirectURL: core.GetStrConfig("app.baseUrl") + "login/callback?",
+	RedirectURL:  core.GetStrConfig("app.baseUrl") + "login/callback?",
 	Endpoint: oauth2.Endpoint{
 		AuthURL:  "https://accounts.google.com/o/oauth2/auth",
 		TokenURL: "https://accounts.google.com/o/oauth2/token",
@@ -70,7 +70,6 @@ func OauthCallbackHandler(w http.ResponseWriter, r *http.Request) {
 	session.Set("id_token", token.Extra("id_token"))
 	session.Set("access_token", token.AccessToken)
 	session.Set("profile", profile)
-
 
 	// Redirect to logged in page
 	http.Redirect(w, r, "/", http.StatusMovedPermanently)

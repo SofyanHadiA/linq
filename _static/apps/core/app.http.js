@@ -1,5 +1,3 @@
-var $ = jQuery;
-
 function httpModule() {
 
     var self = {
@@ -36,12 +34,19 @@ function httpModule() {
             data: data,
             token: ""
         };
-        
-        $.post(url, postData, function(response) {
-            callback(response), "json"
-        }).fail(function(error) {
-            $app.$notify.danger("Post Failed to: <b>" + url + "</b> " + error.responseText);
-        })
+
+        $.ajax({
+            url: url,
+            data: JSON.stringify(postData),
+            dataType: 'application/json',
+            type: 'post',
+            success: function(response) {
+                callback(response)
+            },
+            error: function(error) {
+                $app.$notify.danger("Post Failed to: <b>" + url + "</b> " + error.responseText);
+            },
+        });
     };
 
     return self;

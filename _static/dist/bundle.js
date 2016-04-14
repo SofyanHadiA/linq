@@ -1,330 +1,10 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-
-},{}],2:[function(require,module,exports){
-(function (process){
-// Copyright Joyent, Inc. and other Node contributors.
-//
-// Permission is hereby granted, free of charge, to any person obtaining a
-// copy of this software and associated documentation files (the
-// "Software"), to deal in the Software without restriction, including
-// without limitation the rights to use, copy, modify, merge, publish,
-// distribute, sublicense, and/or sell copies of the Software, and to permit
-// persons to whom the Software is furnished to do so, subject to the
-// following conditions:
-//
-// The above copyright notice and this permission notice shall be included
-// in all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
-// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
-// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
-// USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-// resolves . and .. elements in a path array with directory names there
-// must be no slashes, empty elements, or device names (c:\) in the array
-// (so also no leading and trailing slashes - it does not distinguish
-// relative and absolute paths)
-function normalizeArray(parts, allowAboveRoot) {
-  // if the path tries to go above the root, `up` ends up > 0
-  var up = 0;
-  for (var i = parts.length - 1; i >= 0; i--) {
-    var last = parts[i];
-    if (last === '.') {
-      parts.splice(i, 1);
-    } else if (last === '..') {
-      parts.splice(i, 1);
-      up++;
-    } else if (up) {
-      parts.splice(i, 1);
-      up--;
-    }
-  }
-
-  // if the path is allowed to go above the root, restore leading ..s
-  if (allowAboveRoot) {
-    for (; up--; up) {
-      parts.unshift('..');
-    }
-  }
-
-  return parts;
-}
-
-// Split a filename into [root, dir, basename, ext], unix version
-// 'root' is just a slash, or nothing.
-var splitPathRe =
-    /^(\/?|)([\s\S]*?)((?:\.{1,2}|[^\/]+?|)(\.[^.\/]*|))(?:[\/]*)$/;
-var splitPath = function(filename) {
-  return splitPathRe.exec(filename).slice(1);
-};
-
-// path.resolve([from ...], to)
-// posix version
-exports.resolve = function() {
-  var resolvedPath = '',
-      resolvedAbsolute = false;
-
-  for (var i = arguments.length - 1; i >= -1 && !resolvedAbsolute; i--) {
-    var path = (i >= 0) ? arguments[i] : process.cwd();
-
-    // Skip empty and invalid entries
-    if (typeof path !== 'string') {
-      throw new TypeError('Arguments to path.resolve must be strings');
-    } else if (!path) {
-      continue;
-    }
-
-    resolvedPath = path + '/' + resolvedPath;
-    resolvedAbsolute = path.charAt(0) === '/';
-  }
-
-  // At this point the path should be resolved to a full absolute path, but
-  // handle relative paths to be safe (might happen when process.cwd() fails)
-
-  // Normalize the path
-  resolvedPath = normalizeArray(filter(resolvedPath.split('/'), function(p) {
-    return !!p;
-  }), !resolvedAbsolute).join('/');
-
-  return ((resolvedAbsolute ? '/' : '') + resolvedPath) || '.';
-};
-
-// path.normalize(path)
-// posix version
-exports.normalize = function(path) {
-  var isAbsolute = exports.isAbsolute(path),
-      trailingSlash = substr(path, -1) === '/';
-
-  // Normalize the path
-  path = normalizeArray(filter(path.split('/'), function(p) {
-    return !!p;
-  }), !isAbsolute).join('/');
-
-  if (!path && !isAbsolute) {
-    path = '.';
-  }
-  if (path && trailingSlash) {
-    path += '/';
-  }
-
-  return (isAbsolute ? '/' : '') + path;
-};
-
-// posix version
-exports.isAbsolute = function(path) {
-  return path.charAt(0) === '/';
-};
-
-// posix version
-exports.join = function() {
-  var paths = Array.prototype.slice.call(arguments, 0);
-  return exports.normalize(filter(paths, function(p, index) {
-    if (typeof p !== 'string') {
-      throw new TypeError('Arguments to path.join must be strings');
-    }
-    return p;
-  }).join('/'));
-};
-
-
-// path.relative(from, to)
-// posix version
-exports.relative = function(from, to) {
-  from = exports.resolve(from).substr(1);
-  to = exports.resolve(to).substr(1);
-
-  function trim(arr) {
-    var start = 0;
-    for (; start < arr.length; start++) {
-      if (arr[start] !== '') break;
-    }
-
-    var end = arr.length - 1;
-    for (; end >= 0; end--) {
-      if (arr[end] !== '') break;
-    }
-
-    if (start > end) return [];
-    return arr.slice(start, end - start + 1);
-  }
-
-  var fromParts = trim(from.split('/'));
-  var toParts = trim(to.split('/'));
-
-  var length = Math.min(fromParts.length, toParts.length);
-  var samePartsLength = length;
-  for (var i = 0; i < length; i++) {
-    if (fromParts[i] !== toParts[i]) {
-      samePartsLength = i;
-      break;
-    }
-  }
-
-  var outputParts = [];
-  for (var i = samePartsLength; i < fromParts.length; i++) {
-    outputParts.push('..');
-  }
-
-  outputParts = outputParts.concat(toParts.slice(samePartsLength));
-
-  return outputParts.join('/');
-};
-
-exports.sep = '/';
-exports.delimiter = ':';
-
-exports.dirname = function(path) {
-  var result = splitPath(path),
-      root = result[0],
-      dir = result[1];
-
-  if (!root && !dir) {
-    // No dirname whatsoever
-    return '.';
-  }
-
-  if (dir) {
-    // It has a dirname, strip trailing slash
-    dir = dir.substr(0, dir.length - 1);
-  }
-
-  return root + dir;
-};
-
-
-exports.basename = function(path, ext) {
-  var f = splitPath(path)[2];
-  // TODO: make this comparison case-insensitive on windows?
-  if (ext && f.substr(-1 * ext.length) === ext) {
-    f = f.substr(0, f.length - ext.length);
-  }
-  return f;
-};
-
-
-exports.extname = function(path) {
-  return splitPath(path)[3];
-};
-
-function filter (xs, f) {
-    if (xs.filter) return xs.filter(f);
-    var res = [];
-    for (var i = 0; i < xs.length; i++) {
-        if (f(xs[i], i, xs)) res.push(xs[i]);
-    }
-    return res;
-}
-
-// String.prototype.substr - negative index don't work in IE8
-var substr = 'ab'.substr(-1) === 'b'
-    ? function (str, start, len) { return str.substr(start, len) }
-    : function (str, start, len) {
-        if (start < 0) start = str.length + start;
-        return str.substr(start, len);
-    }
-;
-
-}).call(this,require('_process'))
-},{"_process":3}],3:[function(require,module,exports){
-// shim for using process in browser
-
-var process = module.exports = {};
-var queue = [];
-var draining = false;
-var currentQueue;
-var queueIndex = -1;
-
-function cleanUpNextTick() {
-    draining = false;
-    if (currentQueue.length) {
-        queue = currentQueue.concat(queue);
-    } else {
-        queueIndex = -1;
-    }
-    if (queue.length) {
-        drainQueue();
-    }
-}
-
-function drainQueue() {
-    if (draining) {
-        return;
-    }
-    var timeout = setTimeout(cleanUpNextTick);
-    draining = true;
-
-    var len = queue.length;
-    while(len) {
-        currentQueue = queue;
-        queue = [];
-        while (++queueIndex < len) {
-            if (currentQueue) {
-                currentQueue[queueIndex].run();
-            }
-        }
-        queueIndex = -1;
-        len = queue.length;
-    }
-    currentQueue = null;
-    draining = false;
-    clearTimeout(timeout);
-}
-
-process.nextTick = function (fun) {
-    var args = new Array(arguments.length - 1);
-    if (arguments.length > 1) {
-        for (var i = 1; i < arguments.length; i++) {
-            args[i - 1] = arguments[i];
-        }
-    }
-    queue.push(new Item(fun, args));
-    if (queue.length === 1 && !draining) {
-        setTimeout(drainQueue, 0);
-    }
-};
-
-// v8 likes predictible objects
-function Item(fun, array) {
-    this.fun = fun;
-    this.array = array;
-}
-Item.prototype.run = function () {
-    this.fun.apply(null, this.array);
-};
-process.title = 'browser';
-process.browser = true;
-process.env = {};
-process.argv = [];
-process.version = ''; // empty string to avoid regexp issues
-process.versions = {};
-
-function noop() {}
-
-process.on = noop;
-process.addListener = noop;
-process.once = noop;
-process.off = noop;
-process.removeListener = noop;
-process.removeAllListeners = noop;
-process.emit = noop;
-
-process.binding = function (name) {
-    throw new Error('process.binding is not supported');
-};
-
-process.cwd = function () { return '/' };
-process.chdir = function (dir) {
-    throw new Error('process.chdir is not supported');
-};
-process.umask = function() { return 0; };
-
-},{}],4:[function(require,module,exports){
 'use strict'
 
 var config = {
+    view: {
+		appView: 'app-view'
+	},
     route: {
         default: 'home'
     }
@@ -332,17 +12,7 @@ var config = {
 
 module.exports = config;
 
-},{}],5:[function(require,module,exports){
-var config = {
-	view: {
-		appView: 'app-view'
-	}
-};
-
-module.exports = config;
-},{}],6:[function(require,module,exports){
-var $ = jQuery;
-
+},{}],2:[function(require,module,exports){
 function httpModule() {
 
     var self = {
@@ -379,19 +49,26 @@ function httpModule() {
             data: data,
             token: ""
         };
-        
-        $.post(url, postData, function(response) {
-            callback(response), "json"
-        }).fail(function(error) {
-            $app.$notify.danger("Post Failed to: <b>" + url + "</b> " + error.responseText);
-        })
+
+        $.ajax({
+            url: url,
+            data: JSON.stringify(postData),
+            dataType: 'application/json',
+            type: 'post',
+            success: function(response) {
+                callback(response)
+            },
+            error: function(error) {
+                $app.$notify.danger("Post Failed to: <b>" + url + "</b> " + error.responseText);
+            },
+        });
     };
 
     return self;
 };
 
 module.exports = httpModule();
-},{}],7:[function(require,module,exports){
+},{}],3:[function(require,module,exports){
 (function (global){
 /*
 * Application core object
@@ -402,7 +79,6 @@ var $ = jQuery = global.jQuery = require('jquery');
 require('bootstrap');
 
 // Load core modules
-var $config = require('./app.config_default.js');
 var $loader = require('./app.loader.js');
 var $view  = require('./views/app.view.js');
 var $tablegrid = require('./app.tablegrid.js');
@@ -416,7 +92,6 @@ var $handlebars = require('handlebars');
 // Core application instance
 var $app = {
     $:$,
-    $config: $config,
     $handlebars: $handlebars,
     $view: $view,
     $loader: $loader,
@@ -429,13 +104,13 @@ var $app = {
     // Start application and bund url cahnages to loader
     start: function (config) {
         // merge default application config with custom comfig
-        $app.$config = $.extend($app.$config, config);
+        $app.$config = config
 
         // bind loader to window on hash change
         window.onhashchange = $app.$loader.load;
         
         // load default controller
-        $app.$loader.load($app.$config );
+        $app.$loader.load();
 
         return $app;
     }
@@ -443,7 +118,7 @@ var $app = {
 
 module.exports = $app;
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./../language/en.js":29,"./app.config_default.js":5,"./app.http.js":6,"./app.loader.js":8,"./app.module.js":9,"./app.notify.js":10,"./app.tablegrid.js":11,"./views/app.view.js":15,"bootstrap":39,"handlebars":82,"jquery":98}],8:[function(require,module,exports){
+},{"./../language/en.js":24,"./app.http.js":2,"./app.loader.js":4,"./app.module.js":5,"./app.notify.js":6,"./app.tablegrid.js":7,"./views/app.view.js":10,"bootstrap":34,"handlebars":77,"jquery":93}],4:[function(require,module,exports){
 /*
  * Page loader core module 
  */
@@ -453,7 +128,6 @@ var $notify = require('./app.notify.js');
 var $http = require('./app.http.js');
 var $module = require('./app.module.js');
 var $handlebars = require('handlebars');
-var $view = require('./app.view.js');
 
 function loaderModule() {
 
@@ -478,14 +152,14 @@ function loaderModule() {
             });
         }
         else {
-            $view.render(module.template, module.model, appView);
+            $app.$view.render(module.template, module.model, appView);
             module.controller();
         }
     };
 };
 
 module.exports = loaderModule();
-},{"./app.http.js":6,"./app.module.js":9,"./app.notify.js":10,"./app.view.js":12,"handlebars":82}],9:[function(require,module,exports){
+},{"./app.http.js":2,"./app.module.js":5,"./app.notify.js":6,"handlebars":77}],5:[function(require,module,exports){
 /*
  *
  */
@@ -509,7 +183,7 @@ function moduleModule() {
 };
 
 module.exports = moduleModule();
-},{}],10:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 
 var $ = jQuery;
 require('bootstrap-notify');
@@ -544,7 +218,7 @@ function notifyModule() {
 }
 
 module.exports = notifyModule(); 
-},{"bootstrap-notify":38}],11:[function(require,module,exports){
+},{"bootstrap-notify":33}],7:[function(require,module,exports){
 var bootbox = require('bootbox');
 
 // load from bower since npm datatables package version does not include dataTables.bootstrap.js
@@ -562,7 +236,7 @@ function tableGridModule($modal, $http) {
 
     return tablegrid;
 
-    function render(tableContainer, serviceUrl, tableConfig, columnId) {
+    function render(tableContainer, serviceUrl, tableConfig, columnId = "id") {
         tablegrid.table = tableContainer;
 
         tableConfig = [{
@@ -577,7 +251,7 @@ function tableGridModule($modal, $http) {
             sortable: false,
             data: columnId,
             render: function (data, type, row) {
-                return '<div class="btn-group"><a class="btn btn-xs btn-default edit-data" href="' + serviceUrl + '/view/' + data + '">'
+                return '<div class="btn-group"><a class="btn btn-xs btn-default edit-data" data-key="'+data+'" >'
                     + '<i class="fa fa-edit"></i></a> '
                     + '<a class="btn btn-xs btn-default btn-delete" href="' + serviceUrl + '/delete/' + data
                     + '"><i class="fa fa-trash"></i></a></div>';
@@ -599,18 +273,6 @@ function tableGridModule($modal, $http) {
                     $.notify({icon: 'fa fa-info-circle', message: error.message}, { type: "info" });
                 }
             }
-        });
-
-        $('#add-data').click(function () {
-            event.preventDefault();
-            var url = $(this).attr('href');
-            app.modalForm(url, 'lg');
-        });
-
-        $(tableContainer + ' tbody').on('click', '.edit-data', function () {
-            event.preventDefault();
-            var url = $(this).attr('href');
-            app.modalForm(url, 'lg');
         });
 
         $(tableContainer + ' #select-all').click(function () {
@@ -683,39 +345,7 @@ function tableGridModule($modal, $http) {
 
 
 module.exports = tableGridModule();
-},{"./../../vendors/datatables/media/js/dataTables.bootstrap.js":99,"./../../vendors/datatables/media/js/jquery.dataTables.js":100,"bootbox":37}],12:[function(require,module,exports){
-var $ = jQuery;
-var $handlebars = $handlebars || require('handlebars');
-var $language = $language || require('./../language/en.js');
-
-function viewModule() {
-        return {
-                render: render
-        };
-
-        function render(template, model, viewContainer) {
-                model = model || {};
-                model.lang = $language;
-
-                var rendered = template(model);
-
-                if (viewContainer) {
-                        $(viewContainer).html(rendered);
-                }
-                return rendered;
-        }
-
-        function renderInput(name, value="", type = "input") {
-                return '<div class="col-sm-6"><div class="form-group">' +
-                        '<label for="'+name+'" class="col-sm-4 control-label">'+$app.lang[name]+'</label>' +
-                        '<div class="col-sm-8">' +
-                        '<input name="'+name+'" id="'+name+'" class="form-control" value="'+value+'" />' +
-                        '</div></div></div>'
-        }
-}
-
-module.exports = viewModule();
-},{"./../language/en.js":29,"handlebars":82}],13:[function(require,module,exports){
+},{"./../../vendors/datatables/media/js/dataTables.bootstrap.js":97,"./../../vendors/datatables/media/js/jquery.dataTables.js":98,"bootbox":32}],8:[function(require,module,exports){
 var $ = jQuery;
 require('../../../node_modules/jquery-validation/dist/jquery.validate.js');
 
@@ -796,7 +426,7 @@ var formModule = function() {
 
 module.exports = formModule();
 
-},{"../../../node_modules/jquery-validation/dist/jquery.validate.js":97}],14:[function(require,module,exports){
+},{"../../../node_modules/jquery-validation/dist/jquery.validate.js":92}],9:[function(require,module,exports){
 var $ = jQuery;
 
 function modalModule() {
@@ -833,7 +463,7 @@ function modalModule() {
 };
 
 module.exports = modalModule();
-},{}],15:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 var $ = jQuery;
 var $handlebars = $handlebars || require('handlebars');
 var $language = $language || require('./../../language/en.js');
@@ -861,7 +491,7 @@ function viewModule() {
 }
 
 module.exports = viewModule();
-},{"./../../language/en.js":29,"./app.form.js":13,"./app.modal.js":14,"handlebars":82}],16:[function(require,module,exports){
+},{"./../../language/en.js":24,"./app.form.js":8,"./app.modal.js":9,"handlebars":77}],11:[function(require,module,exports){
 function customerController() {
 
     var $ = $app.$;
@@ -904,7 +534,7 @@ function customerController() {
 };
 
 module.exports = customerController;
-},{"./form/customer.form.js":21}],17:[function(require,module,exports){
+},{"./form/customer.form.js":16}],12:[function(require,module,exports){
 (function (global){
 
 function customerModule ($app) {
@@ -920,14 +550,14 @@ function customerModule ($app) {
 
 module.exports = customerModule; 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./customer.controller.js":16,"./customer.model.js":18,"./customer.template.hbs":19}],18:[function(require,module,exports){
+},{"./customer.controller.js":11,"./customer.model.js":13,"./customer.template.hbs":14}],13:[function(require,module,exports){
 function customerModel() {
 	return {		
 	};
 };
 
 module.exports = customerModel();
-},{}],19:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
@@ -948,7 +578,7 @@ module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":f
     + "\n                            </button>\n\n                            <a class=\"btn btn-success\" id=\"import-excel\" href=\"../customers/excel_import\" data-target=\"#modal-container\">\n                                <i class=\"fa fa-file-excel-o\"></i> Excel Import\n                            </a>\n                        </div>\n                    </div>\n                </div>\n\n                <div class=\"box-body \">\n                    <table id=\"customer-table\" class=\"table table-bordered table-hover\">\n                        <thead>\n                            <tr>\n                                <th width=\"10px\">\n                                    <input type=\"checkbox\" id=\"select-all\" />\n                                </th>\n                                <th>Last Name</th>\n                                <th>First Name</th>\n                                <th>Email</th>\n                                <th>Phone</th>\n                                <th width=\"50px\">Action</th>\n                            </tr>\n                        </thead>\n                    </table>\n                </div>\n\n                <div id=\"feedback_bar\"></div>\n            </div>\n        </div>\n    </div>\n</section>";
 },"useData":true});
 
-},{"hbsfy/runtime":96}],20:[function(require,module,exports){
+},{"hbsfy/runtime":91}],15:[function(require,module,exports){
 function customerFormController() {
 
     var $modal = $app.$modal;
@@ -1002,7 +632,7 @@ function customerFormController() {
 };
 
 module.exports = customerFormController;
-},{"./customer.form.template.hbs":22}],21:[function(require,module,exports){
+},{"./customer.form.template.hbs":17}],16:[function(require,module,exports){
 (function (global){
 
 function customerFormModule ($app) {
@@ -1017,7 +647,7 @@ function customerFormModule ($app) {
 
 module.exports = customerFormModule; 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./customer.form.controller.js":20,"./customer.form.template.hbs":22}],22:[function(require,module,exports){
+},{"./customer.form.controller.js":15,"./customer.form.template.hbs":17}],17:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
@@ -1034,13 +664,13 @@ module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":f
     + "\" />                        \n                    </div>\n                </div>\n            </div>\n\n            <?php $this->load->view(\"people/form_basic_info\"); ?>\n\n            <div class=\"col-sm-6\">\n                <div class=\"form-group\">\n                    <?php echo form_label($this->lang->line('customers_taxable'), 'taxable', array('class' => 'col-sm-4 control-label')); ?>\n                    <div class='col-sm-8'>\n                        <div class=\"checkbox\">\n                            <label>\n                                <?php echo form_checkbox('taxable', '1', $person_info->taxable == '' ? TRUE : (boolean)$person_info->taxable); ?>\n                            </label>\n                        </div>\n                    </div>\n                </div>\n            </div>\n        </div>\n\n    </fieldset>    \n    </form>    \n</div>\n\n<div class=\"modal-footer\">\n    <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">Close</button>\n    <button type=\"submit\" form=\"customer_form\" class=\"btn btn-primary\">Save changes</button>\n</div>\n\n";
 },"useData":true});
 
-},{"hbsfy/runtime":96}],23:[function(require,module,exports){
+},{"hbsfy/runtime":91}],18:[function(require,module,exports){
 module.exports = {
 	controller: {},
 	model:{},
 	template: require('./dashboard.template.js')
 }
-},{"./dashboard.template.js":24}],24:[function(require,module,exports){
+},{"./dashboard.template.js":19}],19:[function(require,module,exports){
 module.exports = '{{#each data}}'+
         '<div class="col-md-6 col-sm-6 col-xs-12" >' +
             '<div id="module-icon-{{this.module_id}}>"  class="info-box">' +
@@ -1058,7 +688,7 @@ module.exports = '{{#each data}}'+
             '</div>' +
         '</div>'+
         '{{/each}}';
-},{}],25:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 function homeController () {
 	
 	var $ = $app.$; 
@@ -1098,7 +728,7 @@ function homeController () {
 };
 
 module.exports = homeController;
-},{"./dashboard/dashboard.js":23}],26:[function(require,module,exports){
+},{"./dashboard/dashboard.js":18}],21:[function(require,module,exports){
 (function (global){
 function home($app) {	
 		
@@ -1113,7 +743,7 @@ function home($app) {
 
 module.exports = home;
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./home.controller.js":25,"./home.model.js":27,"./home.template.hbs":28}],27:[function(require,module,exports){
+},{"./home.controller.js":20,"./home.model.js":22,"./home.template.hbs":23}],22:[function(require,module,exports){
 function homeModel(){
 	return {
 		title: $app.$language.module_home,
@@ -1121,14 +751,14 @@ function homeModel(){
 };
 
 module.exports = homeModel();
-},{}],28:[function(require,module,exports){
+},{}],23:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
     return "<section class=\"content-header\"></section> \n<section class=\"content\"> \n    <div class=\"row\"> \n        <div class=\"col-md-12\"> \n            <div class=\"box\"> \n                <div class=\"box-body\"> \n                    <dashboard-content/> \n                </div> \n            </div> \n        </div> \n    </div> \n</section>";
 },"useData":true});
 
-},{"hbsfy/runtime":96}],29:[function(require,module,exports){
+},{"hbsfy/runtime":91}],24:[function(require,module,exports){
 module.exports = {
 	alpha: "The %s field may only contain alphabetical characters.",
 	alpha_dash: "The %s field may only contain alpha-numeric characters, underscores, and dashes.",
@@ -1745,7 +1375,7 @@ module.exports = {
 	valid_url: "The %s field must contain a valid URL.",
 	validation_form_error: "Please fill all required fields and make sure input is in correct format."
 };
-},{}],30:[function(require,module,exports){
+},{}],25:[function(require,module,exports){
 'use strict'
 
 var $app = require('./core/app.js');
@@ -1760,7 +1390,7 @@ var config = require('./config.js');
 
 // start the application
 $app.start(config);
-},{"./config.js":4,"./core/app.js":7,"./customer/customer.js":17,"./home/home.js":26,"./user/user.js":35}],31:[function(require,module,exports){
+},{"./config.js":1,"./core/app.js":3,"./customer/customer.js":12,"./home/home.js":21,"./user/user.js":30}],26:[function(require,module,exports){
 /*global $app*/
 
 function userFormController(endpoint, model) {
@@ -1770,6 +1400,7 @@ function userFormController(endpoint, model) {
 
     var self = {
         load: onLoad,
+        formId : "#user-form",
         formConfig: {
             rules: {
                 first_name: {
@@ -1796,7 +1427,7 @@ function userFormController(endpoint, model) {
             size: 'lg'
         }
         var input = {
-            accountNumberInput: $form.input("customers_account_number").setValue(model.accountNumber),
+            accountNumberInput: $form.input("customers_account_number"),
             emailInput: $form.input("email"),
             firstNameInput: $form.input("first_name").setClass("required"),
             lastNameInput: $form.input("last_name").setClass("required"),
@@ -1808,12 +1439,14 @@ function userFormController(endpoint, model) {
             cityInput: $form.input("city"),
             zipInput: $form.input("zip", "number"),
         }
+        
+        if(model){
+            input.accountNumberInput.setValue(model.userAccount);
+        }
 
         $modal.show(require('./user.form.template.hbs'), input, modalConfig);
         
-        var formUser = "#user-form";
-        
-        $form.create("#user-form")
+        $form.create(self.formId)
             .config(self.formConfig)
             .onSubmit(function() {
                 event.preventDefault();
@@ -1821,14 +1454,14 @@ function userFormController(endpoint, model) {
                 var data = $(formUser).serializeObject();
                 $http.post(url, data, function() {
                     $('#modal-container').modal('hide');
-                    $app.controller.customerController.tableGrid.ajax.reload();
+                    //$app.controller.customerController.tableGrid.ajax.reload();
                 });
             });
     }
 };
 
 module.exports = userFormController;
-},{"./user.form.template.hbs":33}],32:[function(require,module,exports){
+},{"./user.form.template.hbs":28}],27:[function(require,module,exports){
 (function (global){
 
 function customerFormModule ($app) {
@@ -1843,7 +1476,7 @@ function customerFormModule ($app) {
 
 module.exports = customerFormModule; 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./user.form.controller.js":31,"./user.form.template.hbs":33}],33:[function(require,module,exports){
+},{"./user.form.controller.js":26,"./user.form.template.hbs":28}],28:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
@@ -1878,7 +1511,7 @@ module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":f
     + "</div>\n            </div>\n        </fieldset>\n    </form>\n</div>\n\n<div class=\"modal-footer\">\n    <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">Close</button>\n    <button type=\"submit\" form=\"user-form\" class=\"btn btn-primary\">Save changes</button>\n</div>\n";
 },"useData":true});
 
-},{"hbsfy/runtime":96}],34:[function(require,module,exports){
+},{"hbsfy/runtime":91}],29:[function(require,module,exports){
 'use strict'
 /* global $app */
 
@@ -1895,7 +1528,8 @@ function userController() {
         table: '#manage-table ',
         userForm: userForm,
         load: onLoad,
-        showForm: showFormCreate,
+        showFormCreate: showFormCreate,
+        showFormEdit : showFormEdit,
         endpoint: 'api/v1/users'
     };
 
@@ -1908,27 +1542,30 @@ function userController() {
             data: 'username'
         }, {
             data: 'email'
-        }], 'id');
+        }], 'uid');
 
         $('body').on('click', '#user-add', function() {
-            self.showForm();
+            self.showFormCreate();
+        });
+        
+        $('#user-table').on('click', '.edit-data', function() {
+            self.showFormEdit();
         });
     };
 
     function showFormCreate() {
-        var model = {
-            accountNumber: "",
-        };
-        self.userForm.controller(self.endpoint, model);
+        self.userForm.controller(self.endpoint);
     };
 
     function showFormEdit() {
-        self.userForm.controller(self.endpoint, model);
+        var form = self.userForm.controller(self.endpoint);
+        $(form.formId).find("#email").val("Email lho");
+        // Todo: Ajax here, populate updated user data
     };
 };
 
 module.exports = userController;
-},{"./form/user.form.js":32}],35:[function(require,module,exports){
+},{"./form/user.form.js":27}],30:[function(require,module,exports){
 (function (global){
 function userModule($app) {
 
@@ -1942,7 +1579,7 @@ function userModule($app) {
 
 module.exports = userModule;
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./user.controller.js":34,"./user.template.hbs":36}],36:[function(require,module,exports){
+},{"./user.controller.js":29,"./user.template.hbs":31}],31:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
@@ -1963,7 +1600,7 @@ module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":f
     + "\n                            </button>\n\n                            <a class=\"btn btn-success\" id=\"import-excel\" href=\"../customers/excel_import\" data-target=\"#modal-container\">\n                                <i class=\"fa fa-file-excel-o\"></i> Excel Import\n                            </a>\n                        </div>\n                    </div>\n                </div>\n\n                <div class=\"box-body \">\n                    <table id=\"user-table\" class=\"table table-bordered table-hover\">\n                        <thead>\n                            <tr>\n                                <th width=\"10px\">\n                                    <input type=\"checkbox\" id=\"select-all\" />\n                                </th>\n                                <th>Username</th>\n                                <th>Email</th>\n                                <th width=\"50px\">Action</th>\n                            </tr>\n                        </thead>\n                    </table>\n                </div>\n\n                <div id=\"feedback_bar\"></div>\n            </div>\n        </div>\n    </div>\n</section>";
 },"useData":true});
 
-},{"hbsfy/runtime":96}],37:[function(require,module,exports){
+},{"hbsfy/runtime":91}],32:[function(require,module,exports){
 /**
  * bootbox.js [v4.4.0]
  *
@@ -2950,7 +2587,7 @@ module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":f
   return exports;
 }));
 
-},{"jquery":98}],38:[function(require,module,exports){
+},{"jquery":93}],33:[function(require,module,exports){
 /*
 * Project: Bootstrap Notify = v3.1.3
 * Description: Turns standard Bootstrap alerts into "Growl-like" notifications.
@@ -3305,7 +2942,7 @@ module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":f
 
 }));
 
-},{"jquery":98}],39:[function(require,module,exports){
+},{"jquery":93}],34:[function(require,module,exports){
 // This file is autogenerated via the `commonjs` Grunt task. You can require() this file in a CommonJS environment.
 require('../../js/transition.js')
 require('../../js/alert.js')
@@ -3319,7 +2956,7 @@ require('../../js/popover.js')
 require('../../js/scrollspy.js')
 require('../../js/tab.js')
 require('../../js/affix.js')
-},{"../../js/affix.js":40,"../../js/alert.js":41,"../../js/button.js":42,"../../js/carousel.js":43,"../../js/collapse.js":44,"../../js/dropdown.js":45,"../../js/modal.js":46,"../../js/popover.js":47,"../../js/scrollspy.js":48,"../../js/tab.js":49,"../../js/tooltip.js":50,"../../js/transition.js":51}],40:[function(require,module,exports){
+},{"../../js/affix.js":35,"../../js/alert.js":36,"../../js/button.js":37,"../../js/carousel.js":38,"../../js/collapse.js":39,"../../js/dropdown.js":40,"../../js/modal.js":41,"../../js/popover.js":42,"../../js/scrollspy.js":43,"../../js/tab.js":44,"../../js/tooltip.js":45,"../../js/transition.js":46}],35:[function(require,module,exports){
 /* ========================================================================
  * Bootstrap: affix.js v3.3.6
  * http://getbootstrap.com/javascript/#affix
@@ -3483,7 +3120,7 @@ require('../../js/affix.js')
 
 }(jQuery);
 
-},{}],41:[function(require,module,exports){
+},{}],36:[function(require,module,exports){
 /* ========================================================================
  * Bootstrap: alert.js v3.3.6
  * http://getbootstrap.com/javascript/#alerts
@@ -3579,7 +3216,7 @@ require('../../js/affix.js')
 
 }(jQuery);
 
-},{}],42:[function(require,module,exports){
+},{}],37:[function(require,module,exports){
 /* ========================================================================
  * Bootstrap: button.js v3.3.6
  * http://getbootstrap.com/javascript/#buttons
@@ -3701,7 +3338,7 @@ require('../../js/affix.js')
 
 }(jQuery);
 
-},{}],43:[function(require,module,exports){
+},{}],38:[function(require,module,exports){
 /* ========================================================================
  * Bootstrap: carousel.js v3.3.6
  * http://getbootstrap.com/javascript/#carousel
@@ -3940,7 +3577,7 @@ require('../../js/affix.js')
 
 }(jQuery);
 
-},{}],44:[function(require,module,exports){
+},{}],39:[function(require,module,exports){
 /* ========================================================================
  * Bootstrap: collapse.js v3.3.6
  * http://getbootstrap.com/javascript/#collapse
@@ -4153,7 +3790,7 @@ require('../../js/affix.js')
 
 }(jQuery);
 
-},{}],45:[function(require,module,exports){
+},{}],40:[function(require,module,exports){
 /* ========================================================================
  * Bootstrap: dropdown.js v3.3.6
  * http://getbootstrap.com/javascript/#dropdowns
@@ -4320,7 +3957,7 @@ require('../../js/affix.js')
 
 }(jQuery);
 
-},{}],46:[function(require,module,exports){
+},{}],41:[function(require,module,exports){
 /* ========================================================================
  * Bootstrap: modal.js v3.3.6
  * http://getbootstrap.com/javascript/#modals
@@ -4659,7 +4296,7 @@ require('../../js/affix.js')
 
 }(jQuery);
 
-},{}],47:[function(require,module,exports){
+},{}],42:[function(require,module,exports){
 /* ========================================================================
  * Bootstrap: popover.js v3.3.6
  * http://getbootstrap.com/javascript/#popovers
@@ -4769,7 +4406,7 @@ require('../../js/affix.js')
 
 }(jQuery);
 
-},{}],48:[function(require,module,exports){
+},{}],43:[function(require,module,exports){
 /* ========================================================================
  * Bootstrap: scrollspy.js v3.3.6
  * http://getbootstrap.com/javascript/#scrollspy
@@ -4943,7 +4580,7 @@ require('../../js/affix.js')
 
 }(jQuery);
 
-},{}],49:[function(require,module,exports){
+},{}],44:[function(require,module,exports){
 /* ========================================================================
  * Bootstrap: tab.js v3.3.6
  * http://getbootstrap.com/javascript/#tabs
@@ -5100,7 +4737,7 @@ require('../../js/affix.js')
 
 }(jQuery);
 
-},{}],50:[function(require,module,exports){
+},{}],45:[function(require,module,exports){
 /* ========================================================================
  * Bootstrap: tooltip.js v3.3.6
  * http://getbootstrap.com/javascript/#tooltip
@@ -5616,7 +5253,7 @@ require('../../js/affix.js')
 
 }(jQuery);
 
-},{}],51:[function(require,module,exports){
+},{}],46:[function(require,module,exports){
 /* ========================================================================
  * Bootstrap: transition.js v3.3.6
  * http://getbootstrap.com/javascript/#transitions
@@ -5677,7 +5314,7 @@ require('../../js/affix.js')
 
 }(jQuery);
 
-},{}],52:[function(require,module,exports){
+},{}],47:[function(require,module,exports){
 /*! DataTables 1.10.11
  * ©2008-2015 SpryMedia Ltd - datatables.net/license
  */
@@ -20946,7 +20583,7 @@ require('../../js/affix.js')
 	return $.fn.dataTable;
 }));
 
-},{"jquery":98}],53:[function(require,module,exports){
+},{"jquery":93}],48:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -21013,7 +20650,7 @@ exports['default'] = inst;
 module.exports = exports['default'];
 
 
-},{"./handlebars.runtime":54,"./handlebars/compiler/ast":56,"./handlebars/compiler/base":57,"./handlebars/compiler/compiler":59,"./handlebars/compiler/javascript-compiler":61,"./handlebars/compiler/visitor":64,"./handlebars/no-conflict":78}],54:[function(require,module,exports){
+},{"./handlebars.runtime":49,"./handlebars/compiler/ast":51,"./handlebars/compiler/base":52,"./handlebars/compiler/compiler":54,"./handlebars/compiler/javascript-compiler":56,"./handlebars/compiler/visitor":59,"./handlebars/no-conflict":73}],49:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -21081,7 +20718,7 @@ exports['default'] = inst;
 module.exports = exports['default'];
 
 
-},{"./handlebars/base":55,"./handlebars/exception":68,"./handlebars/no-conflict":78,"./handlebars/runtime":79,"./handlebars/safe-string":80,"./handlebars/utils":81}],55:[function(require,module,exports){
+},{"./handlebars/base":50,"./handlebars/exception":63,"./handlebars/no-conflict":73,"./handlebars/runtime":74,"./handlebars/safe-string":75,"./handlebars/utils":76}],50:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -21187,7 +20824,7 @@ exports.createFrame = _utils.createFrame;
 exports.logger = _logger2['default'];
 
 
-},{"./decorators":66,"./exception":68,"./helpers":69,"./logger":77,"./utils":81}],56:[function(require,module,exports){
+},{"./decorators":61,"./exception":63,"./helpers":64,"./logger":72,"./utils":76}],51:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -21220,7 +20857,7 @@ exports['default'] = AST;
 module.exports = exports['default'];
 
 
-},{}],57:[function(require,module,exports){
+},{}],52:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -21270,7 +20907,7 @@ function parse(input, options) {
 }
 
 
-},{"../utils":81,"./helpers":60,"./parser":62,"./whitespace-control":65}],58:[function(require,module,exports){
+},{"../utils":76,"./helpers":55,"./parser":57,"./whitespace-control":60}],53:[function(require,module,exports){
 /* global define */
 'use strict';
 
@@ -21438,7 +21075,7 @@ exports['default'] = CodeGen;
 module.exports = exports['default'];
 
 
-},{"../utils":81,"source-map":83}],59:[function(require,module,exports){
+},{"../utils":76,"source-map":78}],54:[function(require,module,exports){
 /* eslint-disable new-cap */
 
 'use strict';
@@ -22012,7 +21649,7 @@ function transformLiteralToPath(sexpr) {
 }
 
 
-},{"../exception":68,"../utils":81,"./ast":56}],60:[function(require,module,exports){
+},{"../exception":63,"../utils":76,"./ast":51}],55:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -22244,7 +21881,7 @@ function preparePartialBlock(open, program, close, locInfo) {
 }
 
 
-},{"../exception":68}],61:[function(require,module,exports){
+},{"../exception":63}],56:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -23372,7 +23009,7 @@ exports['default'] = JavaScriptCompiler;
 module.exports = exports['default'];
 
 
-},{"../base":55,"../exception":68,"../utils":81,"./code-gen":58}],62:[function(require,module,exports){
+},{"../base":50,"../exception":63,"../utils":76,"./code-gen":53}],57:[function(require,module,exports){
 /* istanbul ignore next */
 /* Jison generated parser */
 "use strict";
@@ -24112,7 +23749,7 @@ var handlebars = (function () {
 exports['default'] = handlebars;
 
 
-},{}],63:[function(require,module,exports){
+},{}],58:[function(require,module,exports){
 /* eslint-disable new-cap */
 'use strict';
 
@@ -24300,7 +23937,7 @@ PrintVisitor.prototype.HashPair = function (pair) {
 /* eslint-enable new-cap */
 
 
-},{"./visitor":64}],64:[function(require,module,exports){
+},{"./visitor":59}],59:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -24442,7 +24079,7 @@ exports['default'] = Visitor;
 module.exports = exports['default'];
 
 
-},{"../exception":68}],65:[function(require,module,exports){
+},{"../exception":63}],60:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -24665,7 +24302,7 @@ exports['default'] = WhitespaceControl;
 module.exports = exports['default'];
 
 
-},{"./visitor":64}],66:[function(require,module,exports){
+},{"./visitor":59}],61:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -24683,7 +24320,7 @@ function registerDefaultDecorators(instance) {
 }
 
 
-},{"./decorators/inline":67}],67:[function(require,module,exports){
+},{"./decorators/inline":62}],62:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -24714,7 +24351,7 @@ exports['default'] = function (instance) {
 module.exports = exports['default'];
 
 
-},{"../utils":81}],68:[function(require,module,exports){
+},{"../utils":76}],63:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -24756,7 +24393,7 @@ exports['default'] = Exception;
 module.exports = exports['default'];
 
 
-},{}],69:[function(require,module,exports){
+},{}],64:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -24804,7 +24441,7 @@ function registerDefaultHelpers(instance) {
 }
 
 
-},{"./helpers/block-helper-missing":70,"./helpers/each":71,"./helpers/helper-missing":72,"./helpers/if":73,"./helpers/log":74,"./helpers/lookup":75,"./helpers/with":76}],70:[function(require,module,exports){
+},{"./helpers/block-helper-missing":65,"./helpers/each":66,"./helpers/helper-missing":67,"./helpers/if":68,"./helpers/log":69,"./helpers/lookup":70,"./helpers/with":71}],65:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -24845,7 +24482,7 @@ exports['default'] = function (instance) {
 module.exports = exports['default'];
 
 
-},{"../utils":81}],71:[function(require,module,exports){
+},{"../utils":76}],66:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -24941,7 +24578,7 @@ exports['default'] = function (instance) {
 module.exports = exports['default'];
 
 
-},{"../exception":68,"../utils":81}],72:[function(require,module,exports){
+},{"../exception":63,"../utils":76}],67:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -24968,7 +24605,7 @@ exports['default'] = function (instance) {
 module.exports = exports['default'];
 
 
-},{"../exception":68}],73:[function(require,module,exports){
+},{"../exception":63}],68:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -24999,7 +24636,7 @@ exports['default'] = function (instance) {
 module.exports = exports['default'];
 
 
-},{"../utils":81}],74:[function(require,module,exports){
+},{"../utils":76}],69:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -25027,7 +24664,7 @@ exports['default'] = function (instance) {
 module.exports = exports['default'];
 
 
-},{}],75:[function(require,module,exports){
+},{}],70:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -25041,7 +24678,7 @@ exports['default'] = function (instance) {
 module.exports = exports['default'];
 
 
-},{}],76:[function(require,module,exports){
+},{}],71:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -25076,7 +24713,7 @@ exports['default'] = function (instance) {
 module.exports = exports['default'];
 
 
-},{"../utils":81}],77:[function(require,module,exports){
+},{"../utils":76}],72:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -25125,7 +24762,7 @@ exports['default'] = logger;
 module.exports = exports['default'];
 
 
-},{"./utils":81}],78:[function(require,module,exports){
+},{"./utils":76}],73:[function(require,module,exports){
 (function (global){
 /* global window */
 'use strict';
@@ -25149,7 +24786,7 @@ module.exports = exports['default'];
 
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],79:[function(require,module,exports){
+},{}],74:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -25443,7 +25080,7 @@ function executeDecorators(fn, prog, container, depths, data, blockParams) {
 }
 
 
-},{"./base":55,"./exception":68,"./utils":81}],80:[function(require,module,exports){
+},{"./base":50,"./exception":63,"./utils":76}],75:[function(require,module,exports){
 // Build out our basic SafeString type
 'use strict';
 
@@ -25460,7 +25097,7 @@ exports['default'] = SafeString;
 module.exports = exports['default'];
 
 
-},{}],81:[function(require,module,exports){
+},{}],76:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -25586,7 +25223,7 @@ function appendContextPath(contextPath, id) {
 }
 
 
-},{}],82:[function(require,module,exports){
+},{}],77:[function(require,module,exports){
 // USAGE:
 // var handlebars = require('handlebars');
 /* eslint-disable no-var */
@@ -25613,7 +25250,7 @@ if (typeof require !== 'undefined' && require.extensions) {
   require.extensions['.hbs'] = extension;
 }
 
-},{"../dist/cjs/handlebars":53,"../dist/cjs/handlebars/compiler/printer":63,"fs":1}],83:[function(require,module,exports){
+},{"../dist/cjs/handlebars":48,"../dist/cjs/handlebars/compiler/printer":58,"fs":94}],78:[function(require,module,exports){
 /*
  * Copyright 2009-2011 Mozilla Foundation and contributors
  * Licensed under the New BSD license. See LICENSE.txt or:
@@ -25623,7 +25260,7 @@ exports.SourceMapGenerator = require('./source-map/source-map-generator').Source
 exports.SourceMapConsumer = require('./source-map/source-map-consumer').SourceMapConsumer;
 exports.SourceNode = require('./source-map/source-node').SourceNode;
 
-},{"./source-map/source-map-consumer":90,"./source-map/source-map-generator":91,"./source-map/source-node":92}],84:[function(require,module,exports){
+},{"./source-map/source-map-consumer":85,"./source-map/source-map-generator":86,"./source-map/source-node":87}],79:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2011 Mozilla Foundation and contributors
@@ -25732,7 +25369,7 @@ define(function (require, exports, module) {
 
 });
 
-},{"./util":93,"amdefine":94}],85:[function(require,module,exports){
+},{"./util":88,"amdefine":89}],80:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2011 Mozilla Foundation and contributors
@@ -25880,7 +25517,7 @@ define(function (require, exports, module) {
 
 });
 
-},{"./base64":86,"amdefine":94}],86:[function(require,module,exports){
+},{"./base64":81,"amdefine":89}],81:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2011 Mozilla Foundation and contributors
@@ -25955,7 +25592,7 @@ define(function (require, exports, module) {
 
 });
 
-},{"amdefine":94}],87:[function(require,module,exports){
+},{"amdefine":89}],82:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2011 Mozilla Foundation and contributors
@@ -26074,7 +25711,7 @@ define(function (require, exports, module) {
 
 });
 
-},{"amdefine":94}],88:[function(require,module,exports){
+},{"amdefine":89}],83:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2014 Mozilla Foundation and contributors
@@ -26162,7 +25799,7 @@ define(function (require, exports, module) {
 
 });
 
-},{"./util":93,"amdefine":94}],89:[function(require,module,exports){
+},{"./util":88,"amdefine":89}],84:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2011 Mozilla Foundation and contributors
@@ -26284,7 +25921,7 @@ define(function (require, exports, module) {
 
 });
 
-},{"amdefine":94}],90:[function(require,module,exports){
+},{"amdefine":89}],85:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2011 Mozilla Foundation and contributors
@@ -27363,7 +27000,7 @@ define(function (require, exports, module) {
 
 });
 
-},{"./array-set":84,"./base64-vlq":85,"./binary-search":87,"./quick-sort":89,"./util":93,"amdefine":94}],91:[function(require,module,exports){
+},{"./array-set":79,"./base64-vlq":80,"./binary-search":82,"./quick-sort":84,"./util":88,"amdefine":89}],86:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2011 Mozilla Foundation and contributors
@@ -27764,7 +27401,7 @@ define(function (require, exports, module) {
 
 });
 
-},{"./array-set":84,"./base64-vlq":85,"./mapping-list":88,"./util":93,"amdefine":94}],92:[function(require,module,exports){
+},{"./array-set":79,"./base64-vlq":80,"./mapping-list":83,"./util":88,"amdefine":89}],87:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2011 Mozilla Foundation and contributors
@@ -28180,7 +27817,7 @@ define(function (require, exports, module) {
 
 });
 
-},{"./source-map-generator":91,"./util":93,"amdefine":94}],93:[function(require,module,exports){
+},{"./source-map-generator":86,"./util":88,"amdefine":89}],88:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2011 Mozilla Foundation and contributors
@@ -28552,7 +28189,7 @@ define(function (require, exports, module) {
 
 });
 
-},{"amdefine":94}],94:[function(require,module,exports){
+},{"amdefine":89}],89:[function(require,module,exports){
 (function (process,__filename){
 /** vim: et:ts=4:sw=4:sts=4
  * @license amdefine 1.0.0 Copyright (c) 2011-2015, The Dojo Foundation All Rights Reserved.
@@ -28857,15 +28494,15 @@ function amdefine(module, requireFn) {
 module.exports = amdefine;
 
 }).call(this,require('_process'),"/node_modules/handlebars/node_modules/source-map/node_modules/amdefine/amdefine.js")
-},{"_process":3,"path":2}],95:[function(require,module,exports){
+},{"_process":96,"path":95}],90:[function(require,module,exports){
 // Create a simple path alias to allow browserify to resolve
 // the runtime on a supported path.
 module.exports = require('./dist/cjs/handlebars.runtime')['default'];
 
-},{"./dist/cjs/handlebars.runtime":54}],96:[function(require,module,exports){
+},{"./dist/cjs/handlebars.runtime":49}],91:[function(require,module,exports){
 module.exports = require("handlebars/runtime")["default"];
 
-},{"handlebars/runtime":95}],97:[function(require,module,exports){
+},{"handlebars/runtime":90}],92:[function(require,module,exports){
 /*!
  * jQuery Validation Plugin v1.15.0
  *
@@ -30398,7 +30035,7 @@ if ( $.ajaxPrefilter ) {
 }
 
 }));
-},{"jquery":98}],98:[function(require,module,exports){
+},{"jquery":93}],93:[function(require,module,exports){
 /*!
  * jQuery JavaScript Library v2.2.2
  * http://jquery.com/
@@ -40242,7 +39879,330 @@ if ( !noGlobal ) {
 return jQuery;
 }));
 
-},{}],99:[function(require,module,exports){
+},{}],94:[function(require,module,exports){
+
+},{}],95:[function(require,module,exports){
+(function (process){
+// Copyright Joyent, Inc. and other Node contributors.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to permit
+// persons to whom the Software is furnished to do so, subject to the
+// following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
+// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+// USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+// resolves . and .. elements in a path array with directory names there
+// must be no slashes, empty elements, or device names (c:\) in the array
+// (so also no leading and trailing slashes - it does not distinguish
+// relative and absolute paths)
+function normalizeArray(parts, allowAboveRoot) {
+  // if the path tries to go above the root, `up` ends up > 0
+  var up = 0;
+  for (var i = parts.length - 1; i >= 0; i--) {
+    var last = parts[i];
+    if (last === '.') {
+      parts.splice(i, 1);
+    } else if (last === '..') {
+      parts.splice(i, 1);
+      up++;
+    } else if (up) {
+      parts.splice(i, 1);
+      up--;
+    }
+  }
+
+  // if the path is allowed to go above the root, restore leading ..s
+  if (allowAboveRoot) {
+    for (; up--; up) {
+      parts.unshift('..');
+    }
+  }
+
+  return parts;
+}
+
+// Split a filename into [root, dir, basename, ext], unix version
+// 'root' is just a slash, or nothing.
+var splitPathRe =
+    /^(\/?|)([\s\S]*?)((?:\.{1,2}|[^\/]+?|)(\.[^.\/]*|))(?:[\/]*)$/;
+var splitPath = function(filename) {
+  return splitPathRe.exec(filename).slice(1);
+};
+
+// path.resolve([from ...], to)
+// posix version
+exports.resolve = function() {
+  var resolvedPath = '',
+      resolvedAbsolute = false;
+
+  for (var i = arguments.length - 1; i >= -1 && !resolvedAbsolute; i--) {
+    var path = (i >= 0) ? arguments[i] : process.cwd();
+
+    // Skip empty and invalid entries
+    if (typeof path !== 'string') {
+      throw new TypeError('Arguments to path.resolve must be strings');
+    } else if (!path) {
+      continue;
+    }
+
+    resolvedPath = path + '/' + resolvedPath;
+    resolvedAbsolute = path.charAt(0) === '/';
+  }
+
+  // At this point the path should be resolved to a full absolute path, but
+  // handle relative paths to be safe (might happen when process.cwd() fails)
+
+  // Normalize the path
+  resolvedPath = normalizeArray(filter(resolvedPath.split('/'), function(p) {
+    return !!p;
+  }), !resolvedAbsolute).join('/');
+
+  return ((resolvedAbsolute ? '/' : '') + resolvedPath) || '.';
+};
+
+// path.normalize(path)
+// posix version
+exports.normalize = function(path) {
+  var isAbsolute = exports.isAbsolute(path),
+      trailingSlash = substr(path, -1) === '/';
+
+  // Normalize the path
+  path = normalizeArray(filter(path.split('/'), function(p) {
+    return !!p;
+  }), !isAbsolute).join('/');
+
+  if (!path && !isAbsolute) {
+    path = '.';
+  }
+  if (path && trailingSlash) {
+    path += '/';
+  }
+
+  return (isAbsolute ? '/' : '') + path;
+};
+
+// posix version
+exports.isAbsolute = function(path) {
+  return path.charAt(0) === '/';
+};
+
+// posix version
+exports.join = function() {
+  var paths = Array.prototype.slice.call(arguments, 0);
+  return exports.normalize(filter(paths, function(p, index) {
+    if (typeof p !== 'string') {
+      throw new TypeError('Arguments to path.join must be strings');
+    }
+    return p;
+  }).join('/'));
+};
+
+
+// path.relative(from, to)
+// posix version
+exports.relative = function(from, to) {
+  from = exports.resolve(from).substr(1);
+  to = exports.resolve(to).substr(1);
+
+  function trim(arr) {
+    var start = 0;
+    for (; start < arr.length; start++) {
+      if (arr[start] !== '') break;
+    }
+
+    var end = arr.length - 1;
+    for (; end >= 0; end--) {
+      if (arr[end] !== '') break;
+    }
+
+    if (start > end) return [];
+    return arr.slice(start, end - start + 1);
+  }
+
+  var fromParts = trim(from.split('/'));
+  var toParts = trim(to.split('/'));
+
+  var length = Math.min(fromParts.length, toParts.length);
+  var samePartsLength = length;
+  for (var i = 0; i < length; i++) {
+    if (fromParts[i] !== toParts[i]) {
+      samePartsLength = i;
+      break;
+    }
+  }
+
+  var outputParts = [];
+  for (var i = samePartsLength; i < fromParts.length; i++) {
+    outputParts.push('..');
+  }
+
+  outputParts = outputParts.concat(toParts.slice(samePartsLength));
+
+  return outputParts.join('/');
+};
+
+exports.sep = '/';
+exports.delimiter = ':';
+
+exports.dirname = function(path) {
+  var result = splitPath(path),
+      root = result[0],
+      dir = result[1];
+
+  if (!root && !dir) {
+    // No dirname whatsoever
+    return '.';
+  }
+
+  if (dir) {
+    // It has a dirname, strip trailing slash
+    dir = dir.substr(0, dir.length - 1);
+  }
+
+  return root + dir;
+};
+
+
+exports.basename = function(path, ext) {
+  var f = splitPath(path)[2];
+  // TODO: make this comparison case-insensitive on windows?
+  if (ext && f.substr(-1 * ext.length) === ext) {
+    f = f.substr(0, f.length - ext.length);
+  }
+  return f;
+};
+
+
+exports.extname = function(path) {
+  return splitPath(path)[3];
+};
+
+function filter (xs, f) {
+    if (xs.filter) return xs.filter(f);
+    var res = [];
+    for (var i = 0; i < xs.length; i++) {
+        if (f(xs[i], i, xs)) res.push(xs[i]);
+    }
+    return res;
+}
+
+// String.prototype.substr - negative index don't work in IE8
+var substr = 'ab'.substr(-1) === 'b'
+    ? function (str, start, len) { return str.substr(start, len) }
+    : function (str, start, len) {
+        if (start < 0) start = str.length + start;
+        return str.substr(start, len);
+    }
+;
+
+}).call(this,require('_process'))
+},{"_process":96}],96:[function(require,module,exports){
+// shim for using process in browser
+
+var process = module.exports = {};
+var queue = [];
+var draining = false;
+var currentQueue;
+var queueIndex = -1;
+
+function cleanUpNextTick() {
+    draining = false;
+    if (currentQueue.length) {
+        queue = currentQueue.concat(queue);
+    } else {
+        queueIndex = -1;
+    }
+    if (queue.length) {
+        drainQueue();
+    }
+}
+
+function drainQueue() {
+    if (draining) {
+        return;
+    }
+    var timeout = setTimeout(cleanUpNextTick);
+    draining = true;
+
+    var len = queue.length;
+    while(len) {
+        currentQueue = queue;
+        queue = [];
+        while (++queueIndex < len) {
+            if (currentQueue) {
+                currentQueue[queueIndex].run();
+            }
+        }
+        queueIndex = -1;
+        len = queue.length;
+    }
+    currentQueue = null;
+    draining = false;
+    clearTimeout(timeout);
+}
+
+process.nextTick = function (fun) {
+    var args = new Array(arguments.length - 1);
+    if (arguments.length > 1) {
+        for (var i = 1; i < arguments.length; i++) {
+            args[i - 1] = arguments[i];
+        }
+    }
+    queue.push(new Item(fun, args));
+    if (queue.length === 1 && !draining) {
+        setTimeout(drainQueue, 0);
+    }
+};
+
+// v8 likes predictible objects
+function Item(fun, array) {
+    this.fun = fun;
+    this.array = array;
+}
+Item.prototype.run = function () {
+    this.fun.apply(null, this.array);
+};
+process.title = 'browser';
+process.browser = true;
+process.env = {};
+process.argv = [];
+process.version = ''; // empty string to avoid regexp issues
+process.versions = {};
+
+function noop() {}
+
+process.on = noop;
+process.addListener = noop;
+process.once = noop;
+process.off = noop;
+process.removeListener = noop;
+process.removeAllListeners = noop;
+process.emit = noop;
+
+process.binding = function (name) {
+    throw new Error('process.binding is not supported');
+};
+
+process.cwd = function () { return '/' };
+process.chdir = function (dir) {
+    throw new Error('process.chdir is not supported');
+};
+process.umask = function() { return 0; };
+
+},{}],97:[function(require,module,exports){
 /*! DataTables Bootstrap 3 integration
  * ©2011-2015 SpryMedia Ltd - datatables.net/license
  */
@@ -40425,7 +40385,7 @@ DataTable.ext.renderer.pageButton.bootstrap = function ( settings, host, idx, bu
 
 return DataTable;
 }));
-},{"datatables.net":52}],100:[function(require,module,exports){
+},{"datatables.net":47}],98:[function(require,module,exports){
 /*! DataTables 1.10.11
  * ©2008-2015 SpryMedia Ltd - datatables.net/license
  */
@@ -55695,4 +55655,4 @@ return DataTable;
 	return $.fn.dataTable;
 }));
 
-},{"jquery":98}]},{},[30]);
+},{"jquery":93}]},{},[25]);

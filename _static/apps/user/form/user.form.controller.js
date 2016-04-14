@@ -7,6 +7,7 @@ function userFormController(endpoint, model) {
 
     var self = {
         load: onLoad,
+        formId : "#user-form",
         formConfig: {
             rules: {
                 first_name: {
@@ -33,7 +34,7 @@ function userFormController(endpoint, model) {
             size: 'lg'
         }
         var input = {
-            accountNumberInput: $form.input("customers_account_number").setValue(model.accountNumber),
+            accountNumberInput: $form.input("customers_account_number"),
             emailInput: $form.input("email"),
             firstNameInput: $form.input("first_name").setClass("required"),
             lastNameInput: $form.input("last_name").setClass("required"),
@@ -45,12 +46,14 @@ function userFormController(endpoint, model) {
             cityInput: $form.input("city"),
             zipInput: $form.input("zip", "number"),
         }
+        
+        if(model){
+            input.accountNumberInput.setValue(model.userAccount);
+        }
 
         $modal.show(require('./user.form.template.hbs'), input, modalConfig);
         
-        var formUser = "#user-form";
-        
-        $form.create("#user-form")
+        $form.create(self.formId)
             .config(self.formConfig)
             .onSubmit(function() {
                 event.preventDefault();
@@ -58,7 +61,7 @@ function userFormController(endpoint, model) {
                 var data = $(formUser).serializeObject();
                 $http.post(url, data, function() {
                     $('#modal-container').modal('hide');
-                    $app.controller.customerController.tableGrid.ajax.reload();
+                    //$app.controller.customerController.tableGrid.ajax.reload();
                 });
             });
     }

@@ -7,7 +7,6 @@ var $ = jQuery = global.jQuery = require('jquery');
 require('bootstrap');
 
 // Load core modules
-var $config = require('./app.config_default.js');
 var $loader = require('./app.loader.js');
 var $view  = require('./views/app.view.js');
 var $tablegrid = require('./app.tablegrid.js');
@@ -21,7 +20,6 @@ var $handlebars = require('handlebars');
 // Core application instance
 var $app = {
     $:$,
-    $config: $config,
     $handlebars: $handlebars,
     $view: $view,
     $loader: $loader,
@@ -34,13 +32,13 @@ var $app = {
     // Start application and bund url cahnages to loader
     start: function (config) {
         // merge default application config with custom comfig
-        $app.$config = $.extend($app.$config, config);
+        $app.$config = config
 
         // bind loader to window on hash change
         window.onhashchange = $app.$loader.load;
         
         // load default controller
-        $app.$loader.load($app.$config );
+        $app.$loader.load();
 
         return $app;
     }
