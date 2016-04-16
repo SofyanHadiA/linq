@@ -6,16 +6,15 @@ function userController() {
     var $notify = $app.$notify;
     var $tablegrid = $app.$tablegrid;
     var $modal = $app.$modal;
+    var $http = $app.$http;
     var $form = $app.$form;
     var userForm = require('./form/user.form.js')($app);
 
     var self = {
         tableGrid: {},
         table: '#manage-table ',
-        userForm: userForm,
+        form: userForm,
         load: onLoad,
-        showFormCreate: showFormCreate,
-        showFormEdit : showFormEdit,
         endpoint: 'api/v1/users'
     };
 
@@ -31,22 +30,31 @@ function userController() {
         }], 'uid');
 
         $('body').on('click', '#user-add', function() {
-            self.showFormCreate();
+            showFormCreate();
         });
         
         $('#user-table').on('click', '.edit-data', function() {
-            self.showFormEdit();
+            var userId = $(this).data("id");
+            showFormEdit(userId);
         });
     };
 
     function showFormCreate() {
-        self.userForm.controller(self.endpoint);
+        $.when(self.form.controller(self.endpoint)).done(function(){
+            self.tableGrid.ajax.reload();
+        })
     };
 
-    function showFormEdit() {
-        var form = self.userForm.controller(self.endpoint);
-        $(form.formId).find("#email").val("Email lho");
-        // Todo: Ajax here, populate updated user data
+    function showFormEdit(id) {
+        $http.get(self.endpoint + "/" + id).done(function(model) {
+            self.form.controller(self.endpoint, model.data);
+        });
+    };
+    
+    function doDelete(id) {
+        $http.remove(self.endpoint + "/" + id).done(function(model) {
+            
+        });
     };
 };
 

@@ -14,57 +14,88 @@ module.exports = config;
 
 },{}],2:[function(require,module,exports){
 function httpModule() {
+    var cache = {};
 
     var self = {
+        cache: cache,
         getToken: undefined,
         post: post,
         get: get
     };
-
-    //TODO: Get token first before doing any request
-    self.token = {}; // app.http.get('../token');
-    self.cachedScriptPromises = {};
-    self.deferFactory = function(requestFunction) {
-        var cache = {};
-        return function(key, callback) {
-            if (!cache[key]) {
-                cache[key] = $.Deferred(function(defer) {
-                    requestFunction(defer, key);
-                }).promise();
-            }
-            return cache[key].done(callback);
-        };
-    };
-
+    
+    return self;
+    
     function get(url) {
-        self.deferFactory(function(defer, url) {
-            $.get(url, self.http.token).then(
-                defer.resolve,
-                defer.reject)
-        });
+        return $.when(self.cache[url] || 
+            $.ajax({
+                url: url,
+                data: {token : ""},
+                type: 'get',
+                success: function(data, textStatus, jqXHR) {
+                    self.cache[url] = data;
+                }
+            })
+        );
     };
 
-    function post(url, data, callback) {
+    function post(url, data) {
         var postData = {
             data: data,
             token: ""
         };
-
-        $.ajax({
-            url: url,
-            data: JSON.stringify(postData),
-            dataType: 'application/json',
-            type: 'post',
-            success: function(response) {
-                callback(response)
-            },
-            error: function(error) {
-                $app.$notify.danger("Post Failed to: <b>" + url + "</b> " + error.responseText);
-            },
-        });
+        return $.when(
+            $.ajax({
+                url: url,
+                data: JSON.stringify(postData),
+                type: 'post',
+                fail: function(jqXHR, textStatus, errorThrown) {
+                    $app.$notify.danger("Post Failed to: <b>" + url + "</b> " + jqXHR.responseText);
+                }
+            })
+        );
     };
-
-    return self;
+    
+    function put(url, data) {
+        var postData = {
+            data: data,
+            token: ""
+        };
+        
+        return $.when(
+            $.ajax({
+                url: url,
+                data: JSON.stringify(postData),
+                type: 'put',
+                success: function(data, textStatus, jqXHR) {
+                    self.cache.remove(url)
+                },
+                fail: function(jqXHR, textStatus, errorThrown) {
+                    $app.$notify.danger("Post Failed to: <b>" + url + "</b> " + jqXHR.responseText);
+                }
+            })
+        );
+    };
+    
+    function remove(url, data) {
+        var postData = {
+            data: data,
+            token: ""
+        };
+        
+        return $.when(
+            $.ajax({
+                url: url,
+                data: JSON.stringify(postData),
+                type: 'delete',
+                success: function(data, textStatus, jqXHR) {
+                    self.cache.remove(url)
+                },
+                fail: function(jqXHR, textStatus, errorThrown) {
+                    $app.$notify.danger("Post Failed to: <b>" + url + "</b> " + jqXHR.responseText);
+                }
+            })
+        );
+    };
 };
 
 module.exports = httpModule();
@@ -251,7 +282,7 @@ function tableGridModule($modal, $http) {
             sortable: false,
             data: columnId,
             render: function (data, type, row) {
-                return '<div class="btn-group"><a class="btn btn-xs btn-default edit-data" data-key="'+data+'" >'
+                return '<div class="btn-group"><a class="btn btn-xs btn-default edit-data" data-id="'+data+'" >'
                     + '<i class="fa fa-edit"></i></a> '
                     + '<a class="btn btn-xs btn-default btn-delete" href="' + serviceUrl + '/delete/' + data
                     + '"><i class="fa fa-trash"></i></a></div>';
@@ -343,7 +374,6 @@ function tableGridModule($modal, $http) {
     }
 };
 
-
 module.exports = tableGridModule();
 },{"./../../vendors/datatables/media/js/dataTables.bootstrap.js":97,"./../../vendors/datatables/media/js/jquery.dataTables.js":98,"bootbox":32}],8:[function(require,module,exports){
 var $ = jQuery;
@@ -404,7 +434,7 @@ var formModule = function() {
         return self;
 
         function setValue(val) {
-            self.value = val;
+            self.value = val || "";
             return self;
         }
 
@@ -431,35 +461,41 @@ var $ = jQuery;
 
 function modalModule() {
 
-    var modal = {
-        show: show
+    var self = {
+        modalId: "",
+        show: show,
+        hide: doHide,
+        promise : {}
     };
 
-    return modal;
+    return self;
 
     function show(template, model, config) {
         var defer = $.Deferred();
-        var modalId = config.modalId || "modal-container-" + (Math.random() + 1).toString(36).substring(7);
+        self.modalId = config.modalId || "modal-container-" + (Math.random() + 1).toString(36).substring(7);
         var renderedTemplate = $app.$view.render(template, model);
 
-        $('body').append('<div class="modal fade" id="' + modalId + '" tabindex="-1" role="dialog">' 
+        $('body').append('<div class="modal" id="' + self.modalId + '" tabindex="-1" role="dialog">' 
             + '<div class="modal-dialog modal-' + config.size + '">' + '<div class="modal-content">'
-            + renderedTemplate + '</div></div></div>');
+            + renderedTemplate 
+            + '</div></div></div>');
 
-        $('#' + modalId).removeData('modal')
-            .modal({
-                show: true
-            });
+        $('#' + self.modalId).modal("show");
 
-        $(document).on('hidden.bs.modal', '#' + modalId, function() {
-            console.log('hide ' + modalId);
-            $('#' + modalId).remove();
-
+        $(document).on('hidden.bs.modal', '#' + self.modalId, function() {
+            $('body').find('#' + self.modalId).remove();
             defer.done();
         });
 
-        return defer.promise();
+        self.promise = defer.promise();
+        
+        return self;
     };
+    
+    function doHide(){
+        $('#' + self.modalId).modal("hide");
+        return self;
+    }
 };
 
 module.exports = modalModule();
@@ -1393,14 +1429,16 @@ $app.start(config);
 },{"./config.js":1,"./core/app.js":3,"./customer/customer.js":12,"./home/home.js":21,"./user/user.js":30}],26:[function(require,module,exports){
 /*global $app*/
 
-function userFormController(endpoint, model) {
+function userFormController(endpoint, data) {
     var $modal = $app.$view.$modal;
     var $form = $app.$view.$form;
     var $http = $app.$http;
 
     var self = {
         load: onLoad,
+        modal: {},
         formId : "#user-form",
+        data: data || {},
         formConfig: {
             rules: {
                 first_name: {
@@ -1424,39 +1462,39 @@ function userFormController(endpoint, model) {
 
     function onLoad() {
         var modalConfig = {
-            size: 'lg'
-        }
-        var input = {
-            accountNumberInput: $form.input("customers_account_number"),
-            emailInput: $form.input("email"),
-            firstNameInput: $form.input("first_name").setClass("required"),
-            lastNameInput: $form.input("last_name").setClass("required"),
-            phoneNumberInput: $form.input("phone_number", "number"),
-            address1Input: $form.input("address_1"),
-            address2Input: $form.input("address_2"),
-            countryInput: $form.input("country"),
-            stateInput: $form.input("state"),
-            cityInput: $form.input("city"),
-            zipInput: $form.input("zip", "number"),
+            size: 'lg',
+            modalId: "modal-container-" + (Math.random() + 1).toString(36).substring(7)
         }
         
-        if(model){
-            input.accountNumberInput.setValue(model.userAccount);
-        }
-
-        $modal.show(require('./user.form.template.hbs'), input, modalConfig);
+        var input = {
+            accountNumberInput: $form.input("uid").setValue(self.data["uid"] || ""),
+            emailInput: $form.input("email").setValue(self.data["email"] || ""),
+            firstNameInput: $form.input("firstName").setClass("required").setValue(self.data["firstName"] || ""),
+            lastNameInput: $form.input("lastName").setClass("required").setValue(self.data["lastName"] || ""),
+            phoneNumberInput: $form.input("phoneNumber", "number").setValue(self.data["phoneNumber"] || ""),
+            address1Input: $form.input("address1").setValue(self.data["address1"] || ""),
+            address2Input: $form.input("address2").setValue(self.data["address2"] || ""),
+            countryInput: $form.input("country").setValue(self.data["country"] || ""),
+            stateInput: $form.input("state").setValue(self.data["state"] || ""),
+            cityInput: $form.input("city").setValue(self.data["city"] || ""),
+            zipInput: $form.input("zip", "number").setValue(self.data["zip"] || ""),
+        };
+        
+        var modal = $modal.show(require('./user.form.template.hbs'), input, modalConfig);
         
         $form.create(self.formId)
             .config(self.formConfig)
             .onSubmit(function() {
                 event.preventDefault();
-                var url = endpoint;
-                var data = $(formUser).serializeObject();
-                $http.post(url, data, function() {
-                    $('#modal-container').modal('hide');
-                    //$app.controller.customerController.tableGrid.ajax.reload();
+                $http.post(endpoint, $(self.formId).serializeObject()).done(function() {
+                   modal.hide()
                 });
-            });
+            }
+        );
+        
+        self.modal = modal;
+        
+        return self;
     }
 };
 
@@ -1520,16 +1558,15 @@ function userController() {
     var $notify = $app.$notify;
     var $tablegrid = $app.$tablegrid;
     var $modal = $app.$modal;
+    var $http = $app.$http;
     var $form = $app.$form;
     var userForm = require('./form/user.form.js')($app);
 
     var self = {
         tableGrid: {},
         table: '#manage-table ',
-        userForm: userForm,
+        form: userForm,
         load: onLoad,
-        showFormCreate: showFormCreate,
-        showFormEdit : showFormEdit,
         endpoint: 'api/v1/users'
     };
 
@@ -1545,22 +1582,31 @@ function userController() {
         }], 'uid');
 
         $('body').on('click', '#user-add', function() {
-            self.showFormCreate();
+            showFormCreate();
         });
         
         $('#user-table').on('click', '.edit-data', function() {
-            self.showFormEdit();
+            var userId = $(this).data("id");
+            showFormEdit(userId);
         });
     };
 
     function showFormCreate() {
-        self.userForm.controller(self.endpoint);
+        $.when(self.form.controller(self.endpoint)).done(function(){
+            self.tableGrid.ajax.reload();
+        })
     };
 
-    function showFormEdit() {
-        var form = self.userForm.controller(self.endpoint);
-        $(form.formId).find("#email").val("Email lho");
-        // Todo: Ajax here, populate updated user data
+    function showFormEdit(id) {
+        $http.get(self.endpoint + "/" + id).done(function(model) {
+            self.form.controller(self.endpoint, model.data);
+        });
+    };
+    
+    function doDelete(id) {
+        $http.remove(self.endpoint + "/" + id).done(function(model) {
+            
+        });
     };
 };
 

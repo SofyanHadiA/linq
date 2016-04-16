@@ -56,7 +56,7 @@ var formModule = function() {
         return self;
 
         function setValue(val) {
-            self.value = val;
+            self.value = val || "";
             return self;
         }
 

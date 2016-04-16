@@ -22,7 +22,7 @@ func UserRepository(db IDB) IRepository {
 		selectAllQuery: "SELECT uid, username, password, email, last_login FROM users",
 		selectQuery:    "SELECT uid, username, password, email, last_login FROM users WHERE uid = ?",
 		insertQuery:	"INSERT INTO users (username, password, email) VALUES(?, ?, ?)",
-		updateQuery:	"UPDATE users set username=$1, password=$2, email=$3 WHERE uid=$0",
+		updateQuery:	"UPDATE users set username=?, password=?, email=? WHERE uid=?",
 	}
 }
 

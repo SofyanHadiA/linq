@@ -30,7 +30,7 @@ function tableGridModule($modal, $http) {
             sortable: false,
             data: columnId,
             render: function (data, type, row) {
-                return '<div class="btn-group"><a class="btn btn-xs btn-default edit-data" data-key="'+data+'" >'
+                return '<div class="btn-group"><a class="btn btn-xs btn-default edit-data" data-id="'+data+'" >'
                     + '<i class="fa fa-edit"></i></a> '
                     + '<a class="btn btn-xs btn-default btn-delete" href="' + serviceUrl + '/delete/' + data
                     + '"><i class="fa fa-trash"></i></a></div>';
@@ -121,6 +121,5 @@ function tableGridModule($modal, $http) {
         $http.post(url, { 'ids[]': row_ids }, tablegrid.dataTable.ajax.reload)
     }
 };
-
 
 module.exports = tableGridModule();
