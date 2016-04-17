@@ -52,11 +52,21 @@ func (repo userRepository) IsExist(id int) bool {
 	return result
 }
 
-
 func (repo userRepository) GetAll(keyword string, order string, orderDir string) []IModel {
 	var result = Users{}
-	rows := repo.db.Resolve(fmt.Sprintf("%s ORDER BY %s %s ", repo.selectAllQuery, order, orderDir))
 	
+	query:= repo.selectAllQuery
+	
+	if(keyword!=""){
+		query = query + fmt.Sprintf(" WHERE username like '%%%s%%' ", keyword)
+	}
+	
+	if(order!=""){
+		query=query + fmt.Sprintf(" ORDER BY %s %s ", order, orderDir)
+	}
+
+	rows := repo.db.Resolve(query)
+
 	for rows.Next() {
 		var user = User{}
 		err := rows.Scan(&user.Uid, &user.Username, &user.Password, &user.Email, &user.LastLogin)
