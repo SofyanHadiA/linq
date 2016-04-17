@@ -7,9 +7,13 @@ function userFormController(endpoint, data) {
 
     var self = {
         load: onLoad,
+        close: onClose,
         modal: {},
         formId : "#user-form",
         data: data || {},
+        promise: {},
+        modal: {},
+        defer: $.Deferred(),
         formConfig: {
             rules: {
                 first_name: {
@@ -51,21 +55,30 @@ function userFormController(endpoint, data) {
             zipInput: $form.input("zip", "number").setValue(self.data["zip"] || ""),
         };
         
-        var modal = $modal.show(require('./user.form.template.hbs'), input, modalConfig);
+        self.modal = $modal.show(require('./user.form.template.hbs'), input, modalConfig);
         
         $form.create(self.formId)
             .config(self.formConfig)
             .onSubmit(function() {
                 event.preventDefault();
-                $http.post(endpoint, $(self.formId).serializeObject()).done(function() {
-                   modal.hide()
-                });
+                if(!data){
+                    $http.post(endpoint, $(self.formId).serializeObject()).done(onDone());
+                }else{
+                    $http.put(endpoint + "/" + self.data["uid"], $(self.formId).serializeObject()).done(onDone());
+                }
             }
         );
         
-        self.modal = modal;
-        
         return self;
+    }
+    
+    function onDone(){
+        self.modal.hide();
+        self.defer.resolve();
+    }
+    
+    function onClose(){
+        return $.when(self.defer.promise())
     }
 };
 

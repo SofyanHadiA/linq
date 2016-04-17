@@ -42,8 +42,27 @@ func (mysql mySqlDB) Ping() bool {
 	return true
 }
 
+func (mysql mySqlDB) ResolveSingle(query string, args ...interface{}) *sql.Row {
+	db, err := sql.Open("mysql", mysql.ConnectionString)
+	utils.HandleWarn(err)
+
+	defer db.Close()
+
+	var row = &sql.Row{}
+
+	if len(args) > 0 {
+		row = db.QueryRow(query, args...)
+	} else {
+		row = db.QueryRow(query)
+	}
+
+	return row
+}
+
+
 func (mysql mySqlDB) Resolve(query string, args ...interface{}) *sql.Rows {
 	db, err := sql.Open("mysql", mysql.ConnectionString)
+	utils.HandleWarn(err)
 	defer db.Close()
 
 	var rows = &sql.Rows{}
@@ -61,6 +80,8 @@ func (mysql mySqlDB) Resolve(query string, args ...interface{}) *sql.Rows {
 
 func (mysql mySqlDB) Execute(query string, args ...interface{}) sql.Result {
 	db, err := sql.Open("mysql", mysql.ConnectionString)
+	utils.HandleWarn(err)
+
 	defer db.Close()
 
 	stmtOut, err := db.Prepare(query)

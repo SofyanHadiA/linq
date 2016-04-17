@@ -4,13 +4,15 @@ var bootbox = require('bootbox');
 require('./../../vendors/datatables/media/js/jquery.dataTables.js');
 require('./../../vendors/datatables/media/js/dataTables.bootstrap.js');
 
-function tableGridModule($modal, $http) {
+function tableGridModule() {
+    
     var tablegrid = {
         table: "",
         dataTable: {},
         render: render,
         get_selected_rows: get_selected_rows,
-        delete: do_delete
+        delete: {},
+        reload: reload
     }
 
     return tablegrid;
@@ -32,8 +34,8 @@ function tableGridModule($modal, $http) {
             render: function (data, type, row) {
                 return '<div class="btn-group"><a class="btn btn-xs btn-default edit-data" data-id="'+data+'" >'
                     + '<i class="fa fa-edit"></i></a> '
-                    + '<a class="btn btn-xs btn-default btn-delete" href="' + serviceUrl + '/delete/' + data
-                    + '"><i class="fa fa-trash"></i></a></div>';
+                    + '<a class="btn btn-xs btn-default btn-delete" data-id="' + data + '">'
+                    +'<i class="fa fa-trash"></i></a></div>';
             }
         }]);
 
@@ -69,10 +71,10 @@ function tableGridModule($modal, $http) {
 
         $(tableContainer + " tbody").on("click", '.btn-delete', function (event) {
             event.preventDefault();
-            var url = $(this).attr('href');
+            var id = $(this).data("id");
             bootbox.confirm('Are you sure to delete this data?', function (result) {
                 if (result) {
-                    do_delete(url);
+                    tablegrid.delete(id)
                 }
             });
         });
@@ -104,7 +106,11 @@ function tableGridModule($modal, $http) {
             $modal(url, 'md');
         });
 
-        return tablegrid.dataTable;
+        return tablegrid;
+    }
+    
+    function reload() {
+        tablegrid.dataTable.ajax.reload();
     }
 
     function get_selected_rows() {

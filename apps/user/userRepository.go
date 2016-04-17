@@ -1,6 +1,8 @@
 package user
 
 import (
+	"fmt"
+	
 	. "linq/core/database"
 	. "linq/core/repository"
 	"linq/core/utils"
@@ -9,20 +11,24 @@ import (
 type userRepository struct {
 	db             	IDB
 	countQuery    	string
+	isExistQuery 	string
 	selectAllQuery 	string
 	selectQuery    	string
 	insertQuery	   	string
 	updateQuery		string
+	deleteQuery		string
 }
 
 func UserRepository(db IDB) IRepository {
 	return userRepository{
 		db:             db,
 		countQuery:     "SELECT COUNT(*) FROM users",
+		isExistQuery:	"SELECT EXISTS(SELECT * FROM users WHERE uid=?)",
 		selectAllQuery: "SELECT uid, username, password, email, last_login FROM users",
 		selectQuery:    "SELECT uid, username, password, email, last_login FROM users WHERE uid = ?",
 		insertQuery:	"INSERT INTO users (username, password, email) VALUES(?, ?, ?)",
 		updateQuery:	"UPDATE users set username=?, password=?, email=? WHERE uid=?",
+		deleteQuery:	"DELETE FROM users WHERE uid=?",
 	}
 }
 
@@ -39,24 +45,27 @@ func (repo userRepository) CountAll() int {
 	return result
 }
 
-func (repo userRepository) GetAll() []IModel {
-	var result = Users{}
-	rows := repo.db.Resolve(repo.selectAllQuery)
+func (repo userRepository) IsExist(id int) bool {
+	var result bool
+	err := repo.db.ResolveSingle(repo.isExistQuery, id).Scan(&result)
+	utils.HandleWarn(err)
+	return result
+}
 
+
+func (repo userRepository) GetAll(keyword string, order string, orderDir string) []IModel {
+	var result = Users{}
+	rows := repo.db.Resolve(fmt.Sprintf("%s ORDER BY %s %s ", repo.selectAllQuery, order, orderDir))
+	
 	for rows.Next() {
 		var user = User{}
 		err := rows.Scan(&user.Uid, &user.Username, &user.Password, &user.Email, &user.LastLogin)
 		utils.HandleWarn(err)
 		result = append(result, user)
 	}
-
 	utils.HandleWarn(rows.Err())
-
-	if len(result) > 0 {
-		return result
-	} else {
-		return nil
-	}
+	
+	return result
 }
 
 func (repo userRepository) Get(id int) IModel {
@@ -87,3 +96,7 @@ func (repo userRepository) Update(model IModel) IModel {
 	return model
 }
 
+func (repo userRepository) Delete(model IModel) IModel {
+	repo.db.Execute(repo.deleteQuery, model.GetId())
+	return model
+}

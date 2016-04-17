@@ -28,7 +28,9 @@ function userController() {
         }, {
             data: 'email'
         }], 'uid');
-
+        
+        self.tableGrid.delete = doDelete
+        
         $('body').on('click', '#user-add', function() {
             showFormCreate();
         });
@@ -40,20 +42,24 @@ function userController() {
     };
 
     function showFormCreate() {
-        $.when(self.form.controller(self.endpoint)).done(function(){
-            self.tableGrid.ajax.reload();
-        })
+        var modalForm = self.form.controller(self.endpoint)
+        modalForm.close().done(function(){
+            self.tableGrid.reload();
+        });
     };
 
     function showFormEdit(id) {
         $http.get(self.endpoint + "/" + id).done(function(model) {
-            self.form.controller(self.endpoint, model.data);
+            var modalForm = self.form.controller(self.endpoint, model.data[0])
+            modalForm.close().done(function(){
+                self.tableGrid.reload();
+            })
         });
     };
     
     function doDelete(id) {
-        $http.remove(self.endpoint + "/" + id).done(function(model) {
-            
+        $http.delete(self.endpoint + "/" + id).done(function(model) {
+            self.tableGrid.reload();
         });
     };
 };

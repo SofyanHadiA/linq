@@ -19,8 +19,10 @@ function httpModule() {
     var self = {
         cache: cache,
         getToken: undefined,
+        get: get,
         post: post,
-        get: get
+        put: put,
+        delete: remove
     };
     
     return self;
@@ -67,7 +69,9 @@ function httpModule() {
                 data: JSON.stringify(postData),
                 type: 'put',
                 success: function(data, textStatus, jqXHR) {
-                    self.cache.remove(url)
+                    if(self.cache.length > 0){
+                        self.cache.remove(url)
+                    }
                 },
                 fail: function(jqXHR, textStatus, errorThrown) {
                     $app.$notify.danger("Post Failed to: <b>" + url + "</b> " + jqXHR.responseText);
@@ -88,7 +92,9 @@ function httpModule() {
                 data: JSON.stringify(postData),
                 type: 'delete',
                 success: function(data, textStatus, jqXHR) {
-                    self.cache.remove(url)
+                    if(self.cache.length > 0){
+                        self.cache.remove(url)
+                    }
                 },
                 fail: function(jqXHR, textStatus, errorThrown) {
                     $app.$notify.danger("Post Failed to: <b>" + url + "</b> " + jqXHR.responseText);
@@ -256,13 +262,15 @@ var bootbox = require('bootbox');
 require('./../../vendors/datatables/media/js/jquery.dataTables.js');
 require('./../../vendors/datatables/media/js/dataTables.bootstrap.js');
 
-function tableGridModule($modal, $http) {
+function tableGridModule() {
+    
     var tablegrid = {
         table: "",
         dataTable: {},
         render: render,
         get_selected_rows: get_selected_rows,
-        delete: do_delete
+        delete: {},
+        reload: reload
     }
 
     return tablegrid;
@@ -284,8 +292,8 @@ function tableGridModule($modal, $http) {
             render: function (data, type, row) {
                 return '<div class="btn-group"><a class="btn btn-xs btn-default edit-data" data-id="'+data+'" >'
                     + '<i class="fa fa-edit"></i></a> '
-                    + '<a class="btn btn-xs btn-default btn-delete" href="' + serviceUrl + '/delete/' + data
-                    + '"><i class="fa fa-trash"></i></a></div>';
+                    + '<a class="btn btn-xs btn-default btn-delete" data-id="' + data + '">'
+                    +'<i class="fa fa-trash"></i></a></div>';
             }
         }]);
 
@@ -321,10 +329,10 @@ function tableGridModule($modal, $http) {
 
         $(tableContainer + " tbody").on("click", '.btn-delete', function (event) {
             event.preventDefault();
-            var url = $(this).attr('href');
+            var id = $(this).data("id");
             bootbox.confirm('Are you sure to delete this data?', function (result) {
                 if (result) {
-                    do_delete(url);
+                    tablegrid.delete(id)
                 }
             });
         });
@@ -356,7 +364,11 @@ function tableGridModule($modal, $http) {
             $modal(url, 'md');
         });
 
-        return tablegrid.dataTable;
+        return tablegrid;
+    }
+    
+    function reload() {
+        tablegrid.dataTable.ajax.reload();
     }
 
     function get_selected_rows() {
@@ -796,11 +808,12 @@ module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":f
 
 },{"hbsfy/runtime":91}],24:[function(require,module,exports){
 module.exports = {
+	uid: "Account #",
 	alpha: "The %s field may only contain alphabetical characters.",
 	alpha_dash: "The %s field may only contain alpha-numeric characters, underscores, and dashes.",
 	alpha_numeric: "The %s field may only contain alpha-numeric characters.",
-	address_1: "Address 1",
-	address_2: "Address 2",
+	address1: "Address 1",
+	address2: "Address 2",
 	city: "City",
 	comments: "Comments",
 	common: "common",
@@ -812,17 +825,17 @@ module.exports = {
 	email: "E-Mail",
 	email_invalid_format: "The e-mail address is not in the proper format",
 	fields_required_message: "Fields in red are required",
-	first_name: "First Name",
-	first_name_required: "The first name is a required field.",
+	firstName: "First Name",
+	firstName_required: "The first name is a required field.",
 	inv: "inv",
-	last_name: "Last Name",
-	last_name_required: "The last name is a required field",
+	lastName: "Last Name",
+	lastName_required: "The last name is a required field",
 	learn_about_project: "to learn the lastest information about the project",
 	list_of: "List of",
 	logout: "Logout",
 	no_persons_to_display: "There are no people to display",
 	or: "OR",
-	phone_number: "Phone",
+	phoneNumber: "Phone",
 	please_visit_my: "Please visit my",
 	powered_by: "Powered by",
 	price: "Price",
@@ -1436,9 +1449,13 @@ function userFormController(endpoint, data) {
 
     var self = {
         load: onLoad,
+        close: onClose,
         modal: {},
         formId : "#user-form",
         data: data || {},
+        promise: {},
+        modal: {},
+        defer: $.Deferred(),
         formConfig: {
             rules: {
                 first_name: {
@@ -1480,21 +1497,30 @@ function userFormController(endpoint, data) {
             zipInput: $form.input("zip", "number").setValue(self.data["zip"] || ""),
         };
         
-        var modal = $modal.show(require('./user.form.template.hbs'), input, modalConfig);
+        self.modal = $modal.show(require('./user.form.template.hbs'), input, modalConfig);
         
         $form.create(self.formId)
             .config(self.formConfig)
             .onSubmit(function() {
                 event.preventDefault();
-                $http.post(endpoint, $(self.formId).serializeObject()).done(function() {
-                   modal.hide()
-                });
+                if(!data){
+                    $http.post(endpoint, $(self.formId).serializeObject()).done(onDone());
+                }else{
+                    $http.put(endpoint + "/" + self.data["uid"], $(self.formId).serializeObject()).done(onDone());
+                }
             }
         );
         
-        self.modal = modal;
-        
         return self;
+    }
+    
+    function onDone(){
+        self.modal.hide();
+        self.defer.resolve();
+    }
+    
+    function onClose(){
+        return $.when(self.defer.promise())
     }
 };
 
@@ -1580,7 +1606,9 @@ function userController() {
         }, {
             data: 'email'
         }], 'uid');
-
+        
+        self.tableGrid.delete = doDelete
+        
         $('body').on('click', '#user-add', function() {
             showFormCreate();
         });
@@ -1592,20 +1620,24 @@ function userController() {
     };
 
     function showFormCreate() {
-        $.when(self.form.controller(self.endpoint)).done(function(){
-            self.tableGrid.ajax.reload();
-        })
+        var modalForm = self.form.controller(self.endpoint)
+        modalForm.close().done(function(){
+            self.tableGrid.reload();
+        });
     };
 
     function showFormEdit(id) {
         $http.get(self.endpoint + "/" + id).done(function(model) {
-            self.form.controller(self.endpoint, model.data);
+            var modalForm = self.form.controller(self.endpoint, model.data[0])
+            modalForm.close().done(function(){
+                self.tableGrid.reload();
+            })
         });
     };
     
     function doDelete(id) {
-        $http.remove(self.endpoint + "/" + id).done(function(model) {
-            
+        $http.delete(self.endpoint + "/" + id).done(function(model) {
+            self.tableGrid.reload();
         });
     };
 };

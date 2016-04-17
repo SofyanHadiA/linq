@@ -4,8 +4,10 @@ function httpModule() {
     var self = {
         cache: cache,
         getToken: undefined,
+        get: get,
         post: post,
-        get: get
+        put: put,
+        delete: remove
     };
     
     return self;
@@ -52,7 +54,9 @@ function httpModule() {
                 data: JSON.stringify(postData),
                 type: 'put',
                 success: function(data, textStatus, jqXHR) {
-                    self.cache.remove(url)
+                    if(self.cache.length > 0){
+                        self.cache.remove(url)
+                    }
                 },
                 fail: function(jqXHR, textStatus, errorThrown) {
                     $app.$notify.danger("Post Failed to: <b>" + url + "</b> " + jqXHR.responseText);
@@ -73,7 +77,9 @@ function httpModule() {
                 data: JSON.stringify(postData),
                 type: 'delete',
                 success: function(data, textStatus, jqXHR) {
-                    self.cache.remove(url)
+                    if(self.cache.length > 0){
+                        self.cache.remove(url)
+                    }
                 },
                 fail: function(jqXHR, textStatus, errorThrown) {
                     $app.$notify.danger("Post Failed to: <b>" + url + "</b> " + jqXHR.responseText);

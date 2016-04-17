@@ -38,3 +38,8 @@ func (user User) UpdateVal() []interface{}{
 
 	return result
 }
+
+var columnMap = map[int]string{
+	0 : "uid",
+	1 : "username",
+}

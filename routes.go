@@ -30,7 +30,8 @@ func GetRoutes(db database.IDB) Routes {
 		Route{"UserList", "GET", "/api/v1/users", userController.GetAll},
 		Route{"UserSingle", "GET", "/api/v1/users/{id:[0-9]+}", userController.Get},
 		Route{"UserCreate", "POST", "/api/v1/users", userController.Create},
-		Route{"UserCreate", "POST", "/api/v1/users", userController.Modify},
+		Route{"UserModify", "PUT", "/api/v1/users", userController.Modify},
+		Route{"UserRemove", "DELETE", "/api/v1/users/{id:[0-9]+}", userController.Remove},
 	
 		Route{"ChatIndex", "GET", "/chat", Chat.ServeHome},
 		Route{"ChatWs", "GET", "/ws", Chat.ServeWs},
