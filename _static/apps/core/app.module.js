@@ -1,7 +1,3 @@
-/*
- *
- */
-
 function moduleModule() {
     var self = {
         modules: {},
@@ -20,4 +16,4 @@ function moduleModule() {
 
 };
 
-module.exports = moduleModule();
+module.exports = moduleModule;

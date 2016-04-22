@@ -35,6 +35,9 @@ function httpModule() {
                 type: 'get',
                 success: function(data, textStatus, jqXHR) {
                     self.cache[url] = data;
+                },
+                fail: function(jqXHR, textStatus, errorThrown) {
+                    $app.$notify.danger("GET Failed: <b>" + url + "</b> " + jqXHR.responseText);
                 }
             })
         );
@@ -51,7 +54,7 @@ function httpModule() {
                 data: JSON.stringify(postData),
                 type: 'post',
                 fail: function(jqXHR, textStatus, errorThrown) {
-                    $app.$notify.danger("Post Failed to: <b>" + url + "</b> " + jqXHR.responseText);
+                    $app.$notify.danger("POST Failed: <b>" + url + "</b> " + jqXHR.responseText);
                 }
             })
         );
@@ -62,7 +65,6 @@ function httpModule() {
             data: data,
             token: ""
         };
-        
         return $.when(
             $.ajax({
                 url: url,
@@ -74,7 +76,7 @@ function httpModule() {
                     }
                 },
                 fail: function(jqXHR, textStatus, errorThrown) {
-                    $app.$notify.danger("Post Failed to: <b>" + url + "</b> " + jqXHR.responseText);
+                    $app.$notify.danger("PUT Failed: <b>" + url + "</b> " + jqXHR.responseText);
                 }
             })
         );
@@ -85,7 +87,6 @@ function httpModule() {
             data: data,
             token: ""
         };
-        
         return $.when(
             $.ajax({
                 url: url,
@@ -97,14 +98,14 @@ function httpModule() {
                     }
                 },
                 fail: function(jqXHR, textStatus, errorThrown) {
-                    $app.$notify.danger("Post Failed to: <b>" + url + "</b> " + jqXHR.responseText);
+                    $app.$notify.danger("DELETE Failed: <b>" + url + "</b> " + jqXHR.responseText);
                 }
             })
         );
     };
 };
 
-module.exports = httpModule();
+module.exports = httpModule;
 },{}],3:[function(require,module,exports){
 (function (global){
 /*
@@ -116,12 +117,12 @@ var $ = jQuery = global.jQuery = require('jquery');
 require('bootstrap');
 
 // Load core modules
+var $notify = require('./app.notify.js');
+var $module = require('./app.module.js');
 var $loader = require('./app.loader.js');
 var $view  = require('./views/app.view.js');
 var $tablegrid = require('./app.tablegrid.js');
-var $notify = require('./app.notify.js');
-var $http = require('./app.http.js');
-var $module = require('./app.module.js');
+var $http = require('./app.http.js')();
 var $language = require('./../language/en.js');
 var $handlebars = require('handlebars');
 // End load core modules
@@ -129,14 +130,14 @@ var $handlebars = require('handlebars');
 // Core application instance
 var $app = {
     $:$,
+    $notify: $notify(),
+    $module: $module(),
     $handlebars: $handlebars,
     $view: $view,
-    $loader: $loader,
-    $tablegrid: $tablegrid,
-    $notify: $notify,
+    $loader: $loader(),
+    $tablegrid: $tablegrid(),
     $http: $http,
     $language: $language,
-    $module: $module,
 
     // Start application and bund url cahnages to loader
     start: function (config) {
@@ -161,28 +162,25 @@ module.exports = $app;
  */
 
 var $ = jQuery;
-var $notify = require('./app.notify.js');
-var $http = require('./app.http.js');
-var $module = require('./app.module.js');
 var $handlebars = require('handlebars');
 
 function loaderModule() {
 
-    var loader = {
+    var self = {
         load: load
     }
 
-    return loader;
+    return self;
 
     function load() {
         var config = $app.$config;
         var hash = location.hash.replace(/^#/, '') || config.route.default;
         var appView = config.view.appView || 'app-view';
         $(appView).html('<div class="spinner text-center"><div class="dots-loader">Loading…</div></div>');
-        var module = $module.resolve(hash);
+        var module = $app.$module.resolve(hash);
 
         if (module.templateUrl) {
-            $http.get(module.templateUrl).then(function(response) {
+            $app.$http.get(module.templateUrl).then(function(response) {
                 module.template = response;
                 $view.render(module.template, module.model, appView);
                 module.controller();
@@ -195,12 +193,8 @@ function loaderModule() {
     };
 };
 
-module.exports = loaderModule();
-},{"./app.http.js":2,"./app.module.js":5,"./app.notify.js":6,"handlebars":77}],5:[function(require,module,exports){
-/*
- *
- */
-
+module.exports = loaderModule;
+},{"handlebars":77}],5:[function(require,module,exports){
 function moduleModule() {
     var self = {
         modules: {},
@@ -219,7 +213,7 @@ function moduleModule() {
 
 };
 
-module.exports = moduleModule();
+module.exports = moduleModule;
 },{}],6:[function(require,module,exports){
 
 var $ = jQuery;
@@ -254,139 +248,132 @@ function notifyModule() {
     };
 }
 
-module.exports = notifyModule(); 
+module.exports = notifyModule; 
 },{"bootstrap-notify":33}],7:[function(require,module,exports){
 var bootbox = require('bootbox');
-
-// load from bower since npm datatables package version does not include dataTables.bootstrap.js
 require('./../../vendors/datatables/media/js/jquery.dataTables.js');
 require('./../../vendors/datatables/media/js/dataTables.bootstrap.js');
 
+
 function tableGridModule() {
-    
-    var tablegrid = {
+
+    var self = {
         table: "",
         dataTable: {},
         render: render,
-        get_selected_rows: get_selected_rows,
-        delete: {},
-        reload: reload
+        getSelectedRows: getSelectedRows,
+        reload: reload,
+        action: {
+            delete: undefined,
+            deleteBulk: undefined
+        }
     }
 
-    return tablegrid;
+    return self;
 
     function render(tableContainer, serviceUrl, tableConfig, columnId = "id") {
-        tablegrid.table = tableContainer;
+        self.table = tableContainer;
 
         tableConfig = [{
-            sortable: false,
-            data: columnId,
-            render: function (data, type, row) {
-                return '<input type="checkbox" id="rows-' + data + '" value="' + data + '"/>';
-            }
-        }]
-        .concat(tableConfig)
-        .concat([{
-            sortable: false,
-            data: columnId,
-            render: function (data, type, row) {
-                return '<div class="btn-group"><a class="btn btn-xs btn-default edit-data" data-id="'+data+'" >'
-                    + '<i class="fa fa-edit"></i></a> '
-                    + '<a class="btn btn-xs btn-default btn-delete" data-id="' + data + '">'
-                    +'<i class="fa fa-trash"></i></a></div>';
-            }
-        }]);
+                sortable: false,
+                data: columnId,
+                render: function(data, type, row) {
+                    return '<input type="checkbox" id="rows-' + data + '" value="' + data + '"/>';
+                }
+            }]
+            .concat(tableConfig)
+            .concat([{
+                sortable: false,
+                data: columnId,
+                render: function(data, type, row) {
+                    return '<div class="btn-group"><a class="btn btn-xs btn-default edit-data" data-id="' + data + '" >' + '<i class="fa fa-edit"></i></a> ' + '<a class="btn btn-xs btn-default btn-delete" data-id="' + data + '">' + '<i class="fa fa-trash"></i></a></div>';
+                }
+            }]);
 
-        tablegrid.dataTable = $(tablegrid.table).DataTable({
+        self.dataTable = $(self.table).DataTable({
             "info": true,
             "autoWidth": false,
             columns: tableConfig,
             "pageLength": 25,
-            "order": [[1, "asc"]],
+            "order": [
+                [1, "asc"]
+            ],
             "processing": true,
             "serverSide": true,
             "ajax": {
                 url: serviceUrl,
                 type: "get",
-                error: function (error) {
-                    $.notify({icon: 'fa fa-info-circle', message: error.message}, { type: "info" });
+                error: function(error) {
+                    $app.$notify.danger(error.message);
                 }
             }
         });
 
-        $(tableContainer + ' #select-all').click(function () {
+        $(tableContainer + ' #select-all').click(function() {
             if ($(this).prop('checked')) {
-                $(tableContainer + " tbody :checkbox").each(function () {
+                $(tableContainer + " tbody :checkbox").each(function() {
                     $(this).prop('checked', true);
                 });
             }
             else {
-                $(tableContainer + " tbody :checkbox").each(function () {
+                $(tableContainer + " tbody :checkbox").each(function() {
                     $(this).prop('checked', false);
                 });
             }
         });
 
-        $(tableContainer + " tbody").on("click", '.btn-delete', function (event) {
+        $(tableContainer + " tbody").on("click", '.btn-delete', function(event) {
             event.preventDefault();
             var id = $(this).data("id");
-            bootbox.confirm('Are you sure to delete this data?', function (result) {
+            bootbox.confirm('Are you sure to delete this data?', function(result) {
                 if (result) {
-                    tablegrid.delete(id)
+                    self.action.delete(id)
                 }
             });
         });
 
-        $('#delete-selected').click(function (event) {
+        $('#delete-selected').click(function(event) {
             event.preventDefault();
             if ($(tableContainer + " tbody :checkbox:checked").length > 0) {
                 var url = $("#delete-selected").attr('href');
-                bootbox.confirm('Are you sure to delete selected data(s)?', function (result) {
+                bootbox.confirm('Are you sure to delete selected data(s)?', function(result) {
                     if (result) {
-                        do_delete(url);
+                        var ids = self.getSelectedRows();
+                        self.action.deleteBulk(ids);
                         $(tableContainer + '#select-all').prop('checked', false);
                     }
                 });
             }
             else {
-                $.notify({
-                    icon: 'fa fa-warning',
-                    message: 'No data selected',
-                }, {
-                        type: "danger"
-                    });
+                $app.$notify.warning('No data selected')
             }
         });
 
-        $('#import-excel').click(function () {
+        $('#import-excel').click(function() {
             event.preventDefault();
             var url = $(this).attr('href');
             $modal(url, 'md');
         });
 
-        return tablegrid;
+        return self;
     }
-    
+
+    function getSelectedRows() {
+        var selectedRows = [];
+
+        $(self.table + " tbody :checkbox:checked").each(function() {
+            selectedRows.push($(this).val());
+        });
+
+        return selectedRows;
+    }
+
     function reload() {
-        tablegrid.dataTable.ajax.reload();
-    }
-
-    function get_selected_rows() {
-        var selected_rows = new Array();
-        $(tablegrid.table + "tbody :checkbox:checked")
-            .each(function () {
-                selected_rows.push($(this).val());
-            });
-        return selected_rows;
-    }
-
-    function do_delete(url) {
-        var row_ids = get_selected_rows();
-        $http.post(url, { 'ids[]': row_ids }, tablegrid.dataTable.ajax.reload)
+        self.dataTable.ajax.reload();
     }
 };
 
-module.exports = tableGridModule();
+module.exports = tableGridModule;
 },{"./../../vendors/datatables/media/js/dataTables.bootstrap.js":97,"./../../vendors/datatables/media/js/jquery.dataTables.js":98,"bootbox":32}],8:[function(require,module,exports){
 var $ = jQuery;
 require('../../../node_modules/jquery-validation/dist/jquery.validate.js');
@@ -437,10 +424,11 @@ var formModule = function() {
             name: name,
             inputType: inputType,
             value: value,
+            label: $app.$language[name],
             className: className,
             setValue: setValue,
             setClass: setClass,
-            render: render,
+            formGroup: formGroup,
         }
 
         return self;
@@ -454,13 +442,19 @@ var formModule = function() {
             self.className = className;
             return self;
         }
+        
+        function formGroup(inputWidth = 8, labelWidth = 4){
+            return '<div class="form-group">' + formLabel(labelWidth) + inputText(inputWidth) + '</div>'
+        }
 
-        function render() {
-            return '<div class="form-group">' +
-                '<label for="' + self.name + '" class="col-sm-4 control-label ' + self.className + '">' + $app.$language[self.name] + '</label>' +
-                '<div class="col-sm-8">' +
-                '<input type="' + self.inputType + '" name="' + self.name + '" id="' + self.name + '" class="form-control" value="' + self.value + '" />' +
-                '</div></div>'
+        function inputText(inputWidth = '8') {
+            return '<div class="col-md-'+inputWidth+'">' +
+                '<input type="text" name="' + self.name + '" id="' + self.name + '" class="form-control" value="' + self.value + '" />' +
+                '</div>'
+        }
+        
+        function formLabel(labelWidth = '4'){
+            return '<label for="' + self.name + '" class="col-md-'+labelWidth+' control-label ' + self.className + '">' + self.label + '</label>' 
         }
     }
 };
@@ -477,14 +471,15 @@ function modalModule() {
         modalId: "",
         show: show,
         hide: doHide,
-        promise : {}
+        promise : {},
+        generateId: generateId
     };
 
     return self;
 
     function show(template, model, config) {
         var defer = $.Deferred();
-        self.modalId = config.modalId || "modal-container-" + (Math.random() + 1).toString(36).substring(7);
+        self.modalId = config.modalId || self.generateId();
         var renderedTemplate = $app.$view.render(template, model);
 
         $('body').append('<div class="modal" id="' + self.modalId + '" tabindex="-1" role="dialog">' 
@@ -508,9 +503,13 @@ function modalModule() {
         $('#' + self.modalId).modal("hide");
         return self;
     }
+    
+    function generateId(){
+        return "modal-container-" + (Math.random() + 1).toString(36).substring(7)
+    }
 };
 
-module.exports = modalModule();
+module.exports = modalModule;
 },{}],10:[function(require,module,exports){
 var $ = jQuery;
 var $handlebars = $handlebars || require('handlebars');
@@ -521,7 +520,7 @@ var $modal = require('./app.modal.js');
 function viewModule() {
     return {
         $form: $form,
-        $modal: $modal,
+        $modal: $modal(),
         render: render
     };
 
@@ -928,7 +927,7 @@ module.exports = {
 	employees_successful_deleted: "You have successfully deleted",
 	employees_successful_updating: "You have successfully updated employee",
 	employees_update: "Update Employee",
-	employees_username: "Username",
+	username: "Username",
 	employees_username_minlength: "The username must be at least 5 characters",
 	employees_username_required: "Username is a required field",
 	error_no_permission_module: "You do not have permission to access the module named",
@@ -1440,7 +1439,7 @@ var config = require('./config.js');
 // start the application
 $app.start(config);
 },{"./config.js":1,"./core/app.js":3,"./customer/customer.js":12,"./home/home.js":21,"./user/user.js":30}],26:[function(require,module,exports){
-/*global $app*/
+/*global $app $*/
 
 function userFormController(endpoint, data) {
     var $modal = $app.$view.$modal;
@@ -1450,19 +1449,18 @@ function userFormController(endpoint, data) {
     var self = {
         load: onLoad,
         close: onClose,
-        modal: {},
+        modal: $app.$view.$modal,
         formId : "#user-form",
         data: data || {},
         promise: {},
-        modal: {},
         defer: $.Deferred(),
         formConfig: {
             rules: {
-                first_name: {
-                    minlength: 3,
+                username: {
+                    minlength: 5,
                     required: true
                 },
-                last_name: {
+                firstName: {
                     minlength: 3,
                     required: true
                 },
@@ -1472,7 +1470,7 @@ function userFormController(endpoint, data) {
             }
         }
     }
-
+    
     self.load();
 
     return self;
@@ -1480,14 +1478,15 @@ function userFormController(endpoint, data) {
     function onLoad() {
         var modalConfig = {
             size: 'lg',
-            modalId: "modal-container-" + (Math.random() + 1).toString(36).substring(7)
+            modalId: self.modal.generateId()
         }
         
         var input = {
-            accountNumberInput: $form.input("uid").setValue(self.data["uid"] || ""),
+            accountNumberInput: $form.input("uid").setValue(self.data["uid"] || "AUTO"),
+            userNameInput: $form.input("username").setValue(self.data["username"] || "").setClass("required"),
             emailInput: $form.input("email").setValue(self.data["email"] || ""),
-            firstNameInput: $form.input("firstName").setClass("required").setValue(self.data["firstName"] || ""),
-            lastNameInput: $form.input("lastName").setClass("required").setValue(self.data["lastName"] || ""),
+            firstNameInput: $form.input("firstName").setValue(self.data["firstName"] || "").setClass("required"),
+            lastNameInput: $form.input("lastName").setValue(self.data["lastName"] || ""),
             phoneNumberInput: $form.input("phoneNumber", "number").setValue(self.data["phoneNumber"] || ""),
             address1Input: $form.input("address1").setValue(self.data["address1"] || ""),
             address2Input: $form.input("address2").setValue(self.data["address2"] || ""),
@@ -1520,7 +1519,7 @@ function userFormController(endpoint, data) {
     }
     
     function onClose(){
-        return $.when(self.defer.promise())
+        return $.when(self.defer.promise());
     }
 };
 
@@ -1548,36 +1547,40 @@ module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":f
 
   return "<div class=\"modal-header\">\n    <button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-hidden=\"true\">&times;</button>\n    <h4 class=\"modal-title\">User Form</h4>\n</div>\n\n<div class=\"modal-body\">\n    <form id=\"user-form\" name=\"user-form\" class=\"form-horizontal\">\n        <span class=\"small\">"
     + container.escapeExpression(alias1(((stack1 = (depth0 != null ? depth0.lang : depth0)) != null ? stack1.fields_required_message : stack1), depth0))
-    + "</span>\n        <ul id=\"error_message_box\" class=\"warning\"></ul>\n        <fieldset id=\"user_basic_info\">\n            <div class=\"row\">\n                <div class=\"col-sm-6\">"
-    + ((stack1 = alias1(((stack1 = (depth0 != null ? depth0.accountNumberInput : depth0)) != null ? stack1.render : stack1), depth0)) != null ? stack1 : "")
-    + "</div>\n                <div class=\"col-sm-6\">"
-    + ((stack1 = alias1(((stack1 = (depth0 != null ? depth0.emailInput : depth0)) != null ? stack1.render : stack1), depth0)) != null ? stack1 : "")
-    + "</div>\n                <div class=\"col-sm-6\">"
-    + ((stack1 = alias1(((stack1 = (depth0 != null ? depth0.firstNameInput : depth0)) != null ? stack1.render : stack1), depth0)) != null ? stack1 : "")
-    + "</div>\n                <div class=\"col-sm-6\">"
-    + ((stack1 = alias1(((stack1 = (depth0 != null ? depth0.lastNameInput : depth0)) != null ? stack1.render : stack1), depth0)) != null ? stack1 : "")
-    + "</div>\n                <div class=\"col-sm-6\">"
-    + ((stack1 = alias1(((stack1 = (depth0 != null ? depth0.phoneNumberInput : depth0)) != null ? stack1.render : stack1), depth0)) != null ? stack1 : "")
-    + "</div>\n                <div class=\"col-sm-6\">"
-    + ((stack1 = alias1(((stack1 = (depth0 != null ? depth0.address1Input : depth0)) != null ? stack1.render : stack1), depth0)) != null ? stack1 : "")
-    + "</div>\n                <div class=\"col-sm-6\">"
-    + ((stack1 = alias1(((stack1 = (depth0 != null ? depth0.address2Input : depth0)) != null ? stack1.render : stack1), depth0)) != null ? stack1 : "")
-    + "</div>\n                <div class=\"col-sm-6\">"
-    + ((stack1 = alias1(((stack1 = (depth0 != null ? depth0.countryInput : depth0)) != null ? stack1.render : stack1), depth0)) != null ? stack1 : "")
-    + "</div>\n                <div class=\"col-sm-6\">"
-    + ((stack1 = alias1(((stack1 = (depth0 != null ? depth0.cityInput : depth0)) != null ? stack1.render : stack1), depth0)) != null ? stack1 : "")
-    + "</div>\n                <div class=\"col-sm-6\">"
-    + ((stack1 = alias1(((stack1 = (depth0 != null ? depth0.stateInput : depth0)) != null ? stack1.render : stack1), depth0)) != null ? stack1 : "")
-    + "</div>\n                <div class=\"col-sm-6\">"
-    + ((stack1 = alias1(((stack1 = (depth0 != null ? depth0.zipInput : depth0)) != null ? stack1.render : stack1), depth0)) != null ? stack1 : "")
-    + "</div>\n                <div class=\"col-sm-6\">"
-    + ((stack1 = alias1(((stack1 = (depth0 != null ? depth0.notesInput : depth0)) != null ? stack1.render : stack1), depth0)) != null ? stack1 : "")
+    + "</span>\n        <ul id=\"error_message_box\" class=\"warning\"></ul>\n        <fieldset id=\"user_basic_info\">\n            <div class=\"row\">\n                <div class=\"col-md-12\">\n                    <label>"
+    + ((stack1 = alias1(((stack1 = (depth0 != null ? depth0.accountNumberInput : depth0)) != null ? stack1.label : stack1), depth0)) != null ? stack1 : "")
+    + ": "
+    + ((stack1 = alias1(((stack1 = (depth0 != null ? depth0.accountNumberInput : depth0)) != null ? stack1.value : stack1), depth0)) != null ? stack1 : "")
+    + " </label>\n                </div>\n                <div class=\"col-md-6\">"
+    + ((stack1 = alias1(((stack1 = (depth0 != null ? depth0.userNameInput : depth0)) != null ? stack1.formGroup : stack1), depth0)) != null ? stack1 : "")
+    + "</div>\n                <div class=\"col-md-6\">"
+    + ((stack1 = alias1(((stack1 = (depth0 != null ? depth0.emailInput : depth0)) != null ? stack1.formGroup : stack1), depth0)) != null ? stack1 : "")
+    + "</div>\n                <div class=\"col-md-6\">"
+    + ((stack1 = alias1(((stack1 = (depth0 != null ? depth0.firstNameInput : depth0)) != null ? stack1.formGroup : stack1), depth0)) != null ? stack1 : "")
+    + "</div>\n                <div class=\"col-md-6\">"
+    + ((stack1 = alias1(((stack1 = (depth0 != null ? depth0.lastNameInput : depth0)) != null ? stack1.formGroup : stack1), depth0)) != null ? stack1 : "")
+    + "</div>\n                <div class=\"col-md-6\">"
+    + ((stack1 = alias1(((stack1 = (depth0 != null ? depth0.phoneNumberInput : depth0)) != null ? stack1.formGroup : stack1), depth0)) != null ? stack1 : "")
+    + "</div>\n                <div class=\"col-md-6\">"
+    + ((stack1 = alias1(((stack1 = (depth0 != null ? depth0.address1Input : depth0)) != null ? stack1.formGroup : stack1), depth0)) != null ? stack1 : "")
+    + "</div>\n                <div class=\"col-md-6\">"
+    + ((stack1 = alias1(((stack1 = (depth0 != null ? depth0.address2Input : depth0)) != null ? stack1.formGroup : stack1), depth0)) != null ? stack1 : "")
+    + "</div>\n                <div class=\"col-md-6\">"
+    + ((stack1 = alias1(((stack1 = (depth0 != null ? depth0.countryInput : depth0)) != null ? stack1.formGroup : stack1), depth0)) != null ? stack1 : "")
+    + "</div>\n                <div class=\"col-md-6\">"
+    + ((stack1 = alias1(((stack1 = (depth0 != null ? depth0.cityInput : depth0)) != null ? stack1.formGroup : stack1), depth0)) != null ? stack1 : "")
+    + "</div>\n                <div class=\"col-md-6\">"
+    + ((stack1 = alias1(((stack1 = (depth0 != null ? depth0.stateInput : depth0)) != null ? stack1.formGroup : stack1), depth0)) != null ? stack1 : "")
+    + "</div>\n                <div class=\"col-md-6\">"
+    + ((stack1 = alias1(((stack1 = (depth0 != null ? depth0.zipInput : depth0)) != null ? stack1.formGroup : stack1), depth0)) != null ? stack1 : "")
+    + "</div>\n                <div class=\"col-md-6\">"
+    + ((stack1 = alias1(((stack1 = (depth0 != null ? depth0.notesInput : depth0)) != null ? stack1.formGroup : stack1), depth0)) != null ? stack1 : "")
     + "</div>\n            </div>\n        </fieldset>\n    </form>\n</div>\n\n<div class=\"modal-footer\">\n    <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">Close</button>\n    <button type=\"submit\" form=\"user-form\" class=\"btn btn-primary\">Save changes</button>\n</div>\n";
 },"useData":true});
 
 },{"hbsfy/runtime":91}],29:[function(require,module,exports){
+/*global $app $*/
 'use strict'
-/* global $app */
 
 function userController() {
     var $ = $app.$;
@@ -1601,13 +1604,18 @@ function userController() {
     return self;
 
     function onLoad() {
-        self.tableGrid = $tablegrid.render("#user-table", self.endpoint, [{
-            data: 'username'
-        }, {
-            data: 'email'
-        }], 'uid');
+        self.tableGrid = $tablegrid.render("#user-table", self.endpoint, 
+        [{data: 'username'}, {data: 'email'},
+        {data: null, 
+        "render" : function ( data, type, full ) { 
+            return full['firstName']+' '+full['lastName'];}
+        }], 
+        'uid');
         
-        self.tableGrid.delete = doDelete
+        self.tableGrid.action.delete = doDelete;
+        
+        self.tableGrid.action.deleteBulk = doDeleteBulk;
+
         
         $('body').on('click', '#user-add', function() {
             showFormCreate();
@@ -1617,14 +1625,14 @@ function userController() {
             var userId = $(this).data("id");
             showFormEdit(userId);
         });
-    };
+    }
 
     function showFormCreate() {
         var modalForm = self.form.controller(self.endpoint)
         modalForm.close().done(function(){
             self.tableGrid.reload();
         });
-    };
+    }
 
     function showFormEdit(id) {
         $http.get(self.endpoint + "/" + id).done(function(model) {
@@ -1633,13 +1641,19 @@ function userController() {
                 self.tableGrid.reload();
             })
         });
-    };
+    }
     
     function doDelete(id) {
         $http.delete(self.endpoint + "/" + id).done(function(model) {
             self.tableGrid.reload();
         });
-    };
+    }
+    
+    function doDeleteBulk(ids) {
+        $http.post(self.endpoint + "/bulkdelete", { ids:ids}).done(function(ids) {
+            self.tableGrid.reload();
+        });
+    }
 };
 
 module.exports = userController;
@@ -1675,7 +1689,7 @@ module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":f
     + alias2(alias1(((stack1 = (depth0 != null ? depth0.lang : depth0)) != null ? stack1.common_email : stack1), depth0))
     + "\n                                </button>\n                            </div>\n                        </div>\n\n                        <div class=\"col-sm-6 text-right\">\n                            <button id=\"user-add\" class=\"btn btn-primary\">\n                                <i class=\"fa fa-plus\"></i> "
     + alias2(alias1(((stack1 = (depth0 != null ? depth0.lang : depth0)) != null ? stack1.user_new : stack1), depth0))
-    + "\n                            </button>\n\n                            <a class=\"btn btn-success\" id=\"import-excel\" href=\"../customers/excel_import\" data-target=\"#modal-container\">\n                                <i class=\"fa fa-file-excel-o\"></i> Excel Import\n                            </a>\n                        </div>\n                    </div>\n                </div>\n\n                <div class=\"box-body \">\n                    <table id=\"user-table\" class=\"table table-bordered table-hover\">\n                        <thead>\n                            <tr>\n                                <th width=\"10px\">\n                                    <input type=\"checkbox\" id=\"select-all\" />\n                                </th>\n                                <th>Username</th>\n                                <th>Email</th>\n                                <th width=\"50px\">Action</th>\n                            </tr>\n                        </thead>\n                    </table>\n                </div>\n\n                <div id=\"feedback_bar\"></div>\n            </div>\n        </div>\n    </div>\n</section>";
+    + "\n                            </button>\n\n                            <a class=\"btn btn-success\" id=\"import-excel\" href=\"../customers/excel_import\" data-target=\"#modal-container\">\n                                <i class=\"fa fa-file-excel-o\"></i> Excel Import\n                            </a>\n                        </div>\n                    </div>\n                </div>\n\n                <div class=\"box-body \">\n                    <table id=\"user-table\" class=\"table table-bordered table-hover\">\n                        <thead>\n                            <tr>\n                                <th width=\"10px\">\n                                    <input type=\"checkbox\" id=\"select-all\" />\n                                </th>\n                                <th>Username</th>\n                                <th>Email</th>\n                                <th>Full Name</th>\n                                <th width=\"50px\">Action</th>\n                            </tr>\n                        </thead>\n                    </table>\n                </div>\n\n                <div id=\"feedback_bar\"></div>\n            </div>\n        </div>\n    </div>\n</section>";
 },"useData":true});
 
 },{"hbsfy/runtime":91}],32:[function(require,module,exports){

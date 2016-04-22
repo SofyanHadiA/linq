@@ -47,10 +47,11 @@ var formModule = function() {
             name: name,
             inputType: inputType,
             value: value,
+            label: $app.$language[name],
             className: className,
             setValue: setValue,
             setClass: setClass,
-            render: render,
+            formGroup: formGroup,
         }
 
         return self;
@@ -64,13 +65,19 @@ var formModule = function() {
             self.className = className;
             return self;
         }
+        
+        function formGroup(inputWidth = 8, labelWidth = 4){
+            return '<div class="form-group">' + formLabel(labelWidth) + inputText(inputWidth) + '</div>'
+        }
 
-        function render() {
-            return '<div class="form-group">' +
-                '<label for="' + self.name + '" class="col-sm-4 control-label ' + self.className + '">' + $app.$language[self.name] + '</label>' +
-                '<div class="col-sm-8">' +
-                '<input type="' + self.inputType + '" name="' + self.name + '" id="' + self.name + '" class="form-control" value="' + self.value + '" />' +
-                '</div></div>'
+        function inputText(inputWidth = '8') {
+            return '<div class="col-md-'+inputWidth+'">' +
+                '<input type="text" name="' + self.name + '" id="' + self.name + '" class="form-control" value="' + self.value + '" />' +
+                '</div>'
+        }
+        
+        function formLabel(labelWidth = '4'){
+            return '<label for="' + self.name + '" class="col-md-'+labelWidth+' control-label ' + self.className + '">' + self.label + '</label>' 
         }
     }
 };

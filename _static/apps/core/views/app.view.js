@@ -7,7 +7,7 @@ var $modal = require('./app.modal.js');
 function viewModule() {
     return {
         $form: $form,
-        $modal: $modal,
+        $modal: $modal(),
         render: render
     };
 

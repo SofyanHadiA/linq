@@ -1,7 +1,7 @@
 package repository
 
 type IModel interface {
-	GetId() int
+	GetId() string
 	InsertVal() []interface{}
 	UpdateVal() []interface{}
 }

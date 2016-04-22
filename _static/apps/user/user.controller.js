@@ -1,5 +1,5 @@
+/*global $app $*/
 'use strict'
-/* global $app */
 
 function userController() {
     var $ = $app.$;
@@ -23,13 +23,18 @@ function userController() {
     return self;
 
     function onLoad() {
-        self.tableGrid = $tablegrid.render("#user-table", self.endpoint, [{
-            data: 'username'
-        }, {
-            data: 'email'
-        }], 'uid');
+        self.tableGrid = $tablegrid.render("#user-table", self.endpoint, 
+        [{data: 'username'}, {data: 'email'},
+        {data: null, 
+        "render" : function ( data, type, full ) { 
+            return full['firstName']+' '+full['lastName'];}
+        }], 
+        'uid');
         
-        self.tableGrid.delete = doDelete
+        self.tableGrid.action.delete = doDelete;
+        
+        self.tableGrid.action.deleteBulk = doDeleteBulk;
+
         
         $('body').on('click', '#user-add', function() {
             showFormCreate();
@@ -39,14 +44,14 @@ function userController() {
             var userId = $(this).data("id");
             showFormEdit(userId);
         });
-    };
+    }
 
     function showFormCreate() {
         var modalForm = self.form.controller(self.endpoint)
         modalForm.close().done(function(){
             self.tableGrid.reload();
         });
-    };
+    }
 
     function showFormEdit(id) {
         $http.get(self.endpoint + "/" + id).done(function(model) {
@@ -55,13 +60,19 @@ function userController() {
                 self.tableGrid.reload();
             })
         });
-    };
+    }
     
     function doDelete(id) {
         $http.delete(self.endpoint + "/" + id).done(function(model) {
             self.tableGrid.reload();
         });
-    };
+    }
+    
+    function doDeleteBulk(ids) {
+        $http.post(self.endpoint + "/bulkdelete", { ids:ids}).done(function(ids) {
+            self.tableGrid.reload();
+        });
+    }
 };
 
 module.exports = userController;

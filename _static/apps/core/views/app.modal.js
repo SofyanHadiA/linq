@@ -6,14 +6,15 @@ function modalModule() {
         modalId: "",
         show: show,
         hide: doHide,
-        promise : {}
+        promise : {},
+        generateId: generateId
     };
 
     return self;
 
     function show(template, model, config) {
         var defer = $.Deferred();
-        self.modalId = config.modalId || "modal-container-" + (Math.random() + 1).toString(36).substring(7);
+        self.modalId = config.modalId || self.generateId();
         var renderedTemplate = $app.$view.render(template, model);
 
         $('body').append('<div class="modal" id="' + self.modalId + '" tabindex="-1" role="dialog">' 
@@ -37,6 +38,10 @@ function modalModule() {
         $('#' + self.modalId).modal("hide");
         return self;
     }
+    
+    function generateId(){
+        return "modal-container-" + (Math.random() + 1).toString(36).substring(7)
+    }
 };
 
-module.exports = modalModule();
+module.exports = modalModule;

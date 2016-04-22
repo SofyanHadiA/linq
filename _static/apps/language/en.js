@@ -119,7 +119,7 @@ module.exports = {
 	employees_successful_deleted: "You have successfully deleted",
 	employees_successful_updating: "You have successfully updated employee",
 	employees_update: "Update Employee",
-	employees_username: "Username",
+	username: "Username",
 	employees_username_minlength: "The username must be at least 5 characters",
 	employees_username_required: "Username is a required field",
 	error_no_permission_module: "You do not have permission to access the module named",

@@ -31,4 +31,4 @@ function notifyModule() {
     };
 }
 
-module.exports = notifyModule(); 
+module.exports = notifyModule; 

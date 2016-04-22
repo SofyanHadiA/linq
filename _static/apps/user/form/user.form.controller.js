@@ -1,4 +1,4 @@
-/*global $app*/
+/*global $app $*/
 
 function userFormController(endpoint, data) {
     var $modal = $app.$view.$modal;
@@ -8,19 +8,18 @@ function userFormController(endpoint, data) {
     var self = {
         load: onLoad,
         close: onClose,
-        modal: {},
+        modal: $app.$view.$modal,
         formId : "#user-form",
         data: data || {},
         promise: {},
-        modal: {},
         defer: $.Deferred(),
         formConfig: {
             rules: {
-                first_name: {
-                    minlength: 3,
+                username: {
+                    minlength: 5,
                     required: true
                 },
-                last_name: {
+                firstName: {
                     minlength: 3,
                     required: true
                 },
@@ -30,7 +29,7 @@ function userFormController(endpoint, data) {
             }
         }
     }
-
+    
     self.load();
 
     return self;
@@ -38,14 +37,15 @@ function userFormController(endpoint, data) {
     function onLoad() {
         var modalConfig = {
             size: 'lg',
-            modalId: "modal-container-" + (Math.random() + 1).toString(36).substring(7)
+            modalId: self.modal.generateId()
         }
         
         var input = {
-            accountNumberInput: $form.input("uid").setValue(self.data["uid"] || ""),
+            accountNumberInput: $form.input("uid").setValue(self.data["uid"] || "AUTO"),
+            userNameInput: $form.input("username").setValue(self.data["username"] || "").setClass("required"),
             emailInput: $form.input("email").setValue(self.data["email"] || ""),
-            firstNameInput: $form.input("firstName").setClass("required").setValue(self.data["firstName"] || ""),
-            lastNameInput: $form.input("lastName").setClass("required").setValue(self.data["lastName"] || ""),
+            firstNameInput: $form.input("firstName").setValue(self.data["firstName"] || "").setClass("required"),
+            lastNameInput: $form.input("lastName").setValue(self.data["lastName"] || ""),
             phoneNumberInput: $form.input("phoneNumber", "number").setValue(self.data["phoneNumber"] || ""),
             address1Input: $form.input("address1").setValue(self.data["address1"] || ""),
             address2Input: $form.input("address2").setValue(self.data["address2"] || ""),
@@ -78,7 +78,7 @@ function userFormController(endpoint, data) {
     }
     
     function onClose(){
-        return $.when(self.defer.promise())
+        return $.when(self.defer.promise());
     }
 };
 

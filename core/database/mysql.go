@@ -23,10 +23,11 @@ func MySqlDB(host string, username string, password string, database string, por
 		Username: username,
 		Password: password,
 		Database: database,
-		// Format : "user:password@tcp(localhost:5555)/dbname"
 		ConnectionString: fmt.Sprintf("%s:%s@tcp(%s:%d)/%s", username, password, host, port, database),
 	}
-	DB.Ping()
+	
+	go DB.Ping()
+	
 	return DB
 }
 

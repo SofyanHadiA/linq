@@ -20,6 +20,9 @@ function httpModule() {
                 type: 'get',
                 success: function(data, textStatus, jqXHR) {
                     self.cache[url] = data;
+                },
+                fail: function(jqXHR, textStatus, errorThrown) {
+                    $app.$notify.danger("GET Failed: <b>" + url + "</b> " + jqXHR.responseText);
                 }
             })
         );
@@ -36,7 +39,7 @@ function httpModule() {
                 data: JSON.stringify(postData),
                 type: 'post',
                 fail: function(jqXHR, textStatus, errorThrown) {
-                    $app.$notify.danger("Post Failed to: <b>" + url + "</b> " + jqXHR.responseText);
+                    $app.$notify.danger("POST Failed: <b>" + url + "</b> " + jqXHR.responseText);
                 }
             })
         );
@@ -47,7 +50,6 @@ function httpModule() {
             data: data,
             token: ""
         };
-        
         return $.when(
             $.ajax({
                 url: url,
@@ -59,7 +61,7 @@ function httpModule() {
                     }
                 },
                 fail: function(jqXHR, textStatus, errorThrown) {
-                    $app.$notify.danger("Post Failed to: <b>" + url + "</b> " + jqXHR.responseText);
+                    $app.$notify.danger("PUT Failed: <b>" + url + "</b> " + jqXHR.responseText);
                 }
             })
         );
@@ -70,7 +72,6 @@ function httpModule() {
             data: data,
             token: ""
         };
-        
         return $.when(
             $.ajax({
                 url: url,
@@ -82,11 +83,11 @@ function httpModule() {
                     }
                 },
                 fail: function(jqXHR, textStatus, errorThrown) {
-                    $app.$notify.danger("Post Failed to: <b>" + url + "</b> " + jqXHR.responseText);
+                    $app.$notify.danger("DELETE Failed: <b>" + url + "</b> " + jqXHR.responseText);
                 }
             })
         );
     };
 };
 
-module.exports = httpModule();
+module.exports = httpModule;

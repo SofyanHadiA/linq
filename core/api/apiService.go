@@ -5,12 +5,12 @@ import(
 	"net/http"
     
     "linq/core/utils"
-    
+
     "github.com/satori/go.uuid"
 	"github.com/gorilla/mux"
 )
 
-type ApiResponse struct{
+type ApiService struct{
 	http.ResponseWriter
 	Request 	*http.Request
 }
@@ -32,17 +32,25 @@ type JsonErrorResponses struct{
 	Errors		[]JsonErrorResponse	`json:"errors"`
 }
 
-func (response ApiResponse) FormValue(key string) string{
-	return response.Request.FormValue(key)
+func (api ApiService) FormValue(key string) string{
+	return api.Request.FormValue(key)
 }
 
-func (response ApiResponse) MuxVars() map[string]string{
-	return mux.Vars(response.Request)
+func (api ApiService) MuxVars(key string) string{
+	muxVars := mux.Vars(api.Request)
+	return muxVars[key]
 }
 
-func (response ApiResponse) ReturnJson(payload interface{}) {
-    response.Header().Set("Content-Type", "application/linq.api+json; charset=UTF-8")
-	response.WriteHeader(http.StatusOK)
+func (api ApiService) DecodeBody(requestData interface{}) error{
+	decoder := json.NewDecoder(api.Request.Body)
+	err := decoder.Decode(&requestData)
+	utils.HandleWarn(err)
+	return err
+}
+
+func (api ApiService) ReturnJson(payload interface{}) {
+    api.Header().Set("Content-Type", "application/linq.api+json; charset=UTF-8")
+	api.WriteHeader(http.StatusOK)
 	
 	data := make([]interface{}, 1)
 	data[0] = payload
@@ -52,27 +60,27 @@ func (response ApiResponse) ReturnJson(payload interface{}) {
 		Token:uuid.NewV4(),
 	}
 	
-	err := json.NewEncoder(response).Encode(responseData)
+	err := json.NewEncoder(api).Encode(responseData)
 	utils.HandleWarn(err)
 }
 
-func (response ApiResponse)ReturnJsonBadRequest(detail string) {
-    response.Header().Set("Content-Type", "application/linq.api+json; charset=UTF-8")
-	response.WriteHeader(http.StatusBadRequest)
+func (api ApiService)ReturnJsonBadRequest(detail string) {
+    api.Header().Set("Content-Type", "application/linq.api+json; charset=UTF-8")
+	api.WriteHeader(http.StatusBadRequest)
 	
 	responseData := JsonErrorResponses{
 		Errors : []JsonErrorResponse{
 			JsonErrorResponse{
 				Status: "400",
 				Title: "Bad Request",
-				Source: response.Request.URL.RequestURI(),
-				Method: response.Request.Method,
+				Source: api.Request.URL.RequestURI(),
+				Method: api.Request.Method,
 				Detail: detail,
 			},
 		},
 	}
 	
-	err := json.NewEncoder(response).Encode(responseData)
+	err := json.NewEncoder(api).Encode(responseData)
 	utils.HandleWarn(err)
 	
 	utils.Log.Warn(detail, responseData)
