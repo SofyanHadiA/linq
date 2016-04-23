@@ -1,4 +1,4 @@
-package user
+package controllers
 
 import (
 	"net/http"
@@ -7,6 +7,10 @@ import (
 	"linq/core/api"
 	"linq/core/repository"
 	"linq/core/utils"
+	
+	"linq/domains/users"
+	
+	"github.com/satori/go.uuid"
 )
 
 type userController struct {
@@ -14,15 +18,15 @@ type userController struct {
 }
 
 type RequestDataModel struct{
-	Data  *User `json:"data"`
+	Data  users.User `json:"data"`
 	Token string 			`json:"token"`
 }
 
 type data struct{
-	Ids     []string       `json:"ids"`
+	Ids     []uuid.UUID       `json:"ids"`
 }
 
-type RequestData 	struct{
+type RequestDataIds 	struct{
 	Data  data 		`json:"data"`
 	Token string 	`json:"token"`
 }
@@ -46,13 +50,17 @@ func (ctrl userController) GetAll(w http.ResponseWriter, r *http.Request) {
 	utils.HandleWarn(err)
 	users := ctrl.repo.GetAll(search, length, orderBy, orderDir)
 
-	respWriter.DTJsonResponse(users, (users != nil), ctrl.repo.CountAll(), len(users), draw)
+	respWriter.DTJsonResponse(users, (users != nil), ctrl.repo.CountAll(), users.GetLength(), draw)
 }
 
 func (ctrl userController) Get(w http.ResponseWriter, r *http.Request) {
 	respWriter := api.ApiService{w, r}
 	
-	userId := respWriter.MuxVars("id")
+	userId, err := uuid.FromString(respWriter.MuxVars("id"))
+	utils.HandleWarn(err)
+	
+	utils.Log.Info("----", userId)
+	
 	user :=ctrl.repo.Get(userId)
 	
 	respWriter.ReturnJson(user)
@@ -65,7 +73,7 @@ func (ctrl userController) Create(w http.ResponseWriter, r *http.Request) {
 	
 	respWriter.DecodeBody(&requestData)
 	
-	result := ctrl.repo.Insert(requestData.Data)
+	result := ctrl.repo.Insert(&requestData.Data)
 
 	respWriter.ReturnJson(result)
 }
@@ -73,14 +81,17 @@ func (ctrl userController) Create(w http.ResponseWriter, r *http.Request) {
 func (ctrl userController) Modify(w http.ResponseWriter, r *http.Request) {
 	respWriter := api.ApiService{w, r}
 	
-	userId := respWriter.MuxVars("id")
+	userId, err := uuid.FromString(respWriter.MuxVars("id"))
+	utils.HandleWarn(err)
 
 	if(ctrl.repo.IsExist(userId)){
 		var requestData RequestDataModel
 		
 		respWriter.DecodeBody(&requestData)
+
+		 requestData.Data.Uid = userId
 		
-		result := ctrl.repo.Update(requestData.Data)
+		result := ctrl.repo.Update(&requestData.Data)
 		
 		respWriter.ReturnJson(result)
 		
@@ -92,7 +103,8 @@ func (ctrl userController) Modify(w http.ResponseWriter, r *http.Request) {
 func (ctrl userController) Remove(w http.ResponseWriter, r *http.Request) {
 	respWriter := api.ApiService{w, r}
 	
-	userId := respWriter.MuxVars("id")
+	userId, err := uuid.FromString(respWriter.MuxVars("id"))
+	utils.HandleWarn(err)
 	
 	if(ctrl.repo.IsExist(userId)){
 		user := ctrl.repo.Get(userId)
@@ -109,7 +121,7 @@ func (ctrl userController) Remove(w http.ResponseWriter, r *http.Request) {
 func (ctrl userController) RemoveBulk(w http.ResponseWriter, r *http.Request) {
 	respWriter := api.ApiService{w, r}
 	
-	var requestData RequestData
+	var requestData RequestDataIds
 	
 	respWriter.DecodeBody(&requestData)
 	

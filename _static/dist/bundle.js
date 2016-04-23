@@ -14,10 +14,8 @@ module.exports = config;
 
 },{}],2:[function(require,module,exports){
 function httpModule() {
-    var cache = {};
-
     var self = {
-        cache: cache,
+        cache: {},
         getToken: undefined,
         get: get,
         post: post,
@@ -71,9 +69,7 @@ function httpModule() {
                 data: JSON.stringify(postData),
                 type: 'put',
                 success: function(data, textStatus, jqXHR) {
-                    if(self.cache.length > 0){
-                        self.cache.remove(url)
-                    }
+                    delete self.cache[url]
                 },
                 fail: function(jqXHR, textStatus, errorThrown) {
                     $app.$notify.danger("PUT Failed: <b>" + url + "</b> " + jqXHR.responseText);
@@ -93,9 +89,7 @@ function httpModule() {
                 data: JSON.stringify(postData),
                 type: 'delete',
                 success: function(data, textStatus, jqXHR) {
-                    if(self.cache.length > 0){
-                        self.cache.remove(url)
-                    }
+                    delete self.cache[url]
                 },
                 fail: function(jqXHR, textStatus, errorThrown) {
                     $app.$notify.danger("DELETE Failed: <b>" + url + "</b> " + jqXHR.responseText);
@@ -429,6 +423,8 @@ var formModule = function() {
             setValue: setValue,
             setClass: setClass,
             formGroup: formGroup,
+            formGroupPassword: formGroupPassword,
+            formGroupTextArea: formGroupTextArea
         }
 
         return self;
@@ -446,15 +442,29 @@ var formModule = function() {
         function formGroup(inputWidth = 8, labelWidth = 4){
             return '<div class="form-group">' + formLabel(labelWidth) + inputText(inputWidth) + '</div>'
         }
+        
+        function formGroupPassword(inputWidth = 8, labelWidth = 4){
+            return '<div class="form-group">' + formLabel(labelWidth) + inputText("password", inputWidth) + '</div>'
+        }
+        
+        function formGroupTextArea(inputWidth = 8, labelWidth = 4){
+            return '<div class="form-group">' + formLabel(labelWidth) + inputTextArea() + '</div>'
+        }
 
-        function inputText(inputWidth = '8') {
-            return '<div class="col-md-'+inputWidth+'">' +
-                '<input type="text" name="' + self.name + '" id="' + self.name + '" class="form-control" value="' + self.value + '" />' +
+        function inputText(type="text", inputWidth = '8') {
+            return '<div class="col-xs-'+inputWidth+'">' +
+                '<input type="'+type+'" name="' + self.name + '" id="' + self.name + '" class="form-control" value="' + self.value + '" />' +
+                '</div>'
+        }
+        
+        function inputTextArea(inputWidth = '8') {
+            return '<div class="col-xs-'+inputWidth+'">' +
+                '<textarea name="' + self.name + '" id="' + self.name + '" class="form-control">' + self.value + '</textarea>'+
                 '</div>'
         }
         
         function formLabel(labelWidth = '4'){
-            return '<label for="' + self.name + '" class="col-md-'+labelWidth+' control-label ' + self.className + '">' + self.label + '</label>' 
+            return '<label for="' + self.name + '" class="col-xs-'+labelWidth+' control-label ' + self.className + '">' + self.label + '</label>' 
         }
     }
 };
@@ -811,6 +821,7 @@ module.exports = {
 	alpha: "The %s field may only contain alphabetical characters.",
 	alpha_dash: "The %s field may only contain alpha-numeric characters, underscores, and dashes.",
 	alpha_numeric: "The %s field may only contain alpha-numeric characters.",
+	address: "Address",
 	address1: "Address 1",
 	address2: "Address 2",
 	city: "City",
@@ -834,7 +845,7 @@ module.exports = {
 	logout: "Logout",
 	no_persons_to_display: "There are no people to display",
 	or: "OR",
-	phoneNumber: "Phone",
+	phone: "Phone",
 	please_visit_my: "Please visit my",
 	powered_by: "Powered by",
 	price: "Price",
@@ -916,7 +927,7 @@ module.exports = {
 	employees_new: "New Employee",
 	employees_none_selected: "You have not selected any employees to delete",
 	employees_one_or_multiple: "employee(s)",
-	employees_password: "Password",
+	password: "Password",
 	employees_password_minlength: "Passwords must be at least 8 characters",
 	employees_password_must_match: "Passwords do not match",
 	employees_password_required: "Password is required",
@@ -1485,11 +1496,11 @@ function userFormController(endpoint, data) {
             accountNumberInput: $form.input("uid").setValue(self.data["uid"] || "AUTO"),
             userNameInput: $form.input("username").setValue(self.data["username"] || "").setClass("required"),
             emailInput: $form.input("email").setValue(self.data["email"] || ""),
+            passwordInput: $form.input("password").setValue(self.data["password"] || ""),
             firstNameInput: $form.input("firstName").setValue(self.data["firstName"] || "").setClass("required"),
             lastNameInput: $form.input("lastName").setValue(self.data["lastName"] || ""),
-            phoneNumberInput: $form.input("phoneNumber", "number").setValue(self.data["phoneNumber"] || ""),
-            address1Input: $form.input("address1").setValue(self.data["address1"] || ""),
-            address2Input: $form.input("address2").setValue(self.data["address2"] || ""),
+            phoneNumberInput: $form.input("phone", "number").setValue(self.data["phone"] || ""),
+            addressInput: $form.input("address").setValue(self.data["address"] || ""),
             countryInput: $form.input("country").setValue(self.data["country"] || ""),
             stateInput: $form.input("state").setValue(self.data["state"] || ""),
             cityInput: $form.input("city").setValue(self.data["city"] || ""),
@@ -1545,13 +1556,11 @@ var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
     var stack1, alias1=container.lambda;
 
-  return "<div class=\"modal-header\">\n    <button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-hidden=\"true\">&times;</button>\n    <h4 class=\"modal-title\">User Form</h4>\n</div>\n\n<div class=\"modal-body\">\n    <form id=\"user-form\" name=\"user-form\" class=\"form-horizontal\">\n        <span class=\"small\">"
-    + container.escapeExpression(alias1(((stack1 = (depth0 != null ? depth0.lang : depth0)) != null ? stack1.fields_required_message : stack1), depth0))
-    + "</span>\n        <ul id=\"error_message_box\" class=\"warning\"></ul>\n        <fieldset id=\"user_basic_info\">\n            <div class=\"row\">\n                <div class=\"col-md-12\">\n                    <label>"
+  return "<div class=\"modal-header\">\n    <button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-hidden=\"true\">&times;</button>\n    <h4 class=\"modal-title\">User Form</h4>\n</div>\n\n<div class=\"modal-body\">\n    <form id=\"user-form\" name=\"user-form\" class=\"form-horizontal\">\n        <ul id=\"error_message_box\" class=\"warning\"></ul>\n        <fieldset id=\"user_basic_info\">\n            <div class=\"row\">\n                <div class=\"col-md-12\">\n                    <legend>Basic Info</legend>\n                </div>\n                <div class=\"form-group\">\n                    <div class=\"col-md-12\">\n                        <label class=\"col-md-2 col-xs-4 control-label\">"
     + ((stack1 = alias1(((stack1 = (depth0 != null ? depth0.accountNumberInput : depth0)) != null ? stack1.label : stack1), depth0)) != null ? stack1 : "")
-    + ": "
+    + "</label>\n                        <div class=\"col-md-4 col-xs-8\">\n                            <input type=\"disabled\" class=\"form-control\" disabled value=\""
     + ((stack1 = alias1(((stack1 = (depth0 != null ? depth0.accountNumberInput : depth0)) != null ? stack1.value : stack1), depth0)) != null ? stack1 : "")
-    + " </label>\n                </div>\n                <div class=\"col-md-6\">"
+    + "\" />\n                        </div>\n                    </div>\n                </div>\n                <div class=\"col-md-6\">"
     + ((stack1 = alias1(((stack1 = (depth0 != null ? depth0.userNameInput : depth0)) != null ? stack1.formGroup : stack1), depth0)) != null ? stack1 : "")
     + "</div>\n                <div class=\"col-md-6\">"
     + ((stack1 = alias1(((stack1 = (depth0 != null ? depth0.emailInput : depth0)) != null ? stack1.formGroup : stack1), depth0)) != null ? stack1 : "")
@@ -1562,9 +1571,7 @@ module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":f
     + "</div>\n                <div class=\"col-md-6\">"
     + ((stack1 = alias1(((stack1 = (depth0 != null ? depth0.phoneNumberInput : depth0)) != null ? stack1.formGroup : stack1), depth0)) != null ? stack1 : "")
     + "</div>\n                <div class=\"col-md-6\">"
-    + ((stack1 = alias1(((stack1 = (depth0 != null ? depth0.address1Input : depth0)) != null ? stack1.formGroup : stack1), depth0)) != null ? stack1 : "")
-    + "</div>\n                <div class=\"col-md-6\">"
-    + ((stack1 = alias1(((stack1 = (depth0 != null ? depth0.address2Input : depth0)) != null ? stack1.formGroup : stack1), depth0)) != null ? stack1 : "")
+    + ((stack1 = alias1(((stack1 = (depth0 != null ? depth0.addressInput : depth0)) != null ? stack1.formGroupTextArea : stack1), depth0)) != null ? stack1 : "")
     + "</div>\n                <div class=\"col-md-6\">"
     + ((stack1 = alias1(((stack1 = (depth0 != null ? depth0.countryInput : depth0)) != null ? stack1.formGroup : stack1), depth0)) != null ? stack1 : "")
     + "</div>\n                <div class=\"col-md-6\">"
@@ -1575,7 +1582,7 @@ module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":f
     + ((stack1 = alias1(((stack1 = (depth0 != null ? depth0.zipInput : depth0)) != null ? stack1.formGroup : stack1), depth0)) != null ? stack1 : "")
     + "</div>\n                <div class=\"col-md-6\">"
     + ((stack1 = alias1(((stack1 = (depth0 != null ? depth0.notesInput : depth0)) != null ? stack1.formGroup : stack1), depth0)) != null ? stack1 : "")
-    + "</div>\n            </div>\n        </fieldset>\n    </form>\n</div>\n\n<div class=\"modal-footer\">\n    <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">Close</button>\n    <button type=\"submit\" form=\"user-form\" class=\"btn btn-primary\">Save changes</button>\n</div>\n";
+    + "</div>\n            </div>\n        </fieldset>\n        <div class=\"row\">\n            <div class=\"col-md-6\">\n                <fieldset>\n                    <div class=\"row\">\n                        <div class=\"col-md-12\">\n                            <legend>Change Password</legend>\n                        </div>\n                        <div class=\"col-md-12\">\n                            <div class=\"form-group class=\" col-md-6 \"\">\n                                <label for=\"passwordOld\" class=\"col-xs-4 control-label \">Old Password</label>\n                                <div class=\"col-xs-8\">\n                                    <input type=\"password\" name=\"passwordOld\" id=\"passwordOld\" class=\"form-control valid\" value=\"\" aria-invalid=\"false\">\n                                </div>\n                            </div>\n                        </div>\n                        <div class=\"col-md-12\">\n                            <div class=\"form-group class=\" col-md-6 \"\">\n                                <label for=\"password\" class=\"col-xs-4 control-label \">Password</label>\n                                <div class=\"col-xs-8\">\n                                    <input type=\"password\" name=\"password\" id=\"password\" class=\"form-control valid\" value=\"\" aria-invalid=\"false\">\n                                </div>\n                            </div>\n                        </div>\n                        <div class=\"col-md-12\">\n                            <div class=\"form-group\">\n                                <label for=\"password2\" class=\"col-xs-4 control-label \">Confirm Password</label>\n                                <div class=\"col-xs-8\">\n                                    <input type=\"password\" name=\"password2\" id=\"password2\" class=\"form-control valid\" value=\"\" aria-invalid=\"false\">\n                                </div>\n                            </div>\n                        </div>\n                    </div>\n                </fieldset>\n\n            </div>\n            <div class=\"col-md-6\">\n                <fieldset>\n                    <div class=\"row\">\n                        <div class=\"col-md-12\">\n                            <legend>Danger Area</legend>\n                        </div>\n                        <div class=\"col-md-12\">\n\n                            <div class=\"form-group class=\" col-md-6 \"\">\n                                <label for=\"removeUser\" class=\"col-xs-4 control-label \">Remove User</label>\n                                <div class=\"col-xs-8\">\n                                    <button class=\"btn btn-danger\">Delete This User</button>\n                                </div>\n                            </div>\n                        </div>\n                    </div>\n                </fieldset>\n            </div>\n        </div>\n    </form>\n</div>\n\n<div class=\"modal-footer\">\n    <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">Close</button>\n    <button type=\"submit\" form=\"user-form\" class=\"btn btn-primary\">Save changes</button>\n</div>\n";
 },"useData":true});
 
 },{"hbsfy/runtime":91}],29:[function(require,module,exports){

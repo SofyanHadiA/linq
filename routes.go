@@ -4,15 +4,17 @@ import (
 	. "linq/core"
 	"linq/core/database"
 
+	"linq/domains/users"
+
 	Auth "linq/apps/auth"
 	Chat "linq/apps/chat"
 	Dashboard "linq/apps/dashboard"
 	Todo "linq/apps/todo"
-	"linq/apps/user"
+	"linq/apps/controllers"
 )
 
 func GetRoutes(db database.IDB) Routes {
-	var userController = user.UserController(user.UserRepository(db))
+	var userController = controllers.UserController(users.UserRepository(db))
 	
 	var routes = Routes{
 		Route{"DashboardIndex", "GET", "/", Dashboard.Index},

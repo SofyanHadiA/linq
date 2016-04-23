@@ -52,6 +52,8 @@ var formModule = function() {
             setValue: setValue,
             setClass: setClass,
             formGroup: formGroup,
+            formGroupPassword: formGroupPassword,
+            formGroupTextArea: formGroupTextArea
         }
 
         return self;
@@ -69,15 +71,29 @@ var formModule = function() {
         function formGroup(inputWidth = 8, labelWidth = 4){
             return '<div class="form-group">' + formLabel(labelWidth) + inputText(inputWidth) + '</div>'
         }
+        
+        function formGroupPassword(inputWidth = 8, labelWidth = 4){
+            return '<div class="form-group">' + formLabel(labelWidth) + inputText("password", inputWidth) + '</div>'
+        }
+        
+        function formGroupTextArea(inputWidth = 8, labelWidth = 4){
+            return '<div class="form-group">' + formLabel(labelWidth) + inputTextArea() + '</div>'
+        }
 
-        function inputText(inputWidth = '8') {
-            return '<div class="col-md-'+inputWidth+'">' +
-                '<input type="text" name="' + self.name + '" id="' + self.name + '" class="form-control" value="' + self.value + '" />' +
+        function inputText(type="text", inputWidth = '8') {
+            return '<div class="col-xs-'+inputWidth+'">' +
+                '<input type="'+type+'" name="' + self.name + '" id="' + self.name + '" class="form-control" value="' + self.value + '" />' +
+                '</div>'
+        }
+        
+        function inputTextArea(inputWidth = '8') {
+            return '<div class="col-xs-'+inputWidth+'">' +
+                '<textarea name="' + self.name + '" id="' + self.name + '" class="form-control">' + self.value + '</textarea>'+
                 '</div>'
         }
         
         function formLabel(labelWidth = '4'){
-            return '<label for="' + self.name + '" class="col-md-'+labelWidth+' control-label ' + self.className + '">' + self.label + '</label>' 
+            return '<label for="' + self.name + '" class="col-xs-'+labelWidth+' control-label ' + self.className + '">' + self.label + '</label>' 
         }
     }
 };

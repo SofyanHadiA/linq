@@ -1,8 +1,6 @@
 function httpModule() {
-    var cache = {};
-
     var self = {
-        cache: cache,
+        cache: {},
         getToken: undefined,
         get: get,
         post: post,
@@ -56,9 +54,7 @@ function httpModule() {
                 data: JSON.stringify(postData),
                 type: 'put',
                 success: function(data, textStatus, jqXHR) {
-                    if(self.cache.length > 0){
-                        self.cache.remove(url)
-                    }
+                    delete self.cache[url]
                 },
                 fail: function(jqXHR, textStatus, errorThrown) {
                     $app.$notify.danger("PUT Failed: <b>" + url + "</b> " + jqXHR.responseText);
@@ -78,9 +74,7 @@ function httpModule() {
                 data: JSON.stringify(postData),
                 type: 'delete',
                 success: function(data, textStatus, jqXHR) {
-                    if(self.cache.length > 0){
-                        self.cache.remove(url)
-                    }
+                    delete self.cache[url]
                 },
                 fail: function(jqXHR, textStatus, errorThrown) {
                     $app.$notify.danger("DELETE Failed: <b>" + url + "</b> " + jqXHR.responseText);

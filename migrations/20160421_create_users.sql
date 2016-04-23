@@ -12,37 +12,13 @@ CREATE TABLE users
   `forgot_code` text NOT NULL,
   `notification_created` int(11) DEFAULT NULL,
   `last_login` int(13) DEFAULT NULL,
-  `join_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `photos_count` int(11) NOT NULL DEFAULT '0',
-  `profile_pic` varchar(200) DEFAULT NULL,
-  `mini_profile_pic` varchar(200) DEFAULT NULL,
-  `mini_profile_pic_status` int(11) NOT NULL DEFAULT '1',
-  `profile_bg_position` varchar(20) NOT NULL DEFAULT '0',
-  `profile_pic_status` int(11) NOT NULL DEFAULT '1',
-  `conversation_count` int(11) NOT NULL DEFAULT '0',
-  `updates_count` int(11) NOT NULL DEFAULT '0',
-  `friend_count` int(11) NOT NULL DEFAULT '0',
-  `status` int(1) NOT NULL DEFAULT '1',
-  `user_case` varchar(500) CHARACTER SET utf8 DEFAULT NULL,
-  `user_city` varchar(80) DEFAULT NULL,
-  `hide_following` enum('0','1','2') DEFAULT '0',
-  `hide_followers` enum('0','1','2') DEFAULT '0',
-  `hide_photos` enum('0','1','2') DEFAULT '0',
-  `hide_maynow_people` enum('0','1') NOT NULL DEFAULT '0',
-  `verified` enum('0','1') NOT NULL DEFAULT '0',
-  `provider` varchar(10) DEFAULT NULL,
-  `provider_id` int(30) DEFAULT NULL,
-  `announcement_readed` enum('0','1') NOT NULL DEFAULT '0',
-  `u_lang` enum('1','2','3','4') NOT NULL DEFAULT '1',
-  `s_fb` varchar(80) DEFAULT NULL,
-  `s_tw` varchar(80) DEFAULT NULL,
-  `s_tumb` varchar(80) DEFAULT NULL,
-  `s_yout` varchar(80) DEFAULT NULL,
-  `s_inst` varchar(80) DEFAULT NULL,
-  `s_gp` varchar(255) DEFAULT NULL,
-  `gender` enum('0','1','2','3') NOT NULL DEFAULT '0',
-  `b_day` varchar(2) DEFAULT NULL,
-  `u_month` varchar(30) CHARACTER SET utf8 DEFAULT NULL,
-  `u_year` varchar(5) DEFAULT NULL,
+  `address` varchar(100),
+  
   PRIMARY KEY (`uid`)
 );
+ALTER TABLE users ADD city varchar(100);
+ALTER TABLE users ADD state varchar(100);
+ALTER TABLE users ADD country varchar(100);
+ALTER TABLE users ADD zip varchar(10);
+ALTER TABLE users ADD phone_number varchar(20);
+ALTER TABLE users ADD deleted tinyint(1) DEFAULT '0';

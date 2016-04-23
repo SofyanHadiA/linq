@@ -5,8 +5,10 @@ import (
 	"fmt"
 
 	"linq/core/utils"
+	"linq/core/repository"
 
 	_ "github.com/go-sql-driver/mysql"
+    "github.com/jmoiron/sqlx"
 )
 
 type mySqlDB struct {
@@ -32,7 +34,7 @@ func MySqlDB(host string, username string, password string, database string, por
 }
 
 func (mysql mySqlDB) Ping() bool {
-	db, err := sql.Open("mysql", mysql.ConnectionString)
+	db, err := sqlx.Connect("mysql", mysql.ConnectionString)
 	err = db.Ping()
 	if err != nil {
 		utils.Log.Fatal(err.Error(), mysql.ConnectionString)
@@ -43,55 +45,46 @@ func (mysql mySqlDB) Ping() bool {
 	return true
 }
 
-func (mysql mySqlDB) ResolveSingle(query string, args ...interface{}) *sql.Row {
-	db, err := sql.Open("mysql", mysql.ConnectionString)
+func (mysql mySqlDB) Select(query string, model repository.IModel) error{
+	db, err := sqlx.Connect("mysql", mysql.ConnectionString)
 	utils.HandleWarn(err)
 
 	defer db.Close()
 
-	var row = &sql.Row{}
+    err = db.Select(&model, query)
+    return err
+}
 
-	if len(args) > 0 {
-		row = db.QueryRow(query, args...)
-	} else {
-		row = db.QueryRow(query)
-	}
+func (mysql mySqlDB) ResolveSingle(query string, args ...interface{}) *sqlx.Row {
+	db, err := sqlx.Connect("mysql", mysql.ConnectionString)
+	utils.HandleWarn(err)
+
+	defer db.Close()
+	
+	row := db.QueryRowx(query, args...)
 
 	return row
 }
 
 
-func (mysql mySqlDB) Resolve(query string, args ...interface{}) *sql.Rows {
-	db, err := sql.Open("mysql", mysql.ConnectionString)
+func (mysql mySqlDB) Resolve(query string, args ...interface{}) *sqlx.Rows {
+	db, err := sqlx.Connect("mysql", mysql.ConnectionString)
 	utils.HandleWarn(err)
 	defer db.Close()
 
-	var rows = &sql.Rows{}
-
-	if len(args) > 0 {
-		rows, err = db.Query(query, args...)
-	} else {
-		rows, err = db.Query(query)
-	}
-
+	rows, err := db.Queryx(query, args...)
 	utils.HandleWarn(err)
 
 	return rows
 }
 
-func (mysql mySqlDB) Execute(query string, args ...interface{}) sql.Result {
-	db, err := sql.Open("mysql", mysql.ConnectionString)
+func (mysql mySqlDB) Execute(query string, model repository.IModel) sql.Result{
+	db, err := sqlx.Connect("mysql", mysql.ConnectionString)
 	utils.HandleWarn(err)
-
 	defer db.Close()
-
-	stmtOut, err := db.Prepare(query)
 	
+	result, err := db.NamedExec(query, model)
 	utils.HandleWarn(err)
-	defer stmtOut.Close()
 	
-	res, err := stmtOut.Exec(args...)
-	utils.HandleWarn(err)
-
-	return res
+	return result
 }

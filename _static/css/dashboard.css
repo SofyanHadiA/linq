@@ -3,7 +3,6 @@
 }
 
 .module-icon{
-    {
     border: 1px solid #ddd;
     margin-bottom: -1px;
     padding: 30px 0px 10px 0px;
@@ -32,7 +31,6 @@
     -ms-transition: all 0.3s ease;
     -o-transition: all 0.3s ease;
     transition: all 0.3s ease;
-}
 }
 
 #module-icon-customers{
