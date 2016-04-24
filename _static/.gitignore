@@ -11,7 +11,7 @@ git-svn-diff.py
 *.rej
 *.orig
 *~
-vendor/
+vendors/
 .idea/
 .idea/*
 packages/
