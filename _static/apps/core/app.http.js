@@ -5,21 +5,24 @@ function httpModule() {
         get: get,
         post: post,
         put: put,
-        delete: remove
+        delete: remove,
+        upload: upload
     };
-    
+
     return self;
-    
+
     function get(url) {
-        return $.when(self.cache[url] || 
+        return $.when(self.cache[url] ||
             $.ajax({
                 url: url,
-                data: {token : ""},
+                data: {
+                    token: ""
+                },
                 type: 'get',
                 success: function(data, textStatus, jqXHR) {
                     self.cache[url] = data;
                 },
-                fail: function(jqXHR, textStatus, errorThrown) {
+                error: function(jqXHR, textStatus, errorThrown) {
                     $app.$notify.danger("GET Failed: <b>" + url + "</b> " + jqXHR.responseText);
                 }
             })
@@ -31,24 +34,24 @@ function httpModule() {
             data: data,
             token: ""
         };
-        return $.when(
+        return (
             $.ajax({
                 url: url,
                 data: JSON.stringify(postData),
                 type: 'post',
-                fail: function(jqXHR, textStatus, errorThrown) {
+                error: function(jqXHR, textStatus, errorThrown) {
                     $app.$notify.danger("POST Failed: <b>" + url + "</b> " + jqXHR.responseText);
                 }
             })
         );
     };
-    
+
     function put(url, data) {
         var postData = {
             data: data,
             token: ""
         };
-        return $.when(
+        return (
             $.ajax({
                 url: url,
                 data: JSON.stringify(postData),
@@ -56,19 +59,19 @@ function httpModule() {
                 success: function(data, textStatus, jqXHR) {
                     delete self.cache[url]
                 },
-                fail: function(jqXHR, textStatus, errorThrown) {
+                error: function(jqXHR, textStatus, errorThrown) {
                     $app.$notify.danger("PUT Failed: <b>" + url + "</b> " + jqXHR.responseText);
                 }
             })
         );
     };
-    
+
     function remove(url, data) {
         var postData = {
             data: data,
             token: ""
         };
-        return $.when(
+        return (
             $.ajax({
                 url: url,
                 data: JSON.stringify(postData),
@@ -76,8 +79,23 @@ function httpModule() {
                 success: function(data, textStatus, jqXHR) {
                     delete self.cache[url]
                 },
-                fail: function(jqXHR, textStatus, errorThrown) {
+                error: function(jqXHR, textStatus, errorThrown) {
                     $app.$notify.danger("DELETE Failed: <b>" + url + "</b> " + jqXHR.responseText);
+                }
+            })
+        );
+    };
+
+    function upload(url, data) {
+        return (
+            $.ajax({
+                url: url,
+                data: data,
+                type: 'post',
+                processData: false,
+                contentType: false,
+                error: function(jqXHR, textStatus, errorThrown) {
+                    $app.$notify.danger("Upload Failed: <b>" + url + "</b> " + jqXHR.responseText);
                 }
             })
         );

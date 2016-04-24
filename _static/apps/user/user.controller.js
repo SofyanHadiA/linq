@@ -32,9 +32,7 @@ function userController() {
         'uid');
         
         self.tableGrid.action.delete = doDelete;
-        
         self.tableGrid.action.deleteBulk = doDeleteBulk;
-
         
         $('body').on('click', '#user-add', function() {
             showFormCreate();

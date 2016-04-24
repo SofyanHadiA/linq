@@ -14,7 +14,7 @@ type Logger struct {
 	logLevel int
 }
 
-var Log = Logger{logLevel : 0}
+var Log = Logger{logLevel: 0}
 
 func SetLogLevel(logLevel int) Logger {
 	logrus.Level = Logrus.DebugLevel

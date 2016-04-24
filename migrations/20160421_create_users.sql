@@ -21,4 +21,5 @@ ALTER TABLE users ADD state varchar(100);
 ALTER TABLE users ADD country varchar(100);
 ALTER TABLE users ADD zip varchar(10);
 ALTER TABLE users ADD phone_number varchar(20);
-ALTER TABLE users ADD deleted tinyint(1) DEFAULT '0';
+ALTER TABLE users modify uid varchar(36) not null;
+ALTER TABLE users ADD photo varchar(200) ;

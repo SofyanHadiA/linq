@@ -4,11 +4,12 @@ import (
 	"database/sql"
 	"fmt"
 
-	"linq/core/utils"
 	"linq/core/repository"
+	"linq/core/utils"
 
 	_ "github.com/go-sql-driver/mysql"
-    "github.com/jmoiron/sqlx"
+	"github.com/jmoiron/sqlx"
+	"github.com/satori/go.uuid"
 )
 
 type mySqlDB struct {
@@ -22,14 +23,14 @@ type mySqlDB struct {
 
 func MySqlDB(host string, username string, password string, database string, port int) IDB {
 	DB := mySqlDB{
-		Username: username,
-		Password: password,
-		Database: database,
+		Username:         username,
+		Password:         password,
+		Database:         database,
 		ConnectionString: fmt.Sprintf("%s:%s@tcp(%s:%d)/%s", username, password, host, port, database),
 	}
-	
+
 	go DB.Ping()
-	
+
 	return DB
 }
 
@@ -45,14 +46,14 @@ func (mysql mySqlDB) Ping() bool {
 	return true
 }
 
-func (mysql mySqlDB) Select(query string, model repository.IModel) error{
+func (mysql mySqlDB) Select(query string, model repository.IModel) error {
 	db, err := sqlx.Connect("mysql", mysql.ConnectionString)
 	utils.HandleWarn(err)
 
 	defer db.Close()
 
-    err = db.Select(&model, query)
-    return err
+	err = db.Select(&model, query)
+	return err
 }
 
 func (mysql mySqlDB) ResolveSingle(query string, args ...interface{}) *sqlx.Row {
@@ -60,12 +61,11 @@ func (mysql mySqlDB) ResolveSingle(query string, args ...interface{}) *sqlx.Row 
 	utils.HandleWarn(err)
 
 	defer db.Close()
-	
+
 	row := db.QueryRowx(query, args...)
 
 	return row
 }
-
 
 func (mysql mySqlDB) Resolve(query string, args ...interface{}) *sqlx.Rows {
 	db, err := sqlx.Connect("mysql", mysql.ConnectionString)
@@ -78,13 +78,28 @@ func (mysql mySqlDB) Resolve(query string, args ...interface{}) *sqlx.Rows {
 	return rows
 }
 
-func (mysql mySqlDB) Execute(query string, model repository.IModel) sql.Result{
+func (mysql mySqlDB) Execute(query string, model repository.IModel) sql.Result {
 	db, err := sqlx.Connect("mysql", mysql.ConnectionString)
 	utils.HandleWarn(err)
 	defer db.Close()
-	
+
 	result, err := db.NamedExec(query, model)
 	utils.HandleWarn(err)
-	
+
+	return result
+}
+
+func (mysql mySqlDB) ExecuteBulk(query string, data []uuid.UUID) sql.Result {
+	db, err := sqlx.Connect("mysql", mysql.ConnectionString)
+	utils.HandleWarn(err)
+	defer db.Close()
+
+	query, args, err := sqlx.In(query, data)
+	utils.HandleWarn(err)
+
+	query = db.Rebind(query)
+
+	result := db.MustExec(query, args...)
+
 	return result
 }

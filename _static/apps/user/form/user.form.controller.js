@@ -1,5 +1,7 @@
 /*global $app $*/
 
+require('cropit');
+
 function userFormController(endpoint, data) {
     var $modal = $app.$view.$modal;
     var $form = $app.$view.$form;
@@ -9,7 +11,7 @@ function userFormController(endpoint, data) {
         load: onLoad,
         close: onClose,
         modal: $app.$view.$modal,
-        formId : "#user-form",
+        formId: "#user-form",
         data: data || {},
         promise: {},
         defer: $.Deferred(),
@@ -29,7 +31,7 @@ function userFormController(endpoint, data) {
             }
         }
     }
-    
+
     self.load();
 
     return self;
@@ -39,7 +41,7 @@ function userFormController(endpoint, data) {
             size: 'lg',
             modalId: self.modal.generateId()
         }
-        
+
         var input = {
             accountNumberInput: $form.input("uid").setValue(self.data["uid"] || "AUTO"),
             userNameInput: $form.input("username").setValue(self.data["username"] || "").setClass("required"),
@@ -54,30 +56,52 @@ function userFormController(endpoint, data) {
             cityInput: $form.input("city").setValue(self.data["city"] || ""),
             zipInput: $form.input("zip", "number").setValue(self.data["zip"] || ""),
         };
-        
+
         self.modal = $modal.show(require('./user.form.template.hbs'), input, modalConfig);
-        
+
         $form.create(self.formId)
             .config(self.formConfig)
             .onSubmit(function() {
                 event.preventDefault();
-                if(!data){
-                    $http.post(endpoint, $(self.formId).serializeObject()).done(onDone());
-                }else{
-                    $http.put(endpoint + "/" + self.data["uid"], $(self.formId).serializeObject()).done(onDone());
+                if (!data) {
+                    $http.post(endpoint, $(self.formId).serializeObject()).success(function(data) {
+                        onDone(data.data[0])
+                    });
                 }
-            }
-        );
-        
+                else {
+                    $http.put(endpoint + "/" + self.data["uid"], $(self.formId).serializeObject()).success(function(data) {
+                        onDone(data.data[0])
+                    });
+                }
+            });
+
+        $('#user-photo').cropit();
+        $('#user-photo').cropit('imageSrc', './uploads/user_avatars/'+ self.data.photo);
+        $('#select-image-btn').click(function() {
+            $("#user-form.cropit-image-input").prop('disabled', false);
+            $('.cropit-image-input').click();
+        });
+
         return self;
     }
-    
-    function onDone(){
-        self.modal.hide();
-        self.defer.resolve();
+
+    function uploadUserPhoto(userId) {
+        var imageData = $('#user-photo').cropit('export');
+
+        // var fd = new FormData();
+        // fd.append('userphoto', $("#user-photo-file")[0].files[0]);
+
+        return $http.post(endpoint + "/" + userId + "/photo", imageData);
     }
-    
-    function onClose(){
+
+    function onDone(data) {
+        uploadUserPhoto(data.uid).success(function() {
+            self.modal.hide();
+            self.defer.resolve();
+        })
+    }
+
+    function onClose() {
         return $.when(self.defer.promise());
     }
 };

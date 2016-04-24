@@ -1,7 +1,9 @@
 package repository
 
-import(
-    "github.com/satori/go.uuid"
+import (
+	"database/sql"
+
+	"github.com/satori/go.uuid"
 )
 
 type IRepository interface {
@@ -12,23 +14,23 @@ type IRepository interface {
 	Insert(model IModel) IModel
 	Update(model IModel) IModel
 	Delete(model IModel) IModel
-	DeleteBulk(model []uuid.UUID) error
+	DeleteBulk(model []uuid.UUID) sql.Result
 }
 
-func ResolveSelectFields(model IModel) string{
+func ResolveSelectFields(model IModel) string {
 	fields := GetDBField(model)
-	
+
 	var result string
-	
+
 	i := 0
-	
-	for key, _ := range fields {
-		if(i>0) {
+
+	for key := range fields {
+		if i > 0 {
 			result += ", "
 		}
-    	result+= "`"+key+"`"
-    	i++
+		result += "`" + key + "`"
+		i++
 	}
-	
+
 	return result
 }

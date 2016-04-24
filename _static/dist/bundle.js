@@ -20,21 +20,24 @@ function httpModule() {
         get: get,
         post: post,
         put: put,
-        delete: remove
+        delete: remove,
+        upload: upload
     };
-    
+
     return self;
-    
+
     function get(url) {
-        return $.when(self.cache[url] || 
+        return $.when(self.cache[url] ||
             $.ajax({
                 url: url,
-                data: {token : ""},
+                data: {
+                    token: ""
+                },
                 type: 'get',
                 success: function(data, textStatus, jqXHR) {
                     self.cache[url] = data;
                 },
-                fail: function(jqXHR, textStatus, errorThrown) {
+                error: function(jqXHR, textStatus, errorThrown) {
                     $app.$notify.danger("GET Failed: <b>" + url + "</b> " + jqXHR.responseText);
                 }
             })
@@ -46,24 +49,24 @@ function httpModule() {
             data: data,
             token: ""
         };
-        return $.when(
+        return (
             $.ajax({
                 url: url,
                 data: JSON.stringify(postData),
                 type: 'post',
-                fail: function(jqXHR, textStatus, errorThrown) {
+                error: function(jqXHR, textStatus, errorThrown) {
                     $app.$notify.danger("POST Failed: <b>" + url + "</b> " + jqXHR.responseText);
                 }
             })
         );
     };
-    
+
     function put(url, data) {
         var postData = {
             data: data,
             token: ""
         };
-        return $.when(
+        return (
             $.ajax({
                 url: url,
                 data: JSON.stringify(postData),
@@ -71,19 +74,19 @@ function httpModule() {
                 success: function(data, textStatus, jqXHR) {
                     delete self.cache[url]
                 },
-                fail: function(jqXHR, textStatus, errorThrown) {
+                error: function(jqXHR, textStatus, errorThrown) {
                     $app.$notify.danger("PUT Failed: <b>" + url + "</b> " + jqXHR.responseText);
                 }
             })
         );
     };
-    
+
     function remove(url, data) {
         var postData = {
             data: data,
             token: ""
         };
-        return $.when(
+        return (
             $.ajax({
                 url: url,
                 data: JSON.stringify(postData),
@@ -91,8 +94,23 @@ function httpModule() {
                 success: function(data, textStatus, jqXHR) {
                     delete self.cache[url]
                 },
-                fail: function(jqXHR, textStatus, errorThrown) {
+                error: function(jqXHR, textStatus, errorThrown) {
                     $app.$notify.danger("DELETE Failed: <b>" + url + "</b> " + jqXHR.responseText);
+                }
+            })
+        );
+    };
+
+    function upload(url, data) {
+        return (
+            $.ajax({
+                url: url,
+                data: data,
+                type: 'post',
+                processData: false,
+                contentType: false,
+                error: function(jqXHR, textStatus, errorThrown) {
+                    $app.$notify.danger("Upload Failed: <b>" + url + "</b> " + jqXHR.responseText);
                 }
             })
         );
@@ -150,7 +168,7 @@ var $app = {
 
 module.exports = $app;
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./../language/en.js":24,"./app.http.js":2,"./app.loader.js":4,"./app.module.js":5,"./app.notify.js":6,"./app.tablegrid.js":7,"./views/app.view.js":10,"bootstrap":34,"handlebars":77,"jquery":93}],4:[function(require,module,exports){
+},{"./../language/en.js":24,"./app.http.js":2,"./app.loader.js":4,"./app.module.js":5,"./app.notify.js":6,"./app.tablegrid.js":7,"./views/app.view.js":10,"bootstrap":34,"handlebars":78,"jquery":94}],4:[function(require,module,exports){
 /*
  * Page loader core module 
  */
@@ -188,7 +206,7 @@ function loaderModule() {
 };
 
 module.exports = loaderModule;
-},{"handlebars":77}],5:[function(require,module,exports){
+},{"handlebars":78}],5:[function(require,module,exports){
 function moduleModule() {
     var self = {
         modules: {},
@@ -368,7 +386,7 @@ function tableGridModule() {
 };
 
 module.exports = tableGridModule;
-},{"./../../vendors/datatables/media/js/dataTables.bootstrap.js":97,"./../../vendors/datatables/media/js/jquery.dataTables.js":98,"bootbox":32}],8:[function(require,module,exports){
+},{"./../../vendors/datatables/media/js/dataTables.bootstrap.js":98,"./../../vendors/datatables/media/js/jquery.dataTables.js":99,"bootbox":32}],8:[function(require,module,exports){
 var $ = jQuery;
 require('../../../node_modules/jquery-validation/dist/jquery.validate.js');
 
@@ -472,7 +490,7 @@ var formModule = function() {
 
 module.exports = formModule();
 
-},{"../../../node_modules/jquery-validation/dist/jquery.validate.js":92}],9:[function(require,module,exports){
+},{"../../../node_modules/jquery-validation/dist/jquery.validate.js":93}],9:[function(require,module,exports){
 var $ = jQuery;
 
 function modalModule() {
@@ -548,7 +566,7 @@ function viewModule() {
 }
 
 module.exports = viewModule();
-},{"./../../language/en.js":24,"./app.form.js":8,"./app.modal.js":9,"handlebars":77}],11:[function(require,module,exports){
+},{"./../../language/en.js":24,"./app.form.js":8,"./app.modal.js":9,"handlebars":78}],11:[function(require,module,exports){
 function customerController() {
 
     var $ = $app.$;
@@ -635,7 +653,7 @@ module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":f
     + "\n                            </button>\n\n                            <a class=\"btn btn-success\" id=\"import-excel\" href=\"../customers/excel_import\" data-target=\"#modal-container\">\n                                <i class=\"fa fa-file-excel-o\"></i> Excel Import\n                            </a>\n                        </div>\n                    </div>\n                </div>\n\n                <div class=\"box-body \">\n                    <table id=\"customer-table\" class=\"table table-bordered table-hover\">\n                        <thead>\n                            <tr>\n                                <th width=\"10px\">\n                                    <input type=\"checkbox\" id=\"select-all\" />\n                                </th>\n                                <th>Last Name</th>\n                                <th>First Name</th>\n                                <th>Email</th>\n                                <th>Phone</th>\n                                <th width=\"50px\">Action</th>\n                            </tr>\n                        </thead>\n                    </table>\n                </div>\n\n                <div id=\"feedback_bar\"></div>\n            </div>\n        </div>\n    </div>\n</section>";
 },"useData":true});
 
-},{"hbsfy/runtime":91}],15:[function(require,module,exports){
+},{"hbsfy/runtime":92}],15:[function(require,module,exports){
 function customerFormController() {
 
     var $modal = $app.$modal;
@@ -721,7 +739,7 @@ module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":f
     + "\" />                        \n                    </div>\n                </div>\n            </div>\n\n            <?php $this->load->view(\"people/form_basic_info\"); ?>\n\n            <div class=\"col-sm-6\">\n                <div class=\"form-group\">\n                    <?php echo form_label($this->lang->line('customers_taxable'), 'taxable', array('class' => 'col-sm-4 control-label')); ?>\n                    <div class='col-sm-8'>\n                        <div class=\"checkbox\">\n                            <label>\n                                <?php echo form_checkbox('taxable', '1', $person_info->taxable == '' ? TRUE : (boolean)$person_info->taxable); ?>\n                            </label>\n                        </div>\n                    </div>\n                </div>\n            </div>\n        </div>\n\n    </fieldset>    \n    </form>    \n</div>\n\n<div class=\"modal-footer\">\n    <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">Close</button>\n    <button type=\"submit\" form=\"customer_form\" class=\"btn btn-primary\">Save changes</button>\n</div>\n\n";
 },"useData":true});
 
-},{"hbsfy/runtime":91}],18:[function(require,module,exports){
+},{"hbsfy/runtime":92}],18:[function(require,module,exports){
 module.exports = {
 	controller: {},
 	model:{},
@@ -815,7 +833,7 @@ module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":f
     return "<section class=\"content-header\"></section> \n<section class=\"content\"> \n    <div class=\"row\"> \n        <div class=\"col-md-12\"> \n            <div class=\"box\"> \n                <div class=\"box-body\"> \n                    <dashboard-content/> \n                </div> \n            </div> \n        </div> \n    </div> \n</section>";
 },"useData":true});
 
-},{"hbsfy/runtime":91}],24:[function(require,module,exports){
+},{"hbsfy/runtime":92}],24:[function(require,module,exports){
 module.exports = {
 	uid: "Account #",
 	alpha: "The %s field may only contain alphabetical characters.",
@@ -1452,6 +1470,8 @@ $app.start(config);
 },{"./config.js":1,"./core/app.js":3,"./customer/customer.js":12,"./home/home.js":21,"./user/user.js":30}],26:[function(require,module,exports){
 /*global $app $*/
 
+require('cropit');
+
 function userFormController(endpoint, data) {
     var $modal = $app.$view.$modal;
     var $form = $app.$view.$form;
@@ -1461,7 +1481,7 @@ function userFormController(endpoint, data) {
         load: onLoad,
         close: onClose,
         modal: $app.$view.$modal,
-        formId : "#user-form",
+        formId: "#user-form",
         data: data || {},
         promise: {},
         defer: $.Deferred(),
@@ -1481,7 +1501,7 @@ function userFormController(endpoint, data) {
             }
         }
     }
-    
+
     self.load();
 
     return self;
@@ -1491,7 +1511,7 @@ function userFormController(endpoint, data) {
             size: 'lg',
             modalId: self.modal.generateId()
         }
-        
+
         var input = {
             accountNumberInput: $form.input("uid").setValue(self.data["uid"] || "AUTO"),
             userNameInput: $form.input("username").setValue(self.data["username"] || "").setClass("required"),
@@ -1506,36 +1526,58 @@ function userFormController(endpoint, data) {
             cityInput: $form.input("city").setValue(self.data["city"] || ""),
             zipInput: $form.input("zip", "number").setValue(self.data["zip"] || ""),
         };
-        
+
         self.modal = $modal.show(require('./user.form.template.hbs'), input, modalConfig);
-        
+
         $form.create(self.formId)
             .config(self.formConfig)
             .onSubmit(function() {
                 event.preventDefault();
-                if(!data){
-                    $http.post(endpoint, $(self.formId).serializeObject()).done(onDone());
-                }else{
-                    $http.put(endpoint + "/" + self.data["uid"], $(self.formId).serializeObject()).done(onDone());
+                if (!data) {
+                    $http.post(endpoint, $(self.formId).serializeObject()).success(function(data) {
+                        onDone(data.data[0])
+                    });
                 }
-            }
-        );
-        
+                else {
+                    $http.put(endpoint + "/" + self.data["uid"], $(self.formId).serializeObject()).success(function(data) {
+                        onDone(data.data[0])
+                    });
+                }
+            });
+
+        $('#user-photo').cropit();
+        $('#user-photo').cropit('imageSrc', './uploads/user_avatars/'+ self.data.photo);
+        $('#select-image-btn').click(function() {
+            $("#user-form.cropit-image-input").prop('disabled', false);
+            $('.cropit-image-input').click();
+        });
+
         return self;
     }
-    
-    function onDone(){
-        self.modal.hide();
-        self.defer.resolve();
+
+    function uploadUserPhoto(userId) {
+        var imageData = $('#user-photo').cropit('export');
+
+        // var fd = new FormData();
+        // fd.append('userphoto', $("#user-photo-file")[0].files[0]);
+
+        return $http.post(endpoint + "/" + userId + "/photo", imageData);
     }
-    
-    function onClose(){
+
+    function onDone(data) {
+        uploadUserPhoto(data.uid).success(function() {
+            self.modal.hide();
+            self.defer.resolve();
+        })
+    }
+
+    function onClose() {
         return $.when(self.defer.promise());
     }
 };
 
 module.exports = userFormController;
-},{"./user.form.template.hbs":28}],27:[function(require,module,exports){
+},{"./user.form.template.hbs":28,"cropit":47}],27:[function(require,module,exports){
 (function (global){
 
 function customerFormModule ($app) {
@@ -1556,36 +1598,36 @@ var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
     var stack1, alias1=container.lambda;
 
-  return "<div class=\"modal-header\">\n    <button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-hidden=\"true\">&times;</button>\n    <h4 class=\"modal-title\">User Form</h4>\n</div>\n\n<div class=\"modal-body\">\n    <form id=\"user-form\" name=\"user-form\" class=\"form-horizontal\">\n        <ul id=\"error_message_box\" class=\"warning\"></ul>\n        <fieldset id=\"user_basic_info\">\n            <div class=\"row\">\n                <div class=\"col-md-12\">\n                    <legend>Basic Info</legend>\n                </div>\n                <div class=\"form-group\">\n                    <div class=\"col-md-12\">\n                        <label class=\"col-md-2 col-xs-4 control-label\">"
+  return "<div class=\"modal-header\">\n    <button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-hidden=\"true\">&times;</button>\n    <h4 class=\"modal-title\">User Form</h4>\n</div>\n\n<div class=\"modal-body\">\n    <fieldset id=\"user_basic_info\">\n        <div class=\"row\">\n            <legend class=\"col-md-12\">Basic Info</legend>\n            <div class=\"col-md-2 col-xs-12 form-horizontal\">\n                <div class=\"form-group\">\n                    <label class=\"col-xs-4 control-label hidden-md hidden-lg hidden-xl\">User Photo</label>\n                    <div class=\"col-md-12 col-xs-8\">\n                        <div id=\"user-photo\" class=\"image-editor\">\n                            <div class=\"cropit-preview\"></div>\n                            <input type=\"range\" class=\"cropit-image-zoom-input\" />\n                            <input id=\"user-photo-file\" type=\"file\" class=\"cropit-image-input\" />\n                            <button id=\"select-image-btn\" class=\"btn btn-primary btn-block btn-xs\">Change User Photo</button>\n                        </div>\n                    </div>\n                </div>\n            </div>\n            <div class=\"col-md-10 col-xs-12\">\n                <form id=\"user-form\" name=\"user-form\" class=\"form-horizontal\">\n                    <div class=\"col-md-12\">\n                        <div class=\"form-group\">\n                            <label class=\"col-md-2 col-xs-4 control-label\">"
     + ((stack1 = alias1(((stack1 = (depth0 != null ? depth0.accountNumberInput : depth0)) != null ? stack1.label : stack1), depth0)) != null ? stack1 : "")
-    + "</label>\n                        <div class=\"col-md-4 col-xs-8\">\n                            <input type=\"disabled\" class=\"form-control\" disabled value=\""
+    + "</label>\n                            <div class=\"col-md-4 col-xs-8\">\n                                <input type=\"disabled\" class=\"form-control\" disabled value=\""
     + ((stack1 = alias1(((stack1 = (depth0 != null ? depth0.accountNumberInput : depth0)) != null ? stack1.value : stack1), depth0)) != null ? stack1 : "")
-    + "\" />\n                        </div>\n                    </div>\n                </div>\n                <div class=\"col-md-6\">"
+    + "\" />\n                            </div>\n                        </div>\n                    </div>\n                    <div class=\"col-md-6\">"
     + ((stack1 = alias1(((stack1 = (depth0 != null ? depth0.userNameInput : depth0)) != null ? stack1.formGroup : stack1), depth0)) != null ? stack1 : "")
-    + "</div>\n                <div class=\"col-md-6\">"
+    + "</div>\n                    <div class=\"col-md-6\">"
     + ((stack1 = alias1(((stack1 = (depth0 != null ? depth0.emailInput : depth0)) != null ? stack1.formGroup : stack1), depth0)) != null ? stack1 : "")
-    + "</div>\n                <div class=\"col-md-6\">"
+    + "</div>\n                    <div class=\"col-md-6\">"
     + ((stack1 = alias1(((stack1 = (depth0 != null ? depth0.firstNameInput : depth0)) != null ? stack1.formGroup : stack1), depth0)) != null ? stack1 : "")
-    + "</div>\n                <div class=\"col-md-6\">"
+    + "</div>\n                    <div class=\"col-md-6\">"
     + ((stack1 = alias1(((stack1 = (depth0 != null ? depth0.lastNameInput : depth0)) != null ? stack1.formGroup : stack1), depth0)) != null ? stack1 : "")
-    + "</div>\n                <div class=\"col-md-6\">"
+    + "</div>\n                    <div class=\"col-md-6\">"
     + ((stack1 = alias1(((stack1 = (depth0 != null ? depth0.phoneNumberInput : depth0)) != null ? stack1.formGroup : stack1), depth0)) != null ? stack1 : "")
-    + "</div>\n                <div class=\"col-md-6\">"
+    + "</div>\n                    <div class=\"col-md-6\">"
     + ((stack1 = alias1(((stack1 = (depth0 != null ? depth0.addressInput : depth0)) != null ? stack1.formGroupTextArea : stack1), depth0)) != null ? stack1 : "")
-    + "</div>\n                <div class=\"col-md-6\">"
+    + "</div>\n                    <div class=\"col-md-6\">"
     + ((stack1 = alias1(((stack1 = (depth0 != null ? depth0.countryInput : depth0)) != null ? stack1.formGroup : stack1), depth0)) != null ? stack1 : "")
-    + "</div>\n                <div class=\"col-md-6\">"
+    + "</div>\n                    <div class=\"col-md-6\">"
     + ((stack1 = alias1(((stack1 = (depth0 != null ? depth0.cityInput : depth0)) != null ? stack1.formGroup : stack1), depth0)) != null ? stack1 : "")
-    + "</div>\n                <div class=\"col-md-6\">"
+    + "</div>\n                    <div class=\"col-md-6\">"
     + ((stack1 = alias1(((stack1 = (depth0 != null ? depth0.stateInput : depth0)) != null ? stack1.formGroup : stack1), depth0)) != null ? stack1 : "")
-    + "</div>\n                <div class=\"col-md-6\">"
+    + "</div>\n                    <div class=\"col-md-6\">"
     + ((stack1 = alias1(((stack1 = (depth0 != null ? depth0.zipInput : depth0)) != null ? stack1.formGroup : stack1), depth0)) != null ? stack1 : "")
-    + "</div>\n                <div class=\"col-md-6\">"
+    + "</div>\n                    <div class=\"col-md-6\">"
     + ((stack1 = alias1(((stack1 = (depth0 != null ? depth0.notesInput : depth0)) != null ? stack1.formGroup : stack1), depth0)) != null ? stack1 : "")
-    + "</div>\n            </div>\n        </fieldset>\n        <div class=\"row\">\n            <div class=\"col-md-6\">\n                <fieldset>\n                    <div class=\"row\">\n                        <div class=\"col-md-12\">\n                            <legend>Change Password</legend>\n                        </div>\n                        <div class=\"col-md-12\">\n                            <div class=\"form-group class=\" col-md-6 \"\">\n                                <label for=\"passwordOld\" class=\"col-xs-4 control-label \">Old Password</label>\n                                <div class=\"col-xs-8\">\n                                    <input type=\"password\" name=\"passwordOld\" id=\"passwordOld\" class=\"form-control valid\" value=\"\" aria-invalid=\"false\">\n                                </div>\n                            </div>\n                        </div>\n                        <div class=\"col-md-12\">\n                            <div class=\"form-group class=\" col-md-6 \"\">\n                                <label for=\"password\" class=\"col-xs-4 control-label \">Password</label>\n                                <div class=\"col-xs-8\">\n                                    <input type=\"password\" name=\"password\" id=\"password\" class=\"form-control valid\" value=\"\" aria-invalid=\"false\">\n                                </div>\n                            </div>\n                        </div>\n                        <div class=\"col-md-12\">\n                            <div class=\"form-group\">\n                                <label for=\"password2\" class=\"col-xs-4 control-label \">Confirm Password</label>\n                                <div class=\"col-xs-8\">\n                                    <input type=\"password\" name=\"password2\" id=\"password2\" class=\"form-control valid\" value=\"\" aria-invalid=\"false\">\n                                </div>\n                            </div>\n                        </div>\n                    </div>\n                </fieldset>\n\n            </div>\n            <div class=\"col-md-6\">\n                <fieldset>\n                    <div class=\"row\">\n                        <div class=\"col-md-12\">\n                            <legend>Danger Area</legend>\n                        </div>\n                        <div class=\"col-md-12\">\n\n                            <div class=\"form-group class=\" col-md-6 \"\">\n                                <label for=\"removeUser\" class=\"col-xs-4 control-label \">Remove User</label>\n                                <div class=\"col-xs-8\">\n                                    <button class=\"btn btn-danger\">Delete This User</button>\n                                </div>\n                            </div>\n                        </div>\n                    </div>\n                </fieldset>\n            </div>\n        </div>\n    </form>\n</div>\n\n<div class=\"modal-footer\">\n    <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">Close</button>\n    <button type=\"submit\" form=\"user-form\" class=\"btn btn-primary\">Save changes</button>\n</div>\n";
+    + "</div>\n                </form>\n            </div>\n        </div>\n    </fieldset>\n    <div class=\"row\">\n        <div class=\"col-md-6\">\n            <div class=\"row form-horizontal\">\n                <legend class=\"col-md-12\">Change Password</legend>\n                <div class=\"col-md-12\">\n                    <div class=\"form-group\">\n                        <label for=\"passwordOld\" class=\"col-xs-4 control-label \">Old Password</label>\n                        <div class=\"col-xs-8\">\n                            <input form=\"user-form\" type=\"password\" name=\"passwordOld\" id=\"passwordOld\" class=\"form-control valid\" value=\"\" aria-invalid=\"false\">\n                        </div>\n                    </div>\n                </div>\n                <div class=\"col-md-12\">\n                    <div class=\"form-group\">\n                        <label for=\"password\" class=\"col-xs-4 control-label \">New Password</label>\n                        <div class=\"col-xs-8\">\n                            <input form=\"user-form\" type=\"password\" name=\"password\" id=\"password\" class=\"form-control valid\" value=\"\" aria-invalid=\"false\">\n                        </div>\n                    </div>\n                </div>\n                <div class=\"col-md-12\">\n                    <div class=\"form-group\">\n                        <label for=\"password2\" class=\"col-xs-4 control-label \">Confirm Password</label>\n                        <div class=\"col-xs-8\">\n                            <input form=\"user-form\" type=\"password\" name=\"password2\" id=\"password2\" class=\"form-control valid\" value=\"\" aria-invalid=\"false\">\n                        </div>\n                    </div>\n                </div>\n            </div>\n        </div>\n        <div class=\"col-md-6\">\n            <div class=\"row form-horizontal\">\n                <legend class=\"col-md-12\">Danger Area</legend>\n                <div class=\"col-md-12 \">\n                    <div class=\"form-group\">\n                        <label for=\"removeUser\" class=\"col-xs-4 control-label\">Remove User</label>\n                        <div class=\"col-xs-8\">\n                            <button class=\"btn btn-danger\">Delete This User</button>\n                        </div>\n                    </div>\n                </div>\n            </div>\n        </div>\n    </div>\n</div>\n\n<div class=\"modal-footer\">\n    <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">Close</button>\n    <button type=\"submit\" form=\"user-form\" class=\"btn btn-primary\">Save changes</button>\n</div>\n";
 },"useData":true});
 
-},{"hbsfy/runtime":91}],29:[function(require,module,exports){
+},{"hbsfy/runtime":92}],29:[function(require,module,exports){
 /*global $app $*/
 'use strict'
 
@@ -1620,9 +1662,7 @@ function userController() {
         'uid');
         
         self.tableGrid.action.delete = doDelete;
-        
         self.tableGrid.action.deleteBulk = doDeleteBulk;
-
         
         $('body').on('click', '#user-add', function() {
             showFormCreate();
@@ -1699,7 +1739,7 @@ module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":f
     + "\n                            </button>\n\n                            <a class=\"btn btn-success\" id=\"import-excel\" href=\"../customers/excel_import\" data-target=\"#modal-container\">\n                                <i class=\"fa fa-file-excel-o\"></i> Excel Import\n                            </a>\n                        </div>\n                    </div>\n                </div>\n\n                <div class=\"box-body \">\n                    <table id=\"user-table\" class=\"table table-bordered table-hover\">\n                        <thead>\n                            <tr>\n                                <th width=\"10px\">\n                                    <input type=\"checkbox\" id=\"select-all\" />\n                                </th>\n                                <th>Username</th>\n                                <th>Email</th>\n                                <th>Full Name</th>\n                                <th width=\"50px\">Action</th>\n                            </tr>\n                        </thead>\n                    </table>\n                </div>\n\n                <div id=\"feedback_bar\"></div>\n            </div>\n        </div>\n    </div>\n</section>";
 },"useData":true});
 
-},{"hbsfy/runtime":91}],32:[function(require,module,exports){
+},{"hbsfy/runtime":92}],32:[function(require,module,exports){
 /**
  * bootbox.js [v4.4.0]
  *
@@ -2686,7 +2726,7 @@ module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":f
   return exports;
 }));
 
-},{"jquery":93}],33:[function(require,module,exports){
+},{"jquery":94}],33:[function(require,module,exports){
 /*
 * Project: Bootstrap Notify = v3.1.3
 * Description: Turns standard Bootstrap alerts into "Growl-like" notifications.
@@ -3041,7 +3081,7 @@ module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":f
 
 }));
 
-},{"jquery":93}],34:[function(require,module,exports){
+},{"jquery":94}],34:[function(require,module,exports){
 // This file is autogenerated via the `commonjs` Grunt task. You can require() this file in a CommonJS environment.
 require('../../js/transition.js')
 require('../../js/alert.js')
@@ -5414,6 +5454,1217 @@ require('../../js/affix.js')
 }(jQuery);
 
 },{}],47:[function(require,module,exports){
+/*! cropit - v0.5.0 <https://github.com/scottcheng/cropit> */
+(function webpackUniversalModuleDefinition(root, factory) {
+	if(typeof exports === 'object' && typeof module === 'object')
+		module.exports = factory(require("jquery"));
+	else if(typeof define === 'function' && define.amd)
+		define(["jquery"], factory);
+	else if(typeof exports === 'object')
+		exports["cropit"] = factory(require("jquery"));
+	else
+		root["cropit"] = factory(root["jQuery"]);
+})(this, function(__WEBPACK_EXTERNAL_MODULE_1__) {
+return /******/ (function(modules) { // webpackBootstrap
+/******/ 	// The module cache
+/******/ 	var installedModules = {};
+
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+
+/******/ 		// Check if module is in cache
+/******/ 		if(installedModules[moduleId])
+/******/ 			return installedModules[moduleId].exports;
+
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = installedModules[moduleId] = {
+/******/ 			exports: {},
+/******/ 			id: moduleId,
+/******/ 			loaded: false
+/******/ 		};
+
+/******/ 		// Execute the module function
+/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+
+/******/ 		// Flag the module as loaded
+/******/ 		module.loaded = true;
+
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+
+
+/******/ 	// expose the modules object (__webpack_modules__)
+/******/ 	__webpack_require__.m = modules;
+
+/******/ 	// expose the module cache
+/******/ 	__webpack_require__.c = installedModules;
+
+/******/ 	// __webpack_public_path__
+/******/ 	__webpack_require__.p = "";
+
+/******/ 	// Load entry module and return exports
+/******/ 	return __webpack_require__(0);
+/******/ })
+/************************************************************************/
+/******/ ([
+/* 0 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var _slice = Array.prototype.slice;
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+	var _jquery = __webpack_require__(1);
+
+	var _jquery2 = _interopRequireDefault(_jquery);
+
+	var _cropit = __webpack_require__(2);
+
+	var _cropit2 = _interopRequireDefault(_cropit);
+
+	var _constants = __webpack_require__(4);
+
+	var _utils = __webpack_require__(6);
+
+	var applyOnEach = function applyOnEach($el, callback) {
+	  return $el.each(function () {
+	    var cropit = _jquery2['default'].data(this, _constants.PLUGIN_KEY);
+
+	    if (!cropit) {
+	      return;
+	    }
+	    callback(cropit);
+	  });
+	};
+
+	var callOnFirst = function callOnFirst($el, method, options) {
+	  var cropit = $el.first().data(_constants.PLUGIN_KEY);
+
+	  if (!cropit || !_jquery2['default'].isFunction(cropit[method])) {
+	    return null;
+	  }
+	  return cropit[method](options);
+	};
+
+	var methods = {
+	  init: function init(options) {
+	    return this.each(function () {
+	      // Only instantiate once per element
+	      if (_jquery2['default'].data(this, _constants.PLUGIN_KEY)) {
+	        return;
+	      }
+
+	      var cropit = new _cropit2['default'](_jquery2['default'], this, options);
+	      _jquery2['default'].data(this, _constants.PLUGIN_KEY, cropit);
+	    });
+	  },
+
+	  destroy: function destroy() {
+	    return this.each(function () {
+	      _jquery2['default'].removeData(this, _constants.PLUGIN_KEY);
+	    });
+	  },
+
+	  isZoomable: function isZoomable() {
+	    return callOnFirst(this, 'isZoomable');
+	  },
+
+	  'export': function _export(options) {
+	    return callOnFirst(this, 'getCroppedImageData', options);
+	  }
+	};
+
+	var delegate = function delegate($el, fnName) {
+	  return applyOnEach($el, function (cropit) {
+	    cropit[fnName]();
+	  });
+	};
+
+	var prop = function prop($el, name, value) {
+	  if ((0, _utils.exists)(value)) {
+	    return applyOnEach($el, function (cropit) {
+	      cropit[name] = value;
+	    });
+	  } else {
+	    var cropit = $el.first().data(_constants.PLUGIN_KEY);
+	    return cropit[name];
+	  }
+	};
+
+	_jquery2['default'].fn.cropit = function (method) {
+	  if (methods[method]) {
+	    return methods[method].apply(this, Array.prototype.slice.call(arguments, 1));
+	  } else if (['imageState', 'imageSrc', 'offset', 'previewSize', 'imageSize', 'zoom', 'initialZoom', 'exportZoom', 'minZoom', 'maxZoom'].indexOf(method) >= 0) {
+	    return prop.apply(undefined, [this].concat(_slice.call(arguments)));
+	  } else if (['rotateCW', 'rotateCCW', 'disable', 'reenable'].indexOf(method) >= 0) {
+	    return delegate.apply(undefined, [this].concat(_slice.call(arguments)));
+	  } else {
+	    return methods.init.apply(this, arguments);
+	  }
+	};
+
+/***/ },
+/* 1 */
+/***/ function(module, exports) {
+
+	module.exports = __WEBPACK_EXTERNAL_MODULE_1__;
+
+/***/ },
+/* 2 */
+/***/ function(module, exports, __webpack_require__) {
+
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+	var _jquery = __webpack_require__(1);
+
+	var _jquery2 = _interopRequireDefault(_jquery);
+
+	var _Zoomer = __webpack_require__(3);
+
+	var _Zoomer2 = _interopRequireDefault(_Zoomer);
+
+	var _constants = __webpack_require__(4);
+
+	var _options = __webpack_require__(5);
+
+	var _utils = __webpack_require__(6);
+
+	var Cropit = (function () {
+	  function Cropit(jQuery, element, options) {
+	    _classCallCheck(this, Cropit);
+
+	    this.$el = (0, _jquery2['default'])(element);
+
+	    var defaults = (0, _options.loadDefaults)(this.$el);
+	    this.options = _jquery2['default'].extend({}, defaults, options);
+
+	    this.init();
+	  }
+
+	  _createClass(Cropit, [{
+	    key: 'init',
+	    value: function init() {
+	      var _this = this;
+
+	      this.image = new Image();
+	      this.preImage = new Image();
+	      this.image.onload = this.onImageLoaded.bind(this);
+	      this.preImage.onload = this.onPreImageLoaded.bind(this);
+	      this.image.onerror = this.preImage.onerror = function () {
+	        _this.onImageError.call(_this, _constants.ERRORS.IMAGE_FAILED_TO_LOAD);
+	      };
+
+	      this.$preview = this.options.$preview.css('position', 'relative');
+	      this.$fileInput = this.options.$fileInput.attr({ accept: 'image/*' });
+	      this.$zoomSlider = this.options.$zoomSlider.attr({ min: 0, max: 1, step: 0.01 });
+
+	      this.previewSize = {
+	        width: this.options.width || this.$preview.width(),
+	        height: this.options.height || this.$preview.height()
+	      };
+
+	      this.$image = (0, _jquery2['default'])('<img />').addClass(_constants.CLASS_NAMES.PREVIEW_IMAGE).attr('alt', '').css({
+	        transformOrigin: 'top left',
+	        webkitTransformOrigin: 'top left',
+	        willChange: 'transform'
+	      });
+	      this.$imageContainer = (0, _jquery2['default'])('<div />').addClass(_constants.CLASS_NAMES.PREVIEW_IMAGE_CONTAINER).css({
+	        position: 'absolute',
+	        overflow: 'hidden',
+	        left: 0,
+	        top: 0,
+	        width: '100%',
+	        height: '100%'
+	      }).append(this.$image);
+	      this.$preview.append(this.$imageContainer);
+
+	      if (this.options.imageBackground) {
+	        if (_jquery2['default'].isArray(this.options.imageBackgroundBorderWidth)) {
+	          this.bgBorderWidthArray = this.options.imageBackgroundBorderWidth;
+	        } else {
+	          this.bgBorderWidthArray = [0, 1, 2, 3].map(function () {
+	            return _this.options.imageBackgroundBorderWidth;
+	          });
+	        }
+
+	        this.$bg = (0, _jquery2['default'])('<img />').addClass(_constants.CLASS_NAMES.PREVIEW_BACKGROUND).attr('alt', '').css({
+	          position: 'relative',
+	          left: this.bgBorderWidthArray[3],
+	          top: this.bgBorderWidthArray[0],
+	          transformOrigin: 'top left',
+	          webkitTransformOrigin: 'top left',
+	          willChange: 'transform'
+	        });
+	        this.$bgContainer = (0, _jquery2['default'])('<div />').addClass(_constants.CLASS_NAMES.PREVIEW_BACKGROUND_CONTAINER).css({
+	          position: 'absolute',
+	          zIndex: 0,
+	          top: -this.bgBorderWidthArray[0],
+	          right: -this.bgBorderWidthArray[1],
+	          bottom: -this.bgBorderWidthArray[2],
+	          left: -this.bgBorderWidthArray[3]
+	        }).append(this.$bg);
+	        if (this.bgBorderWidthArray[0] > 0) {
+	          this.$bgContainer.css('overflow', 'hidden');
+	        }
+	        this.$preview.prepend(this.$bgContainer);
+	      }
+
+	      this.initialZoom = this.options.initialZoom;
+
+	      this.imageLoaded = false;
+
+	      this.moveContinue = false;
+
+	      this.zoomer = new _Zoomer2['default']();
+
+	      if (this.options.allowDragNDrop) {
+	        _jquery2['default'].event.props.push('dataTransfer');
+	      }
+
+	      this.bindListeners();
+
+	      if (this.options.imageState && this.options.imageState.src) {
+	        this.loadImage(this.options.imageState.src);
+	      }
+	    }
+	  }, {
+	    key: 'bindListeners',
+	    value: function bindListeners() {
+	      this.$fileInput.on('change.cropit', this.onFileChange.bind(this));
+	      this.$imageContainer.on(_constants.EVENTS.PREVIEW, this.onPreviewEvent.bind(this));
+	      this.$zoomSlider.on(_constants.EVENTS.ZOOM_INPUT, this.onZoomSliderChange.bind(this));
+
+	      if (this.options.allowDragNDrop) {
+	        this.$imageContainer.on('dragover.cropit dragleave.cropit', this.onDragOver.bind(this));
+	        this.$imageContainer.on('drop.cropit', this.onDrop.bind(this));
+	      }
+	    }
+	  }, {
+	    key: 'unbindListeners',
+	    value: function unbindListeners() {
+	      this.$fileInput.off('change.cropit');
+	      this.$imageContainer.off(_constants.EVENTS.PREVIEW);
+	      this.$imageContainer.off('dragover.cropit dragleave.cropit drop.cropit');
+	      this.$zoomSlider.off(_constants.EVENTS.ZOOM_INPUT);
+	    }
+	  }, {
+	    key: 'onFileChange',
+	    value: function onFileChange(e) {
+	      this.options.onFileChange(e);
+
+	      if (this.$fileInput.get(0).files) {
+	        this.loadFile(this.$fileInput.get(0).files[0]);
+	      }
+	    }
+	  }, {
+	    key: 'loadFile',
+	    value: function loadFile(file) {
+	      var fileReader = new FileReader();
+	      if (file && file.type.match('image')) {
+	        fileReader.readAsDataURL(file);
+	        fileReader.onload = this.onFileReaderLoaded.bind(this);
+	        fileReader.onerror = this.onFileReaderError.bind(this);
+	      } else if (file) {
+	        this.onFileReaderError();
+	      }
+	    }
+	  }, {
+	    key: 'onFileReaderLoaded',
+	    value: function onFileReaderLoaded(e) {
+	      this.loadImage(e.target.result);
+	    }
+	  }, {
+	    key: 'onFileReaderError',
+	    value: function onFileReaderError() {
+	      this.options.onFileReaderError();
+	    }
+	  }, {
+	    key: 'onDragOver',
+	    value: function onDragOver(e) {
+	      e.preventDefault();
+	      e.dataTransfer.dropEffect = 'copy';
+	      this.$preview.toggleClass(_constants.CLASS_NAMES.DRAG_HOVERED, e.type === 'dragover');
+	    }
+	  }, {
+	    key: 'onDrop',
+	    value: function onDrop(e) {
+	      var _this2 = this;
+
+	      e.preventDefault();
+	      e.stopPropagation();
+
+	      var files = Array.prototype.slice.call(e.dataTransfer.files, 0);
+	      files.some(function (file) {
+	        if (!file.type.match('image')) {
+	          return false;
+	        }
+
+	        _this2.loadFile(file);
+	        return true;
+	      });
+
+	      this.$preview.removeClass(_constants.CLASS_NAMES.DRAG_HOVERED);
+	    }
+	  }, {
+	    key: 'loadImage',
+	    value: function loadImage(imageSrc) {
+	      var _this3 = this;
+
+	      if (!imageSrc) {
+	        return;
+	      }
+
+	      this.options.onImageLoading();
+	      this.setImageLoadingClass();
+
+	      if (imageSrc.indexOf('data') === 0) {
+	        this.preImage.src = imageSrc;
+	      } else {
+	        var xhr = new XMLHttpRequest();
+	        xhr.onload = function (e) {
+	          if (e.target.status >= 300) {
+	            _this3.onImageError.call(_this3, _constants.ERRORS.IMAGE_FAILED_TO_LOAD);
+	            return;
+	          }
+
+	          _this3.loadFile(e.target.response);
+	        };
+	        xhr.open('GET', imageSrc);
+	        xhr.responseType = 'blob';
+	        xhr.send();
+	      }
+	    }
+	  }, {
+	    key: 'onPreImageLoaded',
+	    value: function onPreImageLoaded() {
+	      if (this.shouldRejectImage({
+	        imageWidth: this.preImage.width,
+	        imageHeight: this.preImage.height,
+	        previewSize: this.previewSize,
+	        maxZoom: this.options.maxZoom,
+	        exportZoom: this.options.exportZoom,
+	        smallImage: this.options.smallImage
+	      })) {
+	        this.onImageError(_constants.ERRORS.SMALL_IMAGE);
+	        if (this.image.src) {
+	          this.setImageLoadedClass();
+	        }
+	        return;
+	      }
+
+	      this.image.src = this.preImage.src;
+	    }
+	  }, {
+	    key: 'onImageLoaded',
+	    value: function onImageLoaded() {
+	      this.rotation = 0;
+	      this.setupZoomer(this.options.imageState && this.options.imageState.zoom || this._initialZoom);
+	      if (this.options.imageState && this.options.imageState.offset) {
+	        this.offset = this.options.imageState.offset;
+	      } else {
+	        this.centerImage();
+	      }
+
+	      this.options.imageState = {};
+
+	      this.$image.attr('src', this.image.src);
+	      if (this.options.imageBackground) {
+	        this.$bg.attr('src', this.image.src);
+	      }
+
+	      this.setImageLoadedClass();
+
+	      this.imageLoaded = true;
+
+	      this.options.onImageLoaded();
+	    }
+	  }, {
+	    key: 'onImageError',
+	    value: function onImageError() {
+	      this.options.onImageError.apply(this, arguments);
+	      this.removeImageLoadingClass();
+	    }
+	  }, {
+	    key: 'setImageLoadingClass',
+	    value: function setImageLoadingClass() {
+	      this.$preview.removeClass(_constants.CLASS_NAMES.IMAGE_LOADED).addClass(_constants.CLASS_NAMES.IMAGE_LOADING);
+	    }
+	  }, {
+	    key: 'setImageLoadedClass',
+	    value: function setImageLoadedClass() {
+	      this.$preview.removeClass(_constants.CLASS_NAMES.IMAGE_LOADING).addClass(_constants.CLASS_NAMES.IMAGE_LOADED);
+	    }
+	  }, {
+	    key: 'removeImageLoadingClass',
+	    value: function removeImageLoadingClass() {
+	      this.$preview.removeClass(_constants.CLASS_NAMES.IMAGE_LOADING);
+	    }
+	  }, {
+	    key: 'getEventPosition',
+	    value: function getEventPosition(e) {
+	      if (e.originalEvent && e.originalEvent.touches && e.originalEvent.touches[0]) {
+	        e = e.originalEvent.touches[0];
+	      }
+	      if (e.clientX && e.clientY) {
+	        return { x: e.clientX, y: e.clientY };
+	      }
+	    }
+	  }, {
+	    key: 'onPreviewEvent',
+	    value: function onPreviewEvent(e) {
+	      if (!this.imageLoaded) {
+	        return;
+	      }
+
+	      this.moveContinue = false;
+	      this.$imageContainer.off(_constants.EVENTS.PREVIEW_MOVE);
+
+	      if (e.type === 'mousedown' || e.type === 'touchstart') {
+	        this.origin = this.getEventPosition(e);
+	        this.moveContinue = true;
+	        this.$imageContainer.on(_constants.EVENTS.PREVIEW_MOVE, this.onMove.bind(this));
+	      } else {
+	        (0, _jquery2['default'])(document.body).focus();
+	      }
+
+	      e.stopPropagation();
+	      return false;
+	    }
+	  }, {
+	    key: 'onMove',
+	    value: function onMove(e) {
+	      var eventPosition = this.getEventPosition(e);
+
+	      if (this.moveContinue && eventPosition) {
+	        this.offset = {
+	          x: this.offset.x + eventPosition.x - this.origin.x,
+	          y: this.offset.y + eventPosition.y - this.origin.y
+	        };
+	      }
+
+	      this.origin = eventPosition;
+
+	      e.stopPropagation();
+	      return false;
+	    }
+	  }, {
+	    key: 'fixOffset',
+	    value: function fixOffset(offset) {
+	      if (!this.imageLoaded) {
+	        return offset;
+	      }
+
+	      var ret = { x: offset.x, y: offset.y };
+
+	      if (!this.options.freeMove) {
+	        if (this.imageWidth * this.zoom >= this.previewSize.width) {
+	          ret.x = Math.min(0, Math.max(ret.x, this.previewSize.width - this.imageWidth * this.zoom));
+	        } else {
+	          ret.x = Math.max(0, Math.min(ret.x, this.previewSize.width - this.imageWidth * this.zoom));
+	        }
+
+	        if (this.imageHeight * this.zoom >= this.previewSize.height) {
+	          ret.y = Math.min(0, Math.max(ret.y, this.previewSize.height - this.imageHeight * this.zoom));
+	        } else {
+	          ret.y = Math.max(0, Math.min(ret.y, this.previewSize.height - this.imageHeight * this.zoom));
+	        }
+	      }
+
+	      ret.x = (0, _utils.round)(ret.x);
+	      ret.y = (0, _utils.round)(ret.y);
+
+	      return ret;
+	    }
+	  }, {
+	    key: 'centerImage',
+	    value: function centerImage() {
+	      if (!this.image.width || !this.image.height || !this.zoom) {
+	        return;
+	      }
+
+	      this.offset = {
+	        x: (this.previewSize.width - this.imageWidth * this.zoom) / 2,
+	        y: (this.previewSize.height - this.imageHeight * this.zoom) / 2
+	      };
+	    }
+	  }, {
+	    key: 'onZoomSliderChange',
+	    value: function onZoomSliderChange() {
+	      if (!this.imageLoaded) {
+	        return;
+	      }
+
+	      this.zoomSliderPos = Number(this.$zoomSlider.val());
+	      var newZoom = this.zoomer.getZoom(this.zoomSliderPos);
+	      if (newZoom === this.zoom) {
+	        return;
+	      }
+	      this.zoom = newZoom;
+	    }
+	  }, {
+	    key: 'enableZoomSlider',
+	    value: function enableZoomSlider() {
+	      this.$zoomSlider.removeAttr('disabled');
+	      this.options.onZoomEnabled();
+	    }
+	  }, {
+	    key: 'disableZoomSlider',
+	    value: function disableZoomSlider() {
+	      this.$zoomSlider.attr('disabled', true);
+	      this.options.onZoomDisabled();
+	    }
+	  }, {
+	    key: 'setupZoomer',
+	    value: function setupZoomer(zoom) {
+	      this.zoomer.setup({
+	        imageSize: this.imageSize,
+	        previewSize: this.previewSize,
+	        exportZoom: this.options.exportZoom,
+	        maxZoom: this.options.maxZoom,
+	        minZoom: this.options.minZoom,
+	        smallImage: this.options.smallImage
+	      });
+	      this.zoom = (0, _utils.exists)(zoom) ? zoom : this._zoom;
+
+	      if (this.isZoomable()) {
+	        this.enableZoomSlider();
+	      } else {
+	        this.disableZoomSlider();
+	      }
+	    }
+	  }, {
+	    key: 'fixZoom',
+	    value: function fixZoom(zoom) {
+	      return this.zoomer.fixZoom(zoom);
+	    }
+	  }, {
+	    key: 'isZoomable',
+	    value: function isZoomable() {
+	      return this.zoomer.isZoomable();
+	    }
+	  }, {
+	    key: 'renderImage',
+	    value: function renderImage() {
+	      var transformation = '\n      translate(' + this.rotatedOffset.x + 'px, ' + this.rotatedOffset.y + 'px)\n      scale(' + this.zoom + ')\n      rotate(' + this.rotation + 'deg)';
+
+	      this.$image.css({
+	        transform: transformation,
+	        webkitTransform: transformation
+	      });
+	      if (this.options.imageBackground) {
+	        this.$bg.css({
+	          transform: transformation,
+	          webkitTransform: transformation
+	        });
+	      }
+	    }
+	  }, {
+	    key: 'rotateCW',
+	    value: function rotateCW() {
+	      if (this.shouldRejectImage({
+	        imageWidth: this.image.height,
+	        imageHeight: this.image.width,
+	        previewSize: this.previewSize,
+	        maxZoom: this.options.maxZoom,
+	        exportZoom: this.options.exportZoom,
+	        smallImage: this.options.smallImage
+	      })) {
+	        this.rotation = (this.rotation + 180) % 360;
+	      } else {
+	        this.rotation = (this.rotation + 90) % 360;
+	      }
+	    }
+	  }, {
+	    key: 'rotateCCW',
+	    value: function rotateCCW() {
+	      if (this.shouldRejectImage({
+	        imageWidth: this.image.height,
+	        imageHeight: this.image.width,
+	        previewSize: this.previewSize,
+	        maxZoom: this.options.maxZoom,
+	        exportZoom: this.options.exportZoom,
+	        smallImage: this.options.smallImage
+	      })) {
+	        this.rotation = (this.rotation + 180) % 360;
+	      } else {
+	        this.rotation = (this.rotation + 270) % 360;
+	      }
+	    }
+	  }, {
+	    key: 'shouldRejectImage',
+	    value: function shouldRejectImage(_ref) {
+	      var imageWidth = _ref.imageWidth;
+	      var imageHeight = _ref.imageHeight;
+	      var previewSize = _ref.previewSize;
+	      var maxZoom = _ref.maxZoom;
+	      var exportZoom = _ref.exportZoom;
+	      var smallImage = _ref.smallImage;
+
+	      if (smallImage !== 'reject') {
+	        return false;
+	      }
+
+	      return imageWidth * maxZoom < previewSize.width * exportZoom || imageHeight * maxZoom < previewSize.height * exportZoom;
+	    }
+	  }, {
+	    key: 'getCroppedImageData',
+	    value: function getCroppedImageData(exportOptions) {
+	      if (!this.image.src) {
+	        return;
+	      }
+
+	      var exportDefaults = {
+	        type: 'image/png',
+	        quality: 0.75,
+	        originalSize: false,
+	        fillBg: '#fff'
+	      };
+	      exportOptions = _jquery2['default'].extend({}, exportDefaults, exportOptions);
+
+	      var exportZoom = exportOptions.originalSize ? 1 / this.zoom : this.options.exportZoom;
+
+	      var zoomedSize = {
+	        width: this.zoom * exportZoom * this.image.width,
+	        height: this.zoom * exportZoom * this.image.height
+	      };
+
+	      var canvas = (0, _jquery2['default'])('<canvas />').attr({
+	        width: this.previewSize.width * exportZoom,
+	        height: this.previewSize.height * exportZoom
+	      }).get(0);
+	      var canvasContext = canvas.getContext('2d');
+
+	      if (exportOptions.type === 'image/jpeg') {
+	        canvasContext.fillStyle = exportOptions.fillBg;
+	        canvasContext.fillRect(0, 0, canvas.width, canvas.height);
+	      }
+
+	      canvasContext.translate(this.rotatedOffset.x * exportZoom, this.rotatedOffset.y * exportZoom);
+	      canvasContext.rotate(this.rotation * Math.PI / 180);
+	      canvasContext.drawImage(this.image, 0, 0, zoomedSize.width, zoomedSize.height);
+
+	      return canvas.toDataURL(exportOptions.type, exportOptions.quality);
+	    }
+	  }, {
+	    key: 'disable',
+	    value: function disable() {
+	      this.unbindListeners();
+	      this.disableZoomSlider();
+	      this.$el.addClass(_constants.CLASS_NAMES.DISABLED);
+	    }
+	  }, {
+	    key: 'reenable',
+	    value: function reenable() {
+	      this.bindListeners();
+	      this.enableZoomSlider();
+	      this.$el.removeClass(_constants.CLASS_NAMES.DISABLED);
+	    }
+	  }, {
+	    key: '$',
+	    value: function $(selector) {
+	      if (!this.$el) {
+	        return null;
+	      }
+	      return this.$el.find(selector);
+	    }
+	  }, {
+	    key: 'offset',
+	    set: function (position) {
+	      if (!position || !(0, _utils.exists)(position.x) || !(0, _utils.exists)(position.y)) {
+	        return;
+	      }
+
+	      this._offset = this.fixOffset(position);
+	      this.renderImage();
+
+	      this.options.onOffsetChange(position);
+	    },
+	    get: function () {
+	      return this._offset;
+	    }
+	  }, {
+	    key: 'zoom',
+	    set: function (newZoom) {
+	      newZoom = this.fixZoom(newZoom);
+
+	      if (this.imageLoaded) {
+	        var oldZoom = this.zoom;
+
+	        var newX = this.previewSize.width / 2 - (this.previewSize.width / 2 - this.offset.x) * newZoom / oldZoom;
+	        var newY = this.previewSize.height / 2 - (this.previewSize.height / 2 - this.offset.y) * newZoom / oldZoom;
+
+	        this._zoom = newZoom;
+	        this.offset = { x: newX, y: newY }; // Triggers renderImage()
+	      } else {
+	        this._zoom = newZoom;
+	      }
+
+	      this.zoomSliderPos = this.zoomer.getSliderPos(this.zoom);
+	      this.$zoomSlider.val(this.zoomSliderPos);
+
+	      this.options.onZoomChange(newZoom);
+	    },
+	    get: function () {
+	      return this._zoom;
+	    }
+	  }, {
+	    key: 'rotatedOffset',
+	    get: function () {
+	      return {
+	        x: this.offset.x + (this.rotation === 90 ? this.image.height * this.zoom : 0) + (this.rotation === 180 ? this.image.width * this.zoom : 0),
+	        y: this.offset.y + (this.rotation === 180 ? this.image.height * this.zoom : 0) + (this.rotation === 270 ? this.image.width * this.zoom : 0)
+	      };
+	    }
+	  }, {
+	    key: 'rotation',
+	    set: function (newRotation) {
+	      this._rotation = newRotation;
+
+	      if (this.imageLoaded) {
+	        // Change in image size may lead to change in zoom range
+	        this.setupZoomer();
+	      }
+	    },
+	    get: function () {
+	      return this._rotation;
+	    }
+	  }, {
+	    key: 'imageState',
+	    get: function () {
+	      return {
+	        src: this.image.src,
+	        offset: this.offset,
+	        zoom: this.zoom
+	      };
+	    }
+	  }, {
+	    key: 'imageSrc',
+	    get: function () {
+	      return this.image.src;
+	    },
+	    set: function (imageSrc) {
+	      this.loadImage(imageSrc);
+	    }
+	  }, {
+	    key: 'imageWidth',
+	    get: function () {
+	      return this.rotation % 180 === 0 ? this.image.width : this.image.height;
+	    }
+	  }, {
+	    key: 'imageHeight',
+	    get: function () {
+	      return this.rotation % 180 === 0 ? this.image.height : this.image.width;
+	    }
+	  }, {
+	    key: 'imageSize',
+	    get: function () {
+	      return {
+	        width: this.imageWidth,
+	        height: this.imageHeight
+	      };
+	    }
+	  }, {
+	    key: 'initialZoom',
+	    get: function () {
+	      return this.options.initialZoom;
+	    },
+	    set: function (initialZoomOption) {
+	      this.options.initialZoom = initialZoomOption;
+	      if (initialZoomOption === 'min') {
+	        this._initialZoom = 0; // Will be fixed when image loads
+	      } else if (initialZoomOption === 'image') {
+	        this._initialZoom = 1;
+	      } else {
+	        this._initialZoom = 0;
+	      }
+	    }
+	  }, {
+	    key: 'exportZoom',
+	    get: function () {
+	      return this.options.exportZoom;
+	    },
+	    set: function (exportZoom) {
+	      this.options.exportZoom = exportZoom;
+	      this.setupZoomer();
+	    }
+	  }, {
+	    key: 'minZoom',
+	    get: function () {
+	      return this.options.minZoom;
+	    },
+	    set: function (minZoom) {
+	      this.options.minZoom = minZoom;
+	      this.setupZoomer();
+	    }
+	  }, {
+	    key: 'maxZoom',
+	    get: function () {
+	      return this.options.maxZoom;
+	    },
+	    set: function (maxZoom) {
+	      this.options.maxZoom = maxZoom;
+	      this.setupZoomer();
+	    }
+	  }, {
+	    key: 'previewSize',
+	    get: function () {
+	      return this._previewSize;
+	    },
+	    set: function (size) {
+	      if (!size || size.width <= 0 || size.height <= 0) {
+	        return;
+	      }
+
+	      this._previewSize = {
+	        width: size.width,
+	        height: size.height
+	      };
+	      this.$preview.css({
+	        width: this.previewSize.width,
+	        height: this.previewSize.height
+	      });
+
+	      if (this.imageLoaded) {
+	        this.setupZoomer();
+	      }
+	    }
+	  }]);
+
+	  return Cropit;
+	})();
+
+	exports['default'] = Cropit;
+	module.exports = exports['default'];
+
+/***/ },
+/* 3 */
+/***/ function(module, exports) {
+
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+	var Zoomer = (function () {
+	  function Zoomer() {
+	    _classCallCheck(this, Zoomer);
+
+	    this.minZoom = this.maxZoom = 1;
+	  }
+
+	  _createClass(Zoomer, [{
+	    key: 'setup',
+	    value: function setup(_ref) {
+	      var imageSize = _ref.imageSize;
+	      var previewSize = _ref.previewSize;
+	      var exportZoom = _ref.exportZoom;
+	      var maxZoom = _ref.maxZoom;
+	      var minZoom = _ref.minZoom;
+	      var smallImage = _ref.smallImage;
+
+	      var widthRatio = previewSize.width / imageSize.width;
+	      var heightRatio = previewSize.height / imageSize.height;
+
+	      if (minZoom === 'fit') {
+	        this.minZoom = Math.min(widthRatio, heightRatio);
+	      } else {
+	        this.minZoom = Math.max(widthRatio, heightRatio);
+	      }
+
+	      if (smallImage === 'allow') {
+	        this.minZoom = Math.min(this.minZoom, 1);
+	      }
+
+	      this.maxZoom = Math.max(this.minZoom, maxZoom / exportZoom);
+	    }
+	  }, {
+	    key: 'getZoom',
+	    value: function getZoom(sliderPos) {
+	      if (!this.minZoom || !this.maxZoom) {
+	        return null;
+	      }
+
+	      return sliderPos * (this.maxZoom - this.minZoom) + this.minZoom;
+	    }
+	  }, {
+	    key: 'getSliderPos',
+	    value: function getSliderPos(zoom) {
+	      if (!this.minZoom || !this.maxZoom) {
+	        return null;
+	      }
+
+	      if (this.minZoom === this.maxZoom) {
+	        return 0;
+	      } else {
+	        return (zoom - this.minZoom) / (this.maxZoom - this.minZoom);
+	      }
+	    }
+	  }, {
+	    key: 'isZoomable',
+	    value: function isZoomable() {
+	      if (!this.minZoom || !this.maxZoom) {
+	        return null;
+	      }
+
+	      return this.minZoom !== this.maxZoom;
+	    }
+	  }, {
+	    key: 'fixZoom',
+	    value: function fixZoom(zoom) {
+	      return Math.max(this.minZoom, Math.min(this.maxZoom, zoom));
+	    }
+	  }]);
+
+	  return Zoomer;
+	})();
+
+	exports['default'] = Zoomer;
+	module.exports = exports['default'];
+
+/***/ },
+/* 4 */
+/***/ function(module, exports) {
+
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+	var PLUGIN_KEY = 'cropit';
+
+	exports.PLUGIN_KEY = PLUGIN_KEY;
+	var CLASS_NAMES = {
+	  PREVIEW: 'cropit-preview',
+	  PREVIEW_IMAGE_CONTAINER: 'cropit-preview-image-container',
+	  PREVIEW_IMAGE: 'cropit-preview-image',
+	  PREVIEW_BACKGROUND_CONTAINER: 'cropit-preview-background-container',
+	  PREVIEW_BACKGROUND: 'cropit-preview-background',
+	  FILE_INPUT: 'cropit-image-input',
+	  ZOOM_SLIDER: 'cropit-image-zoom-input',
+
+	  DRAG_HOVERED: 'cropit-drag-hovered',
+	  IMAGE_LOADING: 'cropit-image-loading',
+	  IMAGE_LOADED: 'cropit-image-loaded',
+	  DISABLED: 'cropit-disabled'
+	};
+
+	exports.CLASS_NAMES = CLASS_NAMES;
+	var ERRORS = {
+	  IMAGE_FAILED_TO_LOAD: { code: 0, message: 'Image failed to load.' },
+	  SMALL_IMAGE: { code: 1, message: 'Image is too small.' }
+	};
+
+	exports.ERRORS = ERRORS;
+	var eventName = function eventName(events) {
+	  return events.map(function (e) {
+	    return '' + e + '.cropit';
+	  }).join(' ');
+	};
+	var EVENTS = {
+	  PREVIEW: eventName(['mousedown', 'mouseup', 'mouseleave', 'touchstart', 'touchend', 'touchcancel', 'touchleave']),
+	  PREVIEW_MOVE: eventName(['mousemove', 'touchmove']),
+	  ZOOM_INPUT: eventName(['mousemove', 'touchmove', 'change'])
+	};
+	exports.EVENTS = EVENTS;
+
+/***/ },
+/* 5 */
+/***/ function(module, exports, __webpack_require__) {
+
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+
+	var _constants = __webpack_require__(4);
+
+	var options = {
+	  elements: [{
+	    name: '$preview',
+	    description: 'The HTML element that displays image preview.',
+	    defaultSelector: '.' + _constants.CLASS_NAMES.PREVIEW
+	  }, {
+	    name: '$fileInput',
+	    description: 'File input element.',
+	    defaultSelector: 'input.' + _constants.CLASS_NAMES.FILE_INPUT
+	  }, {
+	    name: '$zoomSlider',
+	    description: 'Range input element that controls image zoom.',
+	    defaultSelector: 'input.' + _constants.CLASS_NAMES.ZOOM_SLIDER
+	  }].map(function (o) {
+	    o.type = 'jQuery element';
+	    o['default'] = '$imageCropper.find(\'' + o.defaultSelector + '\')';
+	    return o;
+	  }),
+
+	  values: [{
+	    name: 'width',
+	    type: 'number',
+	    description: 'Width of image preview in pixels. If set, it will override the CSS property.',
+	    'default': null
+	  }, {
+	    name: 'height',
+	    type: 'number',
+	    description: 'Height of image preview in pixels. If set, it will override the CSS property.',
+	    'default': null
+	  }, {
+	    name: 'imageBackground',
+	    type: 'boolean',
+	    description: 'Whether or not to display the background image beyond the preview area.',
+	    'default': false
+	  }, {
+	    name: 'imageBackgroundBorderWidth',
+	    type: 'array or number',
+	    description: 'Width of background image border in pixels.\n        The four array elements specify the width of background image width on the top, right, bottom, left side respectively.\n        The background image beyond the width will be hidden.\n        If specified as a number, border with uniform width on all sides will be applied.',
+	    'default': [0, 0, 0, 0]
+	  }, {
+	    name: 'exportZoom',
+	    type: 'number',
+	    description: 'The ratio between the desired image size to export and the preview size.\n        For example, if the preview size is `300px * 200px`, and `exportZoom = 2`, then\n        the exported image size will be `600px * 400px`.\n        This also affects the maximum zoom level, since the exported image cannot be zoomed to larger than its original size.',
+	    'default': 1
+	  }, {
+	    name: 'allowDragNDrop',
+	    type: 'boolean',
+	    description: 'When set to true, you can load an image by dragging it from local file browser onto the preview area.',
+	    'default': true
+	  }, {
+	    name: 'minZoom',
+	    type: 'string',
+	    description: 'This options decides the minimal zoom level of the image.\n        If set to `\'fill\'`, the image has to fill the preview area, i.e. both width and height must not go smaller than the preview area.\n        If set to `\'fit\'`, the image can shrink further to fit the preview area, i.e. at least one of its edges must not go smaller than the preview area.',
+	    'default': 'fill'
+	  }, {
+	    name: 'maxZoom',
+	    type: 'number',
+	    description: 'Determines how big the image can be zoomed. E.g. if set to 1.5, the image can be zoomed to 150% of its original size.',
+	    'default': 1
+	  }, {
+	    name: 'initialZoom',
+	    type: 'string',
+	    description: 'Determines the zoom when an image is loaded.\n        When set to `\'min\'`, image is zoomed to the smallest when loaded.\n        When set to `\'image\'`, image is zoomed to 100% when loaded.',
+	    'default': 'min'
+	  }, {
+	    name: 'freeMove',
+	    type: 'boolean',
+	    description: 'When set to true, you can freely move the image instead of being bound to the container borders',
+	    'default': false
+	  }, {
+	    name: 'smallImage',
+	    type: 'string',
+	    description: 'When set to `\'reject\'`, `onImageError` would be called when cropit loads an image that is smaller than the container.\n        When set to `\'allow\'`, images smaller than the container can be zoomed down to its original size, overiding `minZoom` option.\n        When set to `\'stretch\'`, the minimum zoom of small images would follow `minZoom` option.',
+	    'default': 'reject'
+	  }],
+
+	  callbacks: [{
+	    name: 'onFileChange',
+	    description: 'Called when user selects a file in the select file input.',
+	    params: [{
+	      name: 'event',
+	      type: 'object',
+	      description: 'File change event object'
+	    }]
+	  }, {
+	    name: 'onFileReaderError',
+	    description: 'Called when `FileReader` encounters an error while loading the image file.'
+	  }, {
+	    name: 'onImageLoading',
+	    description: 'Called when image starts to be loaded.'
+	  }, {
+	    name: 'onImageLoaded',
+	    description: 'Called when image is loaded.'
+	  }, {
+	    name: 'onImageError',
+	    description: 'Called when image cannot be loaded.',
+	    params: [{
+	      name: 'error',
+	      type: 'object',
+	      description: 'Error object.'
+	    }, {
+	      name: 'error.code',
+	      type: 'number',
+	      description: 'Error code. `0` means generic image loading failure. `1` means image is too small.'
+	    }, {
+	      name: 'error.message',
+	      type: 'string',
+	      description: 'A message explaining the error.'
+	    }]
+	  }, {
+	    name: 'onZoomEnabled',
+	    description: 'Called when image the zoom slider is enabled.'
+	  }, {
+	    name: 'onZoomDisabled',
+	    description: 'Called when image the zoom slider is disabled.'
+	  }, {
+	    name: 'onZoomChange',
+	    description: 'Called when zoom changes.',
+	    params: [{
+	      name: 'zoom',
+	      type: 'number',
+	      description: 'New zoom.'
+	    }]
+	  }, {
+	    name: 'onOffsetChange',
+	    description: 'Called when image offset changes.',
+	    params: [{
+	      name: 'offset',
+	      type: 'object',
+	      description: 'New offset, with `x` and `y` values.'
+	    }]
+	  }].map(function (o) {
+	    o.type = 'function';return o;
+	  })
+	};
+
+	var loadDefaults = function loadDefaults($el) {
+	  var defaults = {};
+	  if ($el) {
+	    options.elements.forEach(function (o) {
+	      defaults[o.name] = $el.find(o.defaultSelector);
+	    });
+	  }
+	  options.values.forEach(function (o) {
+	    defaults[o.name] = o['default'];
+	  });
+	  options.callbacks.forEach(function (o) {
+	    defaults[o.name] = function () {};
+	  });
+
+	  return defaults;
+	};
+
+	exports.loadDefaults = loadDefaults;
+	exports['default'] = options;
+
+/***/ },
+/* 6 */
+/***/ function(module, exports) {
+
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+	var exists = function exists(v) {
+	  return typeof v !== 'undefined';
+	};
+
+	exports.exists = exists;
+	var round = function round(x) {
+	  return +(Math.round(x * 100) + 'e-2');
+	};
+	exports.round = round;
+
+/***/ }
+/******/ ])
+});
+;
+},{"jquery":94}],48:[function(require,module,exports){
 /*! DataTables 1.10.11
  * ©2008-2015 SpryMedia Ltd - datatables.net/license
  */
@@ -20682,7 +21933,7 @@ require('../../js/affix.js')
 	return $.fn.dataTable;
 }));
 
-},{"jquery":93}],48:[function(require,module,exports){
+},{"jquery":94}],49:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -20749,7 +22000,7 @@ exports['default'] = inst;
 module.exports = exports['default'];
 
 
-},{"./handlebars.runtime":49,"./handlebars/compiler/ast":51,"./handlebars/compiler/base":52,"./handlebars/compiler/compiler":54,"./handlebars/compiler/javascript-compiler":56,"./handlebars/compiler/visitor":59,"./handlebars/no-conflict":73}],49:[function(require,module,exports){
+},{"./handlebars.runtime":50,"./handlebars/compiler/ast":52,"./handlebars/compiler/base":53,"./handlebars/compiler/compiler":55,"./handlebars/compiler/javascript-compiler":57,"./handlebars/compiler/visitor":60,"./handlebars/no-conflict":74}],50:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -20817,7 +22068,7 @@ exports['default'] = inst;
 module.exports = exports['default'];
 
 
-},{"./handlebars/base":50,"./handlebars/exception":63,"./handlebars/no-conflict":73,"./handlebars/runtime":74,"./handlebars/safe-string":75,"./handlebars/utils":76}],50:[function(require,module,exports){
+},{"./handlebars/base":51,"./handlebars/exception":64,"./handlebars/no-conflict":74,"./handlebars/runtime":75,"./handlebars/safe-string":76,"./handlebars/utils":77}],51:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -20923,7 +22174,7 @@ exports.createFrame = _utils.createFrame;
 exports.logger = _logger2['default'];
 
 
-},{"./decorators":61,"./exception":63,"./helpers":64,"./logger":72,"./utils":76}],51:[function(require,module,exports){
+},{"./decorators":62,"./exception":64,"./helpers":65,"./logger":73,"./utils":77}],52:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -20956,7 +22207,7 @@ exports['default'] = AST;
 module.exports = exports['default'];
 
 
-},{}],52:[function(require,module,exports){
+},{}],53:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -21006,7 +22257,7 @@ function parse(input, options) {
 }
 
 
-},{"../utils":76,"./helpers":55,"./parser":57,"./whitespace-control":60}],53:[function(require,module,exports){
+},{"../utils":77,"./helpers":56,"./parser":58,"./whitespace-control":61}],54:[function(require,module,exports){
 /* global define */
 'use strict';
 
@@ -21174,7 +22425,7 @@ exports['default'] = CodeGen;
 module.exports = exports['default'];
 
 
-},{"../utils":76,"source-map":78}],54:[function(require,module,exports){
+},{"../utils":77,"source-map":79}],55:[function(require,module,exports){
 /* eslint-disable new-cap */
 
 'use strict';
@@ -21748,7 +22999,7 @@ function transformLiteralToPath(sexpr) {
 }
 
 
-},{"../exception":63,"../utils":76,"./ast":51}],55:[function(require,module,exports){
+},{"../exception":64,"../utils":77,"./ast":52}],56:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -21980,7 +23231,7 @@ function preparePartialBlock(open, program, close, locInfo) {
 }
 
 
-},{"../exception":63}],56:[function(require,module,exports){
+},{"../exception":64}],57:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -23108,7 +24359,7 @@ exports['default'] = JavaScriptCompiler;
 module.exports = exports['default'];
 
 
-},{"../base":50,"../exception":63,"../utils":76,"./code-gen":53}],57:[function(require,module,exports){
+},{"../base":51,"../exception":64,"../utils":77,"./code-gen":54}],58:[function(require,module,exports){
 /* istanbul ignore next */
 /* Jison generated parser */
 "use strict";
@@ -23848,7 +25099,7 @@ var handlebars = (function () {
 exports['default'] = handlebars;
 
 
-},{}],58:[function(require,module,exports){
+},{}],59:[function(require,module,exports){
 /* eslint-disable new-cap */
 'use strict';
 
@@ -24036,7 +25287,7 @@ PrintVisitor.prototype.HashPair = function (pair) {
 /* eslint-enable new-cap */
 
 
-},{"./visitor":59}],59:[function(require,module,exports){
+},{"./visitor":60}],60:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -24178,7 +25429,7 @@ exports['default'] = Visitor;
 module.exports = exports['default'];
 
 
-},{"../exception":63}],60:[function(require,module,exports){
+},{"../exception":64}],61:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -24401,7 +25652,7 @@ exports['default'] = WhitespaceControl;
 module.exports = exports['default'];
 
 
-},{"./visitor":59}],61:[function(require,module,exports){
+},{"./visitor":60}],62:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -24419,7 +25670,7 @@ function registerDefaultDecorators(instance) {
 }
 
 
-},{"./decorators/inline":62}],62:[function(require,module,exports){
+},{"./decorators/inline":63}],63:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -24450,7 +25701,7 @@ exports['default'] = function (instance) {
 module.exports = exports['default'];
 
 
-},{"../utils":76}],63:[function(require,module,exports){
+},{"../utils":77}],64:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -24492,7 +25743,7 @@ exports['default'] = Exception;
 module.exports = exports['default'];
 
 
-},{}],64:[function(require,module,exports){
+},{}],65:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -24540,7 +25791,7 @@ function registerDefaultHelpers(instance) {
 }
 
 
-},{"./helpers/block-helper-missing":65,"./helpers/each":66,"./helpers/helper-missing":67,"./helpers/if":68,"./helpers/log":69,"./helpers/lookup":70,"./helpers/with":71}],65:[function(require,module,exports){
+},{"./helpers/block-helper-missing":66,"./helpers/each":67,"./helpers/helper-missing":68,"./helpers/if":69,"./helpers/log":70,"./helpers/lookup":71,"./helpers/with":72}],66:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -24581,7 +25832,7 @@ exports['default'] = function (instance) {
 module.exports = exports['default'];
 
 
-},{"../utils":76}],66:[function(require,module,exports){
+},{"../utils":77}],67:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -24677,7 +25928,7 @@ exports['default'] = function (instance) {
 module.exports = exports['default'];
 
 
-},{"../exception":63,"../utils":76}],67:[function(require,module,exports){
+},{"../exception":64,"../utils":77}],68:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -24704,7 +25955,7 @@ exports['default'] = function (instance) {
 module.exports = exports['default'];
 
 
-},{"../exception":63}],68:[function(require,module,exports){
+},{"../exception":64}],69:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -24735,7 +25986,7 @@ exports['default'] = function (instance) {
 module.exports = exports['default'];
 
 
-},{"../utils":76}],69:[function(require,module,exports){
+},{"../utils":77}],70:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -24763,7 +26014,7 @@ exports['default'] = function (instance) {
 module.exports = exports['default'];
 
 
-},{}],70:[function(require,module,exports){
+},{}],71:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -24777,7 +26028,7 @@ exports['default'] = function (instance) {
 module.exports = exports['default'];
 
 
-},{}],71:[function(require,module,exports){
+},{}],72:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -24812,7 +26063,7 @@ exports['default'] = function (instance) {
 module.exports = exports['default'];
 
 
-},{"../utils":76}],72:[function(require,module,exports){
+},{"../utils":77}],73:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -24861,7 +26112,7 @@ exports['default'] = logger;
 module.exports = exports['default'];
 
 
-},{"./utils":76}],73:[function(require,module,exports){
+},{"./utils":77}],74:[function(require,module,exports){
 (function (global){
 /* global window */
 'use strict';
@@ -24885,7 +26136,7 @@ module.exports = exports['default'];
 
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],74:[function(require,module,exports){
+},{}],75:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -25179,7 +26430,7 @@ function executeDecorators(fn, prog, container, depths, data, blockParams) {
 }
 
 
-},{"./base":50,"./exception":63,"./utils":76}],75:[function(require,module,exports){
+},{"./base":51,"./exception":64,"./utils":77}],76:[function(require,module,exports){
 // Build out our basic SafeString type
 'use strict';
 
@@ -25196,7 +26447,7 @@ exports['default'] = SafeString;
 module.exports = exports['default'];
 
 
-},{}],76:[function(require,module,exports){
+},{}],77:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -25322,7 +26573,7 @@ function appendContextPath(contextPath, id) {
 }
 
 
-},{}],77:[function(require,module,exports){
+},{}],78:[function(require,module,exports){
 // USAGE:
 // var handlebars = require('handlebars');
 /* eslint-disable no-var */
@@ -25349,7 +26600,7 @@ if (typeof require !== 'undefined' && require.extensions) {
   require.extensions['.hbs'] = extension;
 }
 
-},{"../dist/cjs/handlebars":48,"../dist/cjs/handlebars/compiler/printer":58,"fs":94}],78:[function(require,module,exports){
+},{"../dist/cjs/handlebars":49,"../dist/cjs/handlebars/compiler/printer":59,"fs":95}],79:[function(require,module,exports){
 /*
  * Copyright 2009-2011 Mozilla Foundation and contributors
  * Licensed under the New BSD license. See LICENSE.txt or:
@@ -25359,7 +26610,7 @@ exports.SourceMapGenerator = require('./source-map/source-map-generator').Source
 exports.SourceMapConsumer = require('./source-map/source-map-consumer').SourceMapConsumer;
 exports.SourceNode = require('./source-map/source-node').SourceNode;
 
-},{"./source-map/source-map-consumer":85,"./source-map/source-map-generator":86,"./source-map/source-node":87}],79:[function(require,module,exports){
+},{"./source-map/source-map-consumer":86,"./source-map/source-map-generator":87,"./source-map/source-node":88}],80:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2011 Mozilla Foundation and contributors
@@ -25468,7 +26719,7 @@ define(function (require, exports, module) {
 
 });
 
-},{"./util":88,"amdefine":89}],80:[function(require,module,exports){
+},{"./util":89,"amdefine":90}],81:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2011 Mozilla Foundation and contributors
@@ -25616,7 +26867,7 @@ define(function (require, exports, module) {
 
 });
 
-},{"./base64":81,"amdefine":89}],81:[function(require,module,exports){
+},{"./base64":82,"amdefine":90}],82:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2011 Mozilla Foundation and contributors
@@ -25691,7 +26942,7 @@ define(function (require, exports, module) {
 
 });
 
-},{"amdefine":89}],82:[function(require,module,exports){
+},{"amdefine":90}],83:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2011 Mozilla Foundation and contributors
@@ -25810,7 +27061,7 @@ define(function (require, exports, module) {
 
 });
 
-},{"amdefine":89}],83:[function(require,module,exports){
+},{"amdefine":90}],84:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2014 Mozilla Foundation and contributors
@@ -25898,7 +27149,7 @@ define(function (require, exports, module) {
 
 });
 
-},{"./util":88,"amdefine":89}],84:[function(require,module,exports){
+},{"./util":89,"amdefine":90}],85:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2011 Mozilla Foundation and contributors
@@ -26020,7 +27271,7 @@ define(function (require, exports, module) {
 
 });
 
-},{"amdefine":89}],85:[function(require,module,exports){
+},{"amdefine":90}],86:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2011 Mozilla Foundation and contributors
@@ -27099,7 +28350,7 @@ define(function (require, exports, module) {
 
 });
 
-},{"./array-set":79,"./base64-vlq":80,"./binary-search":82,"./quick-sort":84,"./util":88,"amdefine":89}],86:[function(require,module,exports){
+},{"./array-set":80,"./base64-vlq":81,"./binary-search":83,"./quick-sort":85,"./util":89,"amdefine":90}],87:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2011 Mozilla Foundation and contributors
@@ -27500,7 +28751,7 @@ define(function (require, exports, module) {
 
 });
 
-},{"./array-set":79,"./base64-vlq":80,"./mapping-list":83,"./util":88,"amdefine":89}],87:[function(require,module,exports){
+},{"./array-set":80,"./base64-vlq":81,"./mapping-list":84,"./util":89,"amdefine":90}],88:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2011 Mozilla Foundation and contributors
@@ -27916,7 +29167,7 @@ define(function (require, exports, module) {
 
 });
 
-},{"./source-map-generator":86,"./util":88,"amdefine":89}],88:[function(require,module,exports){
+},{"./source-map-generator":87,"./util":89,"amdefine":90}],89:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2011 Mozilla Foundation and contributors
@@ -28288,7 +29539,7 @@ define(function (require, exports, module) {
 
 });
 
-},{"amdefine":89}],89:[function(require,module,exports){
+},{"amdefine":90}],90:[function(require,module,exports){
 (function (process,__filename){
 /** vim: et:ts=4:sw=4:sts=4
  * @license amdefine 1.0.0 Copyright (c) 2011-2015, The Dojo Foundation All Rights Reserved.
@@ -28593,15 +29844,15 @@ function amdefine(module, requireFn) {
 module.exports = amdefine;
 
 }).call(this,require('_process'),"/node_modules/handlebars/node_modules/source-map/node_modules/amdefine/amdefine.js")
-},{"_process":96,"path":95}],90:[function(require,module,exports){
+},{"_process":97,"path":96}],91:[function(require,module,exports){
 // Create a simple path alias to allow browserify to resolve
 // the runtime on a supported path.
 module.exports = require('./dist/cjs/handlebars.runtime')['default'];
 
-},{"./dist/cjs/handlebars.runtime":49}],91:[function(require,module,exports){
+},{"./dist/cjs/handlebars.runtime":50}],92:[function(require,module,exports){
 module.exports = require("handlebars/runtime")["default"];
 
-},{"handlebars/runtime":90}],92:[function(require,module,exports){
+},{"handlebars/runtime":91}],93:[function(require,module,exports){
 /*!
  * jQuery Validation Plugin v1.15.0
  *
@@ -30134,7 +31385,7 @@ if ( $.ajaxPrefilter ) {
 }
 
 }));
-},{"jquery":93}],93:[function(require,module,exports){
+},{"jquery":94}],94:[function(require,module,exports){
 /*!
  * jQuery JavaScript Library v2.2.2
  * http://jquery.com/
@@ -39978,9 +41229,9 @@ if ( !noGlobal ) {
 return jQuery;
 }));
 
-},{}],94:[function(require,module,exports){
-
 },{}],95:[function(require,module,exports){
+
+},{}],96:[function(require,module,exports){
 (function (process){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -40208,7 +41459,7 @@ var substr = 'ab'.substr(-1) === 'b'
 ;
 
 }).call(this,require('_process'))
-},{"_process":96}],96:[function(require,module,exports){
+},{"_process":97}],97:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -40301,7 +41552,7 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],97:[function(require,module,exports){
+},{}],98:[function(require,module,exports){
 /*! DataTables Bootstrap 3 integration
  * ©2011-2015 SpryMedia Ltd - datatables.net/license
  */
@@ -40484,7 +41735,7 @@ DataTable.ext.renderer.pageButton.bootstrap = function ( settings, host, idx, bu
 
 return DataTable;
 }));
-},{"datatables.net":47}],98:[function(require,module,exports){
+},{"datatables.net":48}],99:[function(require,module,exports){
 /*! DataTables 1.10.11
  * ©2008-2015 SpryMedia Ltd - datatables.net/license
  */
@@ -55754,4 +57005,4 @@ return DataTable;
 	return $.fn.dataTable;
 }));
 
-},{"jquery":93}]},{},[25]);
+},{"jquery":94}]},{},[25]);

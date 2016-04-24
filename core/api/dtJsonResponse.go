@@ -3,9 +3,9 @@ package api
 import (
 	"encoding/json"
 	"net/http"
-    
-    "linq/core/utils"
-	
+
+	"linq/core/utils"
+
 	"github.com/satori/go.uuid"
 )
 
@@ -18,7 +18,7 @@ type jsonDTResponse struct {
 	Token           uuid.UUID   `json:"token"`
 }
 
-func (response ApiService)DTJsonResponse(data interface{}, success bool, recordsTotal int, recordsFiltered int, draw int) {
+func (response ApiService) DTJsonResponse(data interface{}, success bool, recordsTotal int, recordsFiltered int, draw int) {
 	dtResponse := jsonDTResponse{
 		Data:            data,
 		Success:         success,
@@ -30,7 +30,7 @@ func (response ApiService)DTJsonResponse(data interface{}, success bool, records
 
 	response.Header().Set("Content-Type", "application/linq.api+json; charset=UTF-8")
 	response.WriteHeader(http.StatusOK)
-	
+
 	err := json.NewEncoder(response).Encode(dtResponse)
 	utils.HandleWarn(err)
 }

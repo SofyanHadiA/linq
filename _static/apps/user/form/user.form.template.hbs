@@ -4,89 +4,91 @@
 </div>
 
 <div class="modal-body">
-    <form id="user-form" name="user-form" class="form-horizontal">
-        <ul id="error_message_box" class="warning"></ul>
-        <fieldset id="user_basic_info">
-            <div class="row">
-                <div class="col-md-12">
-                    <legend>Basic Info</legend>
-                </div>
-                <div class="form-group">
-                    <div class="col-md-12">
-                        <label class="col-md-2 col-xs-4 control-label">{{{accountNumberInput.label}}}</label>
-                        <div class="col-md-4 col-xs-8">
-                            <input type="disabled" class="form-control" disabled value="{{{accountNumberInput.value}}}" />
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6">{{{userNameInput.formGroup}}}</div>
-                <div class="col-md-6">{{{emailInput.formGroup}}}</div>
-                <div class="col-md-6">{{{firstNameInput.formGroup}}}</div>
-                <div class="col-md-6">{{{lastNameInput.formGroup}}}</div>
-                <div class="col-md-6">{{{phoneNumberInput.formGroup}}}</div>
-                <div class="col-md-6">{{{addressInput.formGroupTextArea}}}</div>
-                <div class="col-md-6">{{{countryInput.formGroup}}}</div>
-                <div class="col-md-6">{{{cityInput.formGroup}}}</div>
-                <div class="col-md-6">{{{stateInput.formGroup}}}</div>
-                <div class="col-md-6">{{{zipInput.formGroup}}}</div>
-                <div class="col-md-6">{{{notesInput.formGroup}}}</div>
-            </div>
-        </fieldset>
+    <fieldset id="user_basic_info">
         <div class="row">
-            <div class="col-md-6">
-                <fieldset>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <legend>Change Password</legend>
-                        </div>
-                        <div class="col-md-12">
-                            <div class="form-group class=" col-md-6 "">
-                                <label for="passwordOld" class="col-xs-4 control-label ">Old Password</label>
-                                <div class="col-xs-8">
-                                    <input type="password" name="passwordOld" id="passwordOld" class="form-control valid" value="" aria-invalid="false">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-12">
-                            <div class="form-group class=" col-md-6 "">
-                                <label for="password" class="col-xs-4 control-label ">Password</label>
-                                <div class="col-xs-8">
-                                    <input type="password" name="password" id="password" class="form-control valid" value="" aria-invalid="false">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-12">
-                            <div class="form-group">
-                                <label for="password2" class="col-xs-4 control-label ">Confirm Password</label>
-                                <div class="col-xs-8">
-                                    <input type="password" name="password2" id="password2" class="form-control valid" value="" aria-invalid="false">
-                                </div>
-                            </div>
+            <legend class="col-md-12">Basic Info</legend>
+            <div class="col-md-2 col-xs-12 form-horizontal">
+                <div class="form-group">
+                    <label class="col-xs-4 control-label hidden-md hidden-lg hidden-xl">User Photo</label>
+                    <div class="col-md-12 col-xs-8">
+                        <div id="user-photo" class="image-editor">
+                            <div class="cropit-preview"></div>
+                            <input type="range" class="cropit-image-zoom-input" />
+                            <input id="user-photo-file" type="file" class="cropit-image-input" />
+                            <button id="select-image-btn" class="btn btn-primary btn-block btn-xs">Change User Photo</button>
                         </div>
                     </div>
-                </fieldset>
-
+                </div>
             </div>
-            <div class="col-md-6">
-                <fieldset>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <legend>Danger Area</legend>
-                        </div>
-                        <div class="col-md-12">
-
-                            <div class="form-group class=" col-md-6 "">
-                                <label for="removeUser" class="col-xs-4 control-label ">Remove User</label>
-                                <div class="col-xs-8">
-                                    <button class="btn btn-danger">Delete This User</button>
-                                </div>
+            <div class="col-md-10 col-xs-12">
+                <form id="user-form" name="user-form" class="form-horizontal">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label class="col-md-2 col-xs-4 control-label">{{{accountNumberInput.label}}}</label>
+                            <div class="col-md-4 col-xs-8">
+                                <input type="disabled" class="form-control" disabled value="{{{accountNumberInput.value}}}" />
                             </div>
                         </div>
                     </div>
-                </fieldset>
+                    <div class="col-md-6">{{{userNameInput.formGroup}}}</div>
+                    <div class="col-md-6">{{{emailInput.formGroup}}}</div>
+                    <div class="col-md-6">{{{firstNameInput.formGroup}}}</div>
+                    <div class="col-md-6">{{{lastNameInput.formGroup}}}</div>
+                    <div class="col-md-6">{{{phoneNumberInput.formGroup}}}</div>
+                    <div class="col-md-6">{{{addressInput.formGroupTextArea}}}</div>
+                    <div class="col-md-6">{{{countryInput.formGroup}}}</div>
+                    <div class="col-md-6">{{{cityInput.formGroup}}}</div>
+                    <div class="col-md-6">{{{stateInput.formGroup}}}</div>
+                    <div class="col-md-6">{{{zipInput.formGroup}}}</div>
+                    <div class="col-md-6">{{{notesInput.formGroup}}}</div>
+                </form>
             </div>
         </div>
-    </form>
+    </fieldset>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="row form-horizontal">
+                <legend class="col-md-12">Change Password</legend>
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label for="passwordOld" class="col-xs-4 control-label ">Old Password</label>
+                        <div class="col-xs-8">
+                            <input form="user-form" type="password" name="passwordOld" id="passwordOld" class="form-control valid" value="" aria-invalid="false">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label for="password" class="col-xs-4 control-label ">New Password</label>
+                        <div class="col-xs-8">
+                            <input form="user-form" type="password" name="password" id="password" class="form-control valid" value="" aria-invalid="false">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label for="password2" class="col-xs-4 control-label ">Confirm Password</label>
+                        <div class="col-xs-8">
+                            <input form="user-form" type="password" name="password2" id="password2" class="form-control valid" value="" aria-invalid="false">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="row form-horizontal">
+                <legend class="col-md-12">Danger Area</legend>
+                <div class="col-md-12 ">
+                    <div class="form-group">
+                        <label for="removeUser" class="col-xs-4 control-label">Remove User</label>
+                        <div class="col-xs-8">
+                            <button class="btn btn-danger">Delete This User</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <div class="modal-footer">

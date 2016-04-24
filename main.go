@@ -22,8 +22,9 @@ func main() {
 	)
 
 	router := NewRouter(GetRoutes(db))
-	
+
 	staticDir := GetStrConfig("app.staticDir")
+	router.PathPrefix("/uploads").Handler(http.StripPrefix("/uploads", http.FileServer(http.Dir("uploads/"))))
 	router.PathPrefix("/").Handler(http.FileServer(http.Dir(staticDir)))
 
 	http.Handle("/", router)
