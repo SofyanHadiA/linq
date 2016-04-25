@@ -27,18 +27,9 @@ type RequestDataModel struct {
 	Token string     `json:"token"`
 }
 
-type data struct {
-	Ids []uuid.UUID `json:"ids"`
-}
-
-type RequestDataIds struct {
-	Data  data   `json:"data"`
-	Token string `json:"token"`
-}
-
-type RequestDataUpload struct {
-	Data  string `json:"data"`
-	Token string `json:"token"`
+type RequestDataUserCredential struct {
+	Data  users.UserCredential `json:"data"`
+	Token string     `json:"token"`
 }
 
 func UserController(repo repository.IRepository) userController {
@@ -114,7 +105,7 @@ func (ctrl userController) SetUserPhoto(w http.ResponseWriter, r *http.Request) 
 	utils.HandleWarn(err)
 
 	if ctrl.repo.IsExist(userId) {
-		var requestData RequestDataUpload
+		var requestData api.RequestDataImage
 
 		respWriter.DecodeBody(&requestData)
 
@@ -134,6 +125,30 @@ func (ctrl userController) SetUserPhoto(w http.ResponseWriter, r *http.Request) 
 		user := *ctrl.repo.Get(userId).(*users.User)
 		user.Avatar = fileName
 		result := ctrl.repo.Update(&user)
+
+		respWriter.ReturnJson(result)
+
+	} else {
+		respWriter.ReturnJsonBadRequest("User not exist")
+	}
+}
+
+func (ctrl userController) ChangePassword(w http.ResponseWriter, r *http.Request) {
+	respWriter := api.ApiService{w, r}
+
+	userId, err := uuid.FromString(respWriter.MuxVars("id"))
+	utils.HandleWarn(err)
+
+	if ctrl.repo.IsExist(userId) {
+		var requestData RequestDataUserCredential
+
+		respWriter.DecodeBody(&requestData)
+
+		requestData.Data.Uid = userId
+		
+		userRepository := ctrl.repo.(users.UserRepository)
+
+		result := userRepository.ChangePassword(&requestData.Data)
 
 		respWriter.ReturnJson(result)
 
@@ -163,7 +178,7 @@ func (ctrl userController) Remove(w http.ResponseWriter, r *http.Request) {
 func (ctrl userController) RemoveBulk(w http.ResponseWriter, r *http.Request) {
 	respWriter := api.ApiService{w, r}
 
-	var requestData RequestDataIds
+	var requestData api.RequestDataIds
 
 	respWriter.DecodeBody(&requestData)
 

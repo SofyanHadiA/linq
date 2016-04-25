@@ -12,7 +12,7 @@ import (
 	"github.com/satori/go.uuid"
 )
 
-type userRepository struct {
+type UserRepository struct {
 	db              IDB
 	countQuery      string
 	isExistQuery    string
@@ -22,29 +22,29 @@ type userRepository struct {
 	deleteBulkQuery string
 }
 
-func UserRepository(db IDB) IRepository {
-	return userRepository{
+func NewUserRepository(db IDB) IRepository {
+	return UserRepository{
 		db:           db,
 		countQuery:   "SELECT COUNT(*) FROM users",
 		isExistQuery: "SELECT EXISTS(SELECT * FROM users WHERE uid=?)",
 	}
 }
 
-func (repo userRepository) CountAll() int {
+func (repo UserRepository) CountAll() int {
 	var result int
 	err := repo.db.ResolveSingle(repo.countQuery).Scan(&result)
 	utils.HandleWarn(err)
 	return result
 }
 
-func (repo userRepository) IsExist(id uuid.UUID) bool {
+func (repo UserRepository) IsExist(id uuid.UUID) bool {
 	var result bool
 	err := repo.db.ResolveSingle(repo.isExistQuery, id).Scan(&result)
 	utils.HandleWarn(err)
 	return result
 }
 
-func (repo userRepository) GetAll(keyword string, length int, order int, orderDir string) IModels {
+func (repo UserRepository) GetAll(keyword string, length int, order int, orderDir string) IModels {
 	query := "SELECT * FROM users WHERE deleted=0 "
 
 	if keyword != "" {
@@ -97,7 +97,7 @@ func (repo userRepository) GetAll(keyword string, length int, order int, orderDi
 	return &result
 }
 
-func (repo userRepository) Get(id uuid.UUID) IModel {
+func (repo UserRepository) Get(id uuid.UUID) IModel {
 	selectQuery := "SELECT * FROM users WHERE uid = ? AND deleted=0 "
 
 	user := &User{}
@@ -110,7 +110,7 @@ func (repo userRepository) Get(id uuid.UUID) IModel {
 	return user
 }
 
-func (repo userRepository) Insert(model IModel) IModel {
+func (repo UserRepository) Insert(model IModel) IModel {
 	insertQuery := `INSERT INTO users 
 		(uid, username, email, first_name, last_name, password, phone_number, address, country, city, state, zip ) 
 		VALUES(:uid, :username, :email, :first_name, :last_name, :password, :phone_number, :address, :country, :city, :state, :zip)`
@@ -123,7 +123,7 @@ func (repo userRepository) Insert(model IModel) IModel {
 	return user
 }
 
-func (repo userRepository) Update(model IModel) IModel {
+func (repo UserRepository) Update(model IModel) IModel {
 	updateQuery := `UPDATE users SET username=:username, email=:email, first_name=:first_name, last_name=:last_name, password=:password, phone_number=:phone_number,
 		address=:address, country=:country, city=:city, state=:state, zip=:zip, avatar=:avatar WHERE uid=:uid`
 
@@ -134,7 +134,7 @@ func (repo userRepository) Update(model IModel) IModel {
 	return user
 }
 
-func (repo userRepository) Delete(model IModel) IModel {
+func (repo UserRepository) Delete(model IModel) IModel {
 	deleteQuery := "UPDATE users SET deleted=1 WHERE uid=:uid"
 
 	user, _ := model.(*User)
@@ -143,9 +143,28 @@ func (repo userRepository) Delete(model IModel) IModel {
 	return model
 }
 
-func (repo userRepository) DeleteBulk(users []uuid.UUID) sql.Result {
+func (repo UserRepository) DeleteBulk(users []uuid.UUID) sql.Result {
 	deleteQuery := "UPDATE users SET deleted=1 WHERE uid IN(?)"
 	err := repo.db.ExecuteBulk(deleteQuery, users)
 
 	return err
 }
+
+func (repo UserRepository) ValidatePassword(userCredential UserCredential) userCredential {
+	//TODO:
+	updateQuery := `UPDATE users SET passwor=:password WHERE uid=:uid`
+
+	repo.db.Execute(updateQuery, userCredential)
+
+	return userCredential
+}
+
+func (repo UserRepository) ChangePassword(userCredential UserCredential) userCredential {
+	//TODO:
+	updateQuery := `UPDATE users SET passwor=:password WHERE uid=:uid`
+
+	repo.db.Execute(updateQuery, userCredential)
+
+	return userCredential
+}
+

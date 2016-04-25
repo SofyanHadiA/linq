@@ -15,6 +15,20 @@ type ApiService struct {
 	Request *http.Request
 }
 
+type data struct {
+	Ids []uuid.UUID `json:"ids"`
+}
+
+type RequestDataIds struct {
+	Data  data   `json:"data"`
+	Token string `json:"token"`
+}
+
+type RequestDataImage struct {
+	Data  string `json:"data"`
+	Token string `json:"token"`
+}
+
 type JsonSuccessResponse struct {
 	Data  []interface{} `json:"data"`
 	Token uuid.UUID     `json:"token"`

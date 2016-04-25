@@ -10,7 +10,7 @@ type User struct {
 	Avatar      string 		   `json:"photo" db:"avatar"`
 	Username    string         `json:"username" db:"username"`
 	Email       string         `json:"email" db:"email"`
-	Password    string         `json:"password" db:"password"`
+	Password    string         `json:"-" db:"password"`
 	FirstName   string         `json:"firstName" db:"first_name"`
 	LastName    string         `json:"lastName" db:"last_name"`
 	PhoneNumber string         `json:"phone" db:"phone_number"`

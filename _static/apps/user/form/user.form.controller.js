@@ -75,8 +75,12 @@ function userFormController(endpoint, data) {
                 }
             });
 
-        $('#user-photo').cropit();
-        $('#user-photo').cropit('imageSrc', './uploads/user_avatars/'+ self.data.photo);
+        if (!self.data.photo) {
+            $('#user-photo').cropit();
+        }
+        else {
+            $('#user-photo').cropit('imageSrc', './uploads/user_avatars/' + self.data.photo);
+        }
         $('#select-image-btn').click(function() {
             $("#user-form.cropit-image-input").prop('disabled', false);
             $('.cropit-image-input').click();
@@ -87,10 +91,6 @@ function userFormController(endpoint, data) {
 
     function uploadUserPhoto(userId) {
         var imageData = $('#user-photo').cropit('export');
-
-        // var fd = new FormData();
-        // fd.append('userphoto', $("#user-photo-file")[0].files[0]);
-
         return $http.post(endpoint + "/" + userId + "/photo", imageData);
     }
 
