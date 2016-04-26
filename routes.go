@@ -33,6 +33,7 @@ func GetRoutes(db database.IDB) Routes {
 		Route{"UserSingle", "GET", "/api/v1/users/{id}", userController.Get},
 		Route{"UserCreate", "POST", "/api/v1/users", userController.Create},
 		Route{"UserModify", "PUT", "/api/v1/users/{id}", userController.Modify},
+		Route{"UserChangePassword", "PUT", "/api/v1/users/{id}", userController.ChangePassword},
 		Route{"UserUpdatePhoto", "POST", "/api/v1/users/{id}/photo", userController.SetUserPhoto},
 		Route{"UserRemove", "DELETE", "/api/v1/users/{id}", userController.Remove},
 		Route{"UserBulkRemove", "POST", "/api/v1/users/bulkdelete", userController.RemoveBulk},

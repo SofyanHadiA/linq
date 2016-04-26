@@ -150,21 +150,21 @@ func (repo UserRepository) DeleteBulk(users []uuid.UUID) sql.Result {
 	return err
 }
 
-func (repo UserRepository) ValidatePassword(userCredential UserCredential) userCredential {
+func (repo UserRepository) ValidatePassword(userCredential *UserCredential) sql.Result {
 	//TODO:
 	updateQuery := `UPDATE users SET passwor=:password WHERE uid=:uid`
 
-	repo.db.Execute(updateQuery, userCredential)
+	result := repo.db.Execute(updateQuery, userCredential)
 
-	return userCredential
+	return result
 }
 
-func (repo UserRepository) ChangePassword(userCredential UserCredential) userCredential {
+func (repo UserRepository) ChangePassword(userCredential *UserCredential) sql.Result {
 	//TODO:
 	updateQuery := `UPDATE users SET passwor=:password WHERE uid=:uid`
 
-	repo.db.Execute(updateQuery, userCredential)
+	result := repo.db.Execute(updateQuery, userCredential)
 
-	return userCredential
+	return result
 }
 

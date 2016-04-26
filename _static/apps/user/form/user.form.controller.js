@@ -13,6 +13,7 @@ function userFormController(endpoint, data) {
         modal: $app.$view.$modal,
         formId: "#user-form",
         data: data || {},
+        isPhotoChanged: false,
         promise: {},
         defer: $.Deferred(),
         formConfig: {
@@ -75,12 +76,13 @@ function userFormController(endpoint, data) {
                 }
             });
 
-        if (!self.data.photo) {
-            $('#user-photo').cropit();
-        }
-        else {
+        $('#user-photo').cropit("onFileChange", function(){
+            self.isPhotoChanged = true;
+        });
+
+        if (self.data.photo) {
             $('#user-photo').cropit('imageSrc', './uploads/user_avatars/' + self.data.photo);
-        }
+        };
         $('#select-image-btn').click(function() {
             $("#user-form.cropit-image-input").prop('disabled', false);
             $('.cropit-image-input').click();
@@ -90,15 +92,23 @@ function userFormController(endpoint, data) {
     }
 
     function uploadUserPhoto(userId) {
-        var imageData = $('#user-photo').cropit('export');
-        return $http.post(endpoint + "/" + userId + "/photo", imageData);
+        if(self.isPhotoChanged){
+            var imageData = $('#user-photo').cropit('export');
+            return $http.post(endpoint + "/" + userId + "/photo", imageData);
+        }else{
+            return
+        }
+    }
+    
+    function changePassword(userId) {
+        //TODO: 
     }
 
     function onDone(data) {
         uploadUserPhoto(data.uid).success(function() {
             self.modal.hide();
             self.defer.resolve();
-        })
+        });
     }
 
     function onClose() {
