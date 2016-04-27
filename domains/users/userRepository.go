@@ -125,7 +125,17 @@ func (repo UserRepository) Insert(model IModel) IModel {
 
 func (repo UserRepository) Update(model IModel) IModel {
 	updateQuery := `UPDATE users SET username=:username, email=:email, first_name=:first_name, last_name=:last_name, password=:password, phone_number=:phone_number,
-		address=:address, country=:country, city=:city, state=:state, zip=:zip, avatar=:avatar WHERE uid=:uid`
+		address=:address, country=:country, city=:city, state=:state, zip=:zip WHERE uid=:uid`
+
+	user, _ := model.(*User)
+
+	repo.db.Execute(updateQuery, user)
+
+	return user
+}
+
+func (repo UserRepository) UpdateUserPhoto(model IModel) IModel {
+	updateQuery := `UPDATE users SET avatar=:avatar WHERE uid=:uid`
 
 	user, _ := model.(*User)
 

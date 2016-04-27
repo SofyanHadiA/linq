@@ -123,8 +123,11 @@ func (ctrl userController) SetUserPhoto(w http.ResponseWriter, r *http.Request) 
 		utils.HandleWarn(err)
 
 		user := *ctrl.repo.Get(userId).(*users.User)
+		
 		user.Avatar = fileName
-		result := ctrl.repo.Update(&user)
+		
+		userRepository := ctrl.repo.(users.UserRepository)
+		result := userRepository.UpdateUserPhoto(&user)
 
 		respWriter.ReturnJson(result)
 

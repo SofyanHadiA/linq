@@ -6,6 +6,7 @@ function userFormController(endpoint, data) {
     var $modal = $app.$view.$modal;
     var $form = $app.$view.$form;
     var $http = $app.$http;
+    var $notify = $app.$notify;
 
     var self = {
         load: onLoad,
@@ -76,13 +77,16 @@ function userFormController(endpoint, data) {
                 }
             });
 
-        $('#user-photo').cropit("onFileChange", function(){
-            self.isPhotoChanged = true;
+        $('#user-photo').cropit({
+            onFileChange: function() {
+                self.isPhotoChanged = true;
+            }
         });
 
         if (self.data.photo) {
             $('#user-photo').cropit('imageSrc', './uploads/user_avatars/' + self.data.photo);
         };
+
         $('#select-image-btn').click(function() {
             $("#user-form.cropit-image-input").prop('disabled', false);
             $('.cropit-image-input').click();
@@ -92,22 +96,43 @@ function userFormController(endpoint, data) {
     }
 
     function uploadUserPhoto(userId) {
-        if(self.isPhotoChanged){
+        if (self.isPhotoChanged) {
             var imageData = $('#user-photo').cropit('export');
             return $http.post(endpoint + "/" + userId + "/photo", imageData);
-        }else{
-            return
+        }
+        else {
+            return null
         }
     }
-    
+
     function changePassword(userId) {
-        //TODO: 
+        var passwordOld = $("#passwordOld").val();
+        var password = $("#password").val();
+        var password2 = $("#password2").val();
+
+        if (password) {
+            if (password != password2) {
+                $notify.warning("Password and password confirmation are not match");
+                return $.Deferred().fail();
+            }
+
+            return $http.put(endpoint + "/" + userId + "/password", {
+                password: password,
+                password2: password2,
+                passwordOld: passwordOld
+            });
+        }
+        else {
+            return null
+        }
     }
 
     function onDone(data) {
-        uploadUserPhoto(data.uid).success(function() {
+        $.when(uploadUserPhoto(data.uid), changePassword(data.uid)).then(function() {
             self.modal.hide();
             self.defer.resolve();
+        }, function() {
+            // do nothing
         });
     }
 

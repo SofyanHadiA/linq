@@ -17,3 +17,4 @@ vendors/
 packages/
 application/config/database.php
 node_modules/
+npm-debug.log
