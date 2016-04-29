@@ -1,12 +1,13 @@
-package repository
+package service
 
 import (
 	"linq/core/utils"
+	. "linq/core/repository"
 
 	"github.com/satori/go.uuid"
 )
 
-type IRepository interface {
+type IService interface {
 	CountAll() (int, error)
 	IsExist(id uuid.UUID) (bool, error)
 	GetAll(paging utils.Paging) (IModels, error)

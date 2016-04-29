@@ -1,6 +1,7 @@
 package api
 
 import (
+	"strconv"
 	"encoding/json"
 	"net/http"
 
@@ -10,9 +11,14 @@ import (
 	"github.com/satori/go.uuid"
 )
 
-type ApiService struct {
+type apiService struct {
 	http.ResponseWriter
 	Request *http.Request
+	isReturned bool
+}
+
+func ApiService(w http.ResponseWriter, r *http.Request) apiService {
+	return apiService{w, r, false}
 }
 
 type data struct {
@@ -35,7 +41,7 @@ type JsonSuccessResponse struct {
 }
 
 type JsonErrorResponse struct {
-	Status string `json:"status"`
+	Status int `json:"status"`
 	Source string `json:"source"`
 	Title  string `json:"title"`
 	Method string `json:"method"`
@@ -46,47 +52,56 @@ type JsonErrorResponses struct {
 	Errors []JsonErrorResponse `json:"errors"`
 }
 
-func (api ApiService) FormValue(key string) string {
+func (api apiService) FormValue(key string) string {
 	return api.Request.FormValue(key)
 }
 
-func (api ApiService) MuxVars(key string) string {
+func (api apiService) MuxVars(key string) string {
 	muxVars := mux.Vars(api.Request)
 	return muxVars[key]
 }
 
-func (api ApiService) DecodeBody(requestData interface{}) error {
+func (api apiService) DecodeBody(requestData interface{}) error {
 	decoder := json.NewDecoder(api.Request.Body)
 	err := decoder.Decode(&requestData)
 	utils.HandleWarn(err)
 	return err
 }
 
-func (api ApiService) ReturnJson(payload interface{}) {
-	api.Header().Set("Content-Type", "application/linq.api+json; charset=UTF-8")
-	api.WriteHeader(http.StatusOK)
-
-	data := make([]interface{}, 1)
-	data[0] = payload
-
-	responseData := JsonSuccessResponse{
-		Data:  data,
-		Token: uuid.NewV4(),
+func (api apiService) ReturnJson(payload interface{}) {
+	if(!api.isReturned){
+		api.Header().Set("Content-Type", "application/linq.api+json; charset=UTF-8")
+		api.WriteHeader(http.StatusOK)
+	
+		data := make([]interface{}, 1)
+		data[0] = payload
+	
+		responseData := JsonSuccessResponse{
+			Data:  data,
+			Token: uuid.NewV4(),
+		}
+	
+		err := json.NewEncoder(api).Encode(responseData)
+		utils.HandleWarn(err)
+		api.isReturned = true
 	}
-
-	err := json.NewEncoder(api).Encode(responseData)
-	utils.HandleWarn(err)
 }
 
-func (api ApiService) ReturnJsonBadRequest(detail string) {
+func (api apiService) HandleApiError(err error, status int)  {
+	if (err != nil && !api.isReturned) {
+		api.returnJsonServerError(err.Error(), status)
+	}
+}
+
+func (api apiService) returnJsonServerError(detail string, status int) {
 	api.Header().Set("Content-Type", "application/linq.api+json; charset=UTF-8")
-	api.WriteHeader(http.StatusBadRequest)
+	api.WriteHeader(status)
 
 	responseData := JsonErrorResponses{
 		Errors: []JsonErrorResponse{
 			{
-				Status: "400",
-				Title:  "Bad Request",
+				Status: status,
+				Title:  http.StatusText(status),
 				Source: api.Request.URL.RequestURI(),
 				Method: api.Request.Method,
 				Detail: detail,
@@ -94,8 +109,8 @@ func (api ApiService) ReturnJsonBadRequest(detail string) {
 		},
 	}
 
-	err := json.NewEncoder(api).Encode(responseData)
-	utils.HandleWarn(err)
-
-	utils.Log.Warn(detail, responseData)
+	json.NewEncoder(api).Encode(responseData)
+	utils.Log.Warn(api.Request.Method, api.Request.URL.RequestURI(), strconv.Itoa(status), detail)
+	
+	api.isReturned = true
 }

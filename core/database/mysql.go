@@ -1,6 +1,7 @@
 package database
 
 import (
+	"errors"
 	"database/sql"
 	"fmt"
 
@@ -29,77 +30,90 @@ func MySqlDB(host string, username string, password string, database string, por
 		ConnectionString: fmt.Sprintf("%s:%s@tcp(%s:%d)/%s", username, password, host, port, database),
 	}
 
-	go DB.Ping()
+	_, err := DB.Ping()
+	if(err!= nil){
+		utils.Log.Fatal(err.Error(), DB.ConnectionString)
+	}
 
 	return DB
 }
 
-func (mysql mySqlDB) Ping() bool {
+func (mysql mySqlDB) Ping() (bool, error) {
 	db, err := sqlx.Connect("mysql", mysql.ConnectionString)
-	err = db.Ping()
-	if err != nil {
-		utils.Log.Fatal(err.Error(), mysql.ConnectionString)
-	} else {
-		utils.Log.Info("Connected to mysql server", mysql.ConnectionString)
+	if(err == nil){
+		if err = db.Ping();err != nil {
+			utils.HandleWarn(err)
+			return false, err
+		} else {
+			utils.Log.Info("Connected to mysql server", mysql.ConnectionString)
+			return true, nil
+		}
+	}else{
+		utils.HandleWarn(err)
+		return false, err
 	}
-
-	return true
 }
 
-func (mysql mySqlDB) Select(query string, model repository.IModel) error {
-	db, err := sqlx.Connect("mysql", mysql.ConnectionString)
-	utils.HandleWarn(err)
-
-	defer db.Close()
-
-	err = db.Select(&model, query)
-	return err
-}
-
-func (mysql mySqlDB) ResolveSingle(query string, args ...interface{}) *sqlx.Row {
-	db, err := sqlx.Connect("mysql", mysql.ConnectionString)
-	utils.HandleWarn(err)
-
-	defer db.Close()
-
-	row := db.QueryRowx(query, args...)
-
-	return row
-}
-
-func (mysql mySqlDB) Resolve(query string, args ...interface{}) *sqlx.Rows {
+func (mysql mySqlDB) ResolveSingle(query string, args ...interface{}) (*sqlx.Row, error) {
 	db, err := sqlx.Connect("mysql", mysql.ConnectionString)
 	utils.HandleWarn(err)
 	defer db.Close()
-
-	rows, err := db.Queryx(query, args...)
-	utils.HandleWarn(err)
-
-	return rows
+	
+	if(err == nil){
+		row := db.QueryRowx(query, args...)
+		utils.HandleWarn(err)
+		
+		return row, err
+	}else{
+		return nil, dbConectError()
+	}
 }
 
-func (mysql mySqlDB) Execute(query string, model repository.IModel) sql.Result {
+func (mysql mySqlDB) Resolve(query string, args ...interface{}) (*sqlx.Rows, error) {
 	db, err := sqlx.Connect("mysql", mysql.ConnectionString)
 	utils.HandleWarn(err)
 	defer db.Close()
-
-	result, err := db.NamedExec(query, model)
-	utils.HandleWarn(err)
-
-	return result
+	
+	if(err == nil){
+		rows, err := db.Queryx(query, args...)
+		utils.HandleWarn(err)
+		
+		return rows, err
+	}else{
+		return nil, dbConectError()
+	}
 }
 
-func (mysql mySqlDB) ExecuteBulk(query string, data []uuid.UUID) sql.Result {
-	db, err := sqlx.Connect("mysql", mysql.ConnectionString)
+func (mysql mySqlDB) Execute(query string, model repository.IModel) (*sql.Result, error) {
+	db, err := sqlx.Connect("mysql", mysql.ConnectionString);
 	utils.HandleWarn(err)
 	defer db.Close()
 
-	query, args, err := sqlx.In(query, data)
+	if(err == nil){
+		result, err := db.NamedExec(query, model)
+		utils.HandleWarn(err)
+		return &result, err
+	}else{
+		return nil, dbConectError()
+	}
+}
+
+func (mysql mySqlDB) ExecuteBulk(query string, data []uuid.UUID) (*sql.Result, error) {
+	db, err := sqlx.Connect("mysql", mysql.ConnectionString)
 	utils.HandleWarn(err)
+	defer db.Close()
+	
+	if(err == nil){
+		query, args, err := sqlx.In(query, data)
+		utils.HandleWarn(err)
+		query = db.Rebind(query)
+		result := db.MustExec(query, args...)
+		return &result, err
+	}else{
+		return nil, dbConectError()
+	}
+}
 
-	query = db.Rebind(query)
-
-	result := db.MustExec(query, args...)
-
-	return result
+func dbConectError() error{
+	return errors.New("CannotConnectToDatabase")
 }

@@ -114,13 +114,13 @@ function userFormController(endpoint, data) {
             if (password != password2) {
                 $notify.warning("Password and password confirmation are not match");
                 return $.Deferred().fail();
+            }else{
+                return $http.put(endpoint + "/" + userId + "/password", {
+                    password: password,
+                    password2: password2,
+                    passwordOld: passwordOld
+                });
             }
-
-            return $http.put(endpoint + "/" + userId + "/password", {
-                password: password,
-                password2: password2,
-                passwordOld: passwordOld
-            });
         }
         else {
             return null

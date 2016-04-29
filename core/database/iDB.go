@@ -9,10 +9,9 @@ import (
 )
 
 type IDB interface {
-	Ping() bool
-	Select(query string, model repository.IModel) error
-	ResolveSingle(query string, args ...interface{}) *sqlx.Row
-	Resolve(query string, args ...interface{}) *sqlx.Rows
-	Execute(query string, model repository.IModel) sql.Result
-	ExecuteBulk(query string, data []uuid.UUID) sql.Result
+	Ping() (bool, error)
+	ResolveSingle(query string, args ...interface{}) (*sqlx.Row, error)
+	Resolve(query string, args ...interface{}) (*sqlx.Rows, error)
+	Execute(query string, model repository.IModel) (*sql.Result, error)
+	ExecuteBulk(query string, data []uuid.UUID) (*sql.Result, error)
 }

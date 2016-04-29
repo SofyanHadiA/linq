@@ -1,7 +1,6 @@
 package users
 
 import (
-	"database/sql"
 	"fmt"
 
 	. "linq/core/database"
@@ -14,47 +13,44 @@ import (
 
 type UserRepository struct {
 	db              IDB
-	countQuery      string
-	isExistQuery    string
-	selectAllQuery  string
-	selectQuery     string
-	deleteQuery     string
-	deleteBulkQuery string
 }
 
 func NewUserRepository(db IDB) IRepository {
 	return UserRepository{
 		db:           db,
-		countQuery:   "SELECT COUNT(*) FROM users",
-		isExistQuery: "SELECT EXISTS(SELECT * FROM users WHERE uid=?)",
 	}
 }
 
-func (repo UserRepository) CountAll() int {
+func (repo UserRepository) CountAll() (int, error) {
+	countQuery:=  "SELECT COUNT(*) FROM users"
+
 	var result int
-	err := repo.db.ResolveSingle(repo.countQuery).Scan(&result)
+	row, err := repo.db.ResolveSingle(countQuery)
+	row.Scan(&result)
 	utils.HandleWarn(err)
-	return result
+	return result, err
 }
 
-func (repo UserRepository) IsExist(id uuid.UUID) bool {
+func (repo UserRepository) IsExist(id uuid.UUID) (bool, error) {
+	isExistQuery:= "SELECT EXISTS(SELECT * FROM users WHERE uid=?)"
+	
 	var result bool
-	err := repo.db.ResolveSingle(repo.isExistQuery, id).Scan(&result)
-	utils.HandleWarn(err)
-	return result
+	row, err := repo.db.ResolveSingle(isExistQuery, id)
+	row.Scan(&result)
+	return result, err
 }
 
-func (repo UserRepository) GetAll(keyword string, length int, order int, orderDir string) IModels {
+func (repo UserRepository) GetAll(paging utils.Paging) (IModels, error) {
 	query := "SELECT * FROM users WHERE deleted=0 "
 
-	if keyword != "" {
+	if paging.Keyword != "" {
 		query += ` AND (username LIKE '%?%' OR email LIKE '%?%' OR first_name LIKE '%?%' OR last_name LIKE '%?%') `
 	}
 
-	if order > 0 {
+	if paging.Order > 0 {
 		var columnMap string
 
-		switch order {
+		switch paging.Order {
 		case 0:
 			columnMap = "uid"
 		case 1:
@@ -67,22 +63,24 @@ func (repo UserRepository) GetAll(keyword string, length int, order int, orderDi
 			columnMap = "username"
 		}
 
-		query += fmt.Sprintf(" ORDER BY %s %s ", columnMap, orderDir)
+		query += fmt.Sprintf(" ORDER BY %s %s ", columnMap, paging.OrderDir)
 	}
 
-	if length > 0 {
-		query += fmt.Sprintf(" LIMIT %d ", length)
+	if paging.Length > 0 {
+		query += fmt.Sprintf(" LIMIT %d ", paging.Length)
 	} else {
 		query += " LIMIT 25 "
 	}
 
 	rows := &sqlx.Rows{}
+	var err error
 
-	if keyword != "" {
-		rows = repo.db.Resolve(query, keyword)
+	if paging.Keyword != "" {
+		rows, err = repo.db.Resolve(query, paging.Keyword)
 	} else {
-		rows = repo.db.Resolve(query)
+		rows, err = repo.db.Resolve(query)
 	}
+	utils.HandleWarn(err)
 
 	result := Users{}
 
@@ -92,25 +90,22 @@ func (repo UserRepository) GetAll(keyword string, length int, order int, orderDi
 		utils.HandleWarn(err)
 		result = append(result, (*user))
 	}
-	utils.HandleWarn(rows.Err())
 
-	return &result
+	return &result, err
 }
 
-func (repo UserRepository) Get(id uuid.UUID) IModel {
+func (repo UserRepository) Get(id uuid.UUID) (IModel, error) {
 	selectQuery := "SELECT * FROM users WHERE uid = ? AND deleted=0 "
 
 	user := &User{}
-	err := repo.db.ResolveSingle(selectQuery, id).StructScan(user)
-
+	rows, err := repo.db.ResolveSingle(selectQuery, id)
 	utils.HandleWarn(err)
-
-	utils.Log.Info("---", user.Avatar)
-
-	return user
+	rows.StructScan(user)
+	
+	return user, err
 }
 
-func (repo UserRepository) Insert(model IModel) IModel {
+func (repo UserRepository) Insert(model IModel) error {
 	insertQuery := `INSERT INTO users 
 		(uid, username, email, first_name, last_name, password, phone_number, address, country, city, state, zip ) 
 		VALUES(:uid, :username, :email, :first_name, :last_name, :password, :phone_number, :address, :country, :city, :state, :zip)`
@@ -118,63 +113,62 @@ func (repo UserRepository) Insert(model IModel) IModel {
 	user, _ := model.(*User)
 	user.Uid = uuid.NewV4()
 
-	repo.db.Execute(insertQuery, user)
-
-	return user
+	_, err:= repo.db.Execute(insertQuery, user)
+	
+	return err
 }
 
-func (repo UserRepository) Update(model IModel) IModel {
+func (repo UserRepository) Update(model IModel) error {
 	updateQuery := `UPDATE users SET username=:username, email=:email, first_name=:first_name, last_name=:last_name, password=:password, phone_number=:phone_number,
 		address=:address, country=:country, city=:city, state=:state, zip=:zip WHERE uid=:uid`
 
 	user, _ := model.(*User)
 
-	repo.db.Execute(updateQuery, user)
-
-	return user
-}
-
-func (repo UserRepository) UpdateUserPhoto(model IModel) IModel {
-	updateQuery := `UPDATE users SET avatar=:avatar WHERE uid=:uid`
-
-	user, _ := model.(*User)
-
-	repo.db.Execute(updateQuery, user)
-
-	return user
-}
-
-func (repo UserRepository) Delete(model IModel) IModel {
-	deleteQuery := "UPDATE users SET deleted=1 WHERE uid=:uid"
-
-	user, _ := model.(*User)
-
-	repo.db.Execute(deleteQuery, user)
-	return model
-}
-
-func (repo UserRepository) DeleteBulk(users []uuid.UUID) sql.Result {
-	deleteQuery := "UPDATE users SET deleted=1 WHERE uid IN(?)"
-	err := repo.db.ExecuteBulk(deleteQuery, users)
+	_, err := repo.db.Execute(updateQuery, user)
 
 	return err
 }
 
-func (repo UserRepository) ValidatePassword(userCredential *UserCredential) sql.Result {
-	//TODO:
-	updateQuery := `UPDATE users SET passwor=:password WHERE uid=:uid`
+func (repo UserRepository) UpdateUserPhoto(model IModel) error {
+	updateQuery := `UPDATE users SET avatar=:avatar WHERE uid=:uid`
 
-	result := repo.db.Execute(updateQuery, userCredential)
+	user, _ := model.(*User)
 
-	return result
+	_, err := repo.db.Execute(updateQuery, user)
+
+	return err
 }
 
-func (repo UserRepository) ChangePassword(userCredential *UserCredential) sql.Result {
-	//TODO:
-	updateQuery := `UPDATE users SET passwor=:password WHERE uid=:uid`
+func (repo UserRepository) Delete(model IModel) error {
+	deleteQuery := "UPDATE users SET deleted=1 WHERE uid=:uid"
 
-	result := repo.db.Execute(updateQuery, userCredential)
+	user, _ := model.(*User)
+	_, err:= repo.db.Execute(deleteQuery, user)
+	
+	return err
+}
 
-	return result
+func (repo UserRepository) DeleteBulk(users []uuid.UUID) error {
+	deleteQuery := "UPDATE users SET deleted=1 WHERE uid IN(?)"
+	_, err := repo.db.ExecuteBulk(deleteQuery, users)
+
+	return err
+}
+
+func (repo UserRepository) ValidatePassword(userCredential IModel) (bool, error) {
+	isValidPasswordQuery:= "SELECT EXISTS(SELECT * FROM users WHERE uid=:uid AND password:=password)"
+
+	var result bool
+	row, err := repo.db.ResolveSingle(isValidPasswordQuery, userCredential)
+	row.Scan(&result)
+	
+	return result, err
+}
+
+func (repo UserRepository) ChangePassword(userCredential IModel) error {
+	updatePasswordQuery := `UPDATE users SET password=:password WHERE uid=:uid`
+	_, err := repo.db.Execute(updatePasswordQuery, userCredential)
+
+	return err
 }
 

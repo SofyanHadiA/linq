@@ -18,7 +18,7 @@ type jsonDTResponse struct {
 	Token           uuid.UUID   `json:"token"`
 }
 
-func (response ApiService) DTJsonResponse(data interface{}, success bool, recordsTotal int, recordsFiltered int, draw int) {
+func (response apiService) DTJsonResponse(data interface{}, success bool, recordsTotal int, recordsFiltered int, draw int) {
 	dtResponse := jsonDTResponse{
 		Data:            data,
 		Success:         success,
