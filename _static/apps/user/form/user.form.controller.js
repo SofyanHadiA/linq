@@ -106,19 +106,19 @@ function userFormController(endpoint, data) {
     }
 
     function changePassword(userId) {
-        var passwordOld = $("#passwordOld").val();
         var password = $("#password").val();
-        var password2 = $("#password2").val();
+        var passwordNew = $("#passwordNew").val();
+        var passwordConfirm = $("#passwordConfirm").val();
 
-        if (password) {
-            if (password != password2) {
-                $notify.warning("Password and password confirmation are not match");
+        if (passwordNew) {
+            if (passwordNew != passwordConfirm) {
+                $notify.warning("Password and password confirmation not match");
                 return $.Deferred().fail();
             }else{
                 return $http.put(endpoint + "/" + userId + "/password", {
                     password: password,
-                    password2: password2,
-                    passwordOld: passwordOld
+                    passwordNew: passwordNew,
+                    passwordConfirm: passwordConfirm
                 });
             }
         }

@@ -12,17 +12,17 @@ import (
 )
 
 type UserRepository struct {
-	db              IDB
+	db IDB
 }
 
 func NewUserRepository(db IDB) IRepository {
 	return UserRepository{
-		db:           db,
+		db: db,
 	}
 }
 
 func (repo UserRepository) CountAll() (int, error) {
-	countQuery:=  "SELECT COUNT(*) FROM users"
+	countQuery := "SELECT COUNT(*) FROM users WHERE deleted = 0"
 
 	var result int
 	row, err := repo.db.ResolveSingle(countQuery)
@@ -32,8 +32,8 @@ func (repo UserRepository) CountAll() (int, error) {
 }
 
 func (repo UserRepository) IsExist(id uuid.UUID) (bool, error) {
-	isExistQuery:= "SELECT EXISTS(SELECT * FROM users WHERE uid=?)"
-	
+	isExistQuery := "SELECT EXISTS(SELECT * FROM users WHERE uid=? AND deleted = 0)"
+
 	var result bool
 	row, err := repo.db.ResolveSingle(isExistQuery, id)
 	row.Scan(&result)
@@ -101,25 +101,25 @@ func (repo UserRepository) Get(id uuid.UUID) (IModel, error) {
 	rows, err := repo.db.ResolveSingle(selectQuery, id)
 	utils.HandleWarn(err)
 	rows.StructScan(user)
-	
+
 	return user, err
 }
 
 func (repo UserRepository) Insert(model IModel) error {
 	insertQuery := `INSERT INTO users 
-		(uid, username, email, first_name, last_name, password, phone_number, address, country, city, state, zip ) 
-		VALUES(:uid, :username, :email, :first_name, :last_name, :password, :phone_number, :address, :country, :city, :state, :zip)`
+		(uid, username, email, first_name, last_name, phone_number, address, country, city, state, zip ) 
+		VALUES(:uid, :username, :email, :first_name, :last_name, :phone_number, :address, :country, :city, :state, :zip)`
 
 	user, _ := model.(*User)
 	user.Uid = uuid.NewV4()
 
-	_, err:= repo.db.Execute(insertQuery, user)
-	
+	_, err := repo.db.Execute(insertQuery, user)
+
 	return err
 }
 
 func (repo UserRepository) Update(model IModel) error {
-	updateQuery := `UPDATE users SET username=:username, email=:email, first_name=:first_name, last_name=:last_name, password=:password, phone_number=:phone_number,
+	updateQuery := `UPDATE users SET username=:username, email=:email, first_name=:first_name, last_name=:last_name, phone_number=:phone_number,
 		address=:address, country=:country, city=:city, state=:state, zip=:zip WHERE uid=:uid`
 
 	user, _ := model.(*User)
@@ -143,8 +143,8 @@ func (repo UserRepository) Delete(model IModel) error {
 	deleteQuery := "UPDATE users SET deleted=1 WHERE uid=:uid"
 
 	user, _ := model.(*User)
-	_, err:= repo.db.Execute(deleteQuery, user)
-	
+	_, err := repo.db.Execute(deleteQuery, user)
+
 	return err
 }
 
@@ -155,20 +155,20 @@ func (repo UserRepository) DeleteBulk(users []uuid.UUID) error {
 	return err
 }
 
-func (repo UserRepository) ValidatePassword(userCredential IModel) (bool, error) {
-	isValidPasswordQuery:= "SELECT EXISTS(SELECT * FROM users WHERE uid=:uid AND password:=password)"
+func (repo UserRepository) ValidatePassword(uid uuid.UUID, password string) (bool, error) {
+	isValidPasswordQuery := "SELECT EXISTS(SELECT * FROM users WHERE uid=? AND password=?)"
 
 	var result bool
-	row, err := repo.db.ResolveSingle(isValidPasswordQuery, userCredential)
+	row, err := repo.db.ResolveSingle(isValidPasswordQuery, uid.String(), password)
 	row.Scan(&result)
-	
+
 	return result, err
 }
 
-func (repo UserRepository) ChangePassword(userCredential IModel) error {
-	updatePasswordQuery := `UPDATE users SET password=:password WHERE uid=:uid`
-	_, err := repo.db.Execute(updatePasswordQuery, userCredential)
+func (repo UserRepository) ChangePassword(uid uuid.UUID, password string) error {
+	updatePasswordQuery := "UPDATE users SET password=? WHERE uid=?"
+
+	_, err := repo.db.ExecuteArgs(updatePasswordQuery, password, uid.String())
 
 	return err
 }
-

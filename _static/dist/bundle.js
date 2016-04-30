@@ -1576,21 +1576,21 @@ function userFormController(endpoint, data) {
     }
 
     function changePassword(userId) {
-        var passwordOld = $("#passwordOld").val();
         var password = $("#password").val();
-        var password2 = $("#password2").val();
+        var passwordNew = $("#passwordNew").val();
+        var passwordConfirm = $("#passwordConfirm").val();
 
-        if (password) {
-            if (password != password2) {
-                $notify.warning("Password and password confirmation are not match");
+        if (passwordNew) {
+            if (passwordNew != passwordConfirm) {
+                $notify.warning("Password and password confirmation not match");
                 return $.Deferred().fail();
+            }else{
+                return $http.put(endpoint + "/" + userId + "/password", {
+                    password: password,
+                    passwordNew: passwordNew,
+                    passwordConfirm: passwordConfirm
+                });
             }
-
-            return $http.put(endpoint + "/" + userId + "/password", {
-                password: password,
-                password2: password2,
-                passwordOld: passwordOld
-            });
         }
         else {
             return null
@@ -1659,7 +1659,7 @@ module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":f
     + ((stack1 = alias1(((stack1 = (depth0 != null ? depth0.zipInput : depth0)) != null ? stack1.formGroup : stack1), depth0)) != null ? stack1 : "")
     + "</div>\n                    <div class=\"col-md-6\">"
     + ((stack1 = alias1(((stack1 = (depth0 != null ? depth0.notesInput : depth0)) != null ? stack1.formGroup : stack1), depth0)) != null ? stack1 : "")
-    + "</div>\n                </form>\n            </div>\n        </div>\n    </fieldset>\n    <div class=\"row\">\n        <div class=\"col-md-2\">\n        </div>\n        <div class=\"col-md-5\">\n            <div class=\"row form-horizontal\">\n                <legend class=\"col-md-12\">Change Password</legend>\n                <div class=\"col-md-12\">\n                    <div class=\"form-group\">\n                        <label for=\"passwordOld\" class=\"col-xs-4 control-label \">Old Password</label>\n                        <div class=\"col-xs-8\">\n                            <input form=\"user-form\" type=\"password\" name=\"passwordOld\" id=\"passwordOld\" class=\"form-control valid\" value=\"\" aria-invalid=\"false\">\n                        </div>\n                    </div>\n                </div>\n                <div class=\"col-md-12\">\n                    <div class=\"form-group\">\n                        <label for=\"password\" class=\"col-xs-4 control-label \">New Password</label>\n                        <div class=\"col-xs-8\">\n                            <input form=\"user-form\" type=\"password\" name=\"password\" id=\"password\" class=\"form-control valid\" value=\"\" aria-invalid=\"false\">\n                        </div>\n                    </div>\n                </div>\n                <div class=\"col-md-12\">\n                    <div class=\"form-group\">\n                        <label for=\"password2\" class=\"col-xs-4 control-label \">Confirm Password</label>\n                        <div class=\"col-xs-8\">\n                            <input form=\"user-form\" type=\"password\" name=\"password2\" id=\"password2\" class=\"form-control valid\" value=\"\" aria-invalid=\"false\">\n                        </div>\n                    </div>\n                </div>\n            </div>\n        </div>\n        <div class=\"col-md-5\">\n            <div class=\"row form-horizontal\">\n                <legend class=\"col-md-12\">Danger Area</legend>\n                <div class=\"col-md-12 \">\n                    <div class=\"form-group\">\n                        <label for=\"removeUser\" class=\"col-xs-4 control-label\">Remove User</label>\n                        <div class=\"col-xs-8\">\n                            <button class=\"btn btn-danger\">Delete This User</button>\n                        </div>\n                    </div>\n                </div>\n            </div>\n        </div>\n    </div>\n</div>\n\n<div class=\"modal-footer\">\n    <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">Close</button>\n    <button type=\"submit\" form=\"user-form\" class=\"btn btn-primary\">Save changes</button>\n</div>\n";
+    + "</div>\n                </form>\n            </div>\n        </div>\n    </fieldset>\n    <div class=\"row\">\n        <div class=\"col-md-2\">\n        </div>\n        <div class=\"col-md-5\">\n            <div class=\"row form-horizontal\">\n                <legend class=\"col-md-12\">Change Password</legend>\n                <div class=\"col-md-12\">\n                    <div class=\"form-group\">\n                        <label for=\"passwordOld\" class=\"col-xs-4 control-label \">Current Password</label>\n                        <div class=\"col-xs-8\">\n                            <input form=\"user-form\" type=\"password\" name=\"password\" id=\"password\" class=\"form-control valid\" value=\"\" aria-invalid=\"false\">\n                        </div>\n                    </div>\n                </div>\n                <div class=\"col-md-12\">\n                    <div class=\"form-group\">\n                        <label for=\"password\" class=\"col-xs-4 control-label \">New Password</label>\n                        <div class=\"col-xs-8\">\n                            <input form=\"user-form\" type=\"password\" name=\"passwordNew\" id=\"passwordNew\" class=\"form-control valid\" value=\"\" aria-invalid=\"false\">\n                        </div>\n                    </div>\n                </div>\n                <div class=\"col-md-12\">\n                    <div class=\"form-group\">\n                        <label for=\"password2\" class=\"col-xs-4 control-label \">Confirm Password</label>\n                        <div class=\"col-xs-8\">\n                            <input form=\"user-form\" type=\"password\" name=\"passwordConfirm\" id=\"passwordConfirm\" class=\"form-control valid\" value=\"\" aria-invalid=\"false\">\n                        </div>\n                    </div>\n                </div>\n            </div>\n        </div>\n        <div class=\"col-md-5\">\n            <div class=\"row form-horizontal\">\n                <legend class=\"col-md-12\">Danger Area</legend>\n                <div class=\"col-md-12 \">\n                    <div class=\"form-group\">\n                        <label for=\"removeUser\" class=\"col-xs-4 control-label\">Remove User</label>\n                        <div class=\"col-xs-8\">\n                            <button class=\"btn btn-danger\">Delete This User</button>\n                        </div>\n                    </div>\n                </div>\n            </div>\n        </div>\n    </div>\n</div>\n\n<div class=\"modal-footer\">\n    <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">Close</button>\n    <button type=\"submit\" form=\"user-form\" class=\"btn btn-primary\">Save changes</button>\n</div>\n";
 },"useData":true});
 
 },{"hbsfy/runtime":92}],29:[function(require,module,exports){

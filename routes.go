@@ -14,7 +14,7 @@ import (
 )
 
 func GetRoutes(db database.IDB) Routes {
-	var userController = controllers.UserController(users.NewUserRepository(db))
+	var userController = controllers.UserController(users.NewUserService(users.NewUserRepository(db)))
 
 	var routes = Routes{
 		Route{"DashboardIndex", "GET", "/", Dashboard.Index},

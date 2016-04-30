@@ -38,6 +38,21 @@ func (log Logger) LogHttp(inner http.Handler, name string) http.Handler {
 	})
 }
 
+func (log Logger) LogHttpError(inner http.Handler, name string) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		start := time.Now()
+
+		inner.ServeHTTP(w, r)
+		log.Info(fmt.Sprintf(
+			"%s\t%s\t%s\t%s",
+			r.Method,
+			r.RequestURI,
+			name,
+			time.Since(start),
+		))
+	})
+}
+
 func (log Logger) Debug(message string, obj ...interface{}) {
 	if log.logLevel == 0 {
 		if len(obj) > 0 {

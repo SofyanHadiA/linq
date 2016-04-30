@@ -1,8 +1,8 @@
-package service
+package services
 
 import (
-	"linq/core/utils"
 	. "linq/core/repository"
+	"linq/core/utils"
 
 	"github.com/satori/go.uuid"
 )
@@ -12,8 +12,8 @@ type IService interface {
 	IsExist(id uuid.UUID) (bool, error)
 	GetAll(paging utils.Paging) (IModels, error)
 	Get(id uuid.UUID) (IModel, error)
-	Insert(model IModel) error
-	Update(model IModel) error
-	Delete(model IModel) error
-	DeleteBulk(model []uuid.UUID) error
+	Create(model IModel) error
+	Modify(model IModel) error
+	Remove(model IModel) error
+	RemoveBulk(model []uuid.UUID) error
 }
