@@ -1,6 +1,8 @@
 /*global $app $*/
 
 require('cropit');
+var bootbox = require('bootbox');
+
 
 function userFormController(endpoint, data) {
     var $modal = $app.$view.$modal;
@@ -77,6 +79,15 @@ function userFormController(endpoint, data) {
                 }
             });
 
+        $('#removeUser').click(function() {
+            var id = $(this).data("id");
+            bootbox.confirm('Are you sure to delete this user?', function(result) {
+                if (result) {
+                    doDelete(id);
+                }
+            });
+        });
+
         $('#user-photo').cropit({
             onFileChange: function() {
                 self.isPhotoChanged = true;
@@ -125,6 +136,13 @@ function userFormController(endpoint, data) {
         else {
             return null
         }
+    }
+    
+    function doDelete(id) {
+        $http.delete(endpoint + "/" + id).success(function(model) {
+            self.modal.hide();
+            onClose();
+        });
     }
 
     function onDone(data) {

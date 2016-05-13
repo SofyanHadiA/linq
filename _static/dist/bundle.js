@@ -274,6 +274,7 @@ function tableGridModule() {
         dataTable: {},
         render: render,
         getSelectedRows: getSelectedRows,
+        remove: remove,
         reload: reload,
         action: {
             delete: undefined,
@@ -337,11 +338,7 @@ function tableGridModule() {
         $(tableContainer + " tbody").on("click", '.btn-delete', function(event) {
             event.preventDefault();
             var id = $(this).data("id");
-            bootbox.confirm('Are you sure to delete this data?', function(result) {
-                if (result) {
-                    self.action.delete(id)
-                }
-            });
+            self.remove(id)
         });
 
         $('#delete-selected').click(function(event) {
@@ -378,6 +375,14 @@ function tableGridModule() {
         });
 
         return selectedRows;
+    }
+    
+    function remove(id){
+        bootbox.confirm('Are you sure to delete this?', function(result) {
+            if (result) {
+                self.action.delete(id)
+            }
+        });
     }
 
     function reload() {
@@ -1471,6 +1476,8 @@ $app.start(config);
 /*global $app $*/
 
 require('cropit');
+var bootbox = require('bootbox');
+
 
 function userFormController(endpoint, data) {
     var $modal = $app.$view.$modal;
@@ -1547,6 +1554,15 @@ function userFormController(endpoint, data) {
                 }
             });
 
+        $('#removeUser').click(function() {
+            var id = $(this).data("id");
+            bootbox.confirm('Are you sure to delete this user?', function(result) {
+                if (result) {
+                    doDelete(id);
+                }
+            });
+        });
+
         $('#user-photo').cropit({
             onFileChange: function() {
                 self.isPhotoChanged = true;
@@ -1596,6 +1612,13 @@ function userFormController(endpoint, data) {
             return null
         }
     }
+    
+    function doDelete(id) {
+        $http.delete(endpoint + "/" + id).success(function(model) {
+            self.modal.hide();
+            onClose();
+        });
+    }
 
     function onDone(data) {
         $.when(uploadUserPhoto(data.uid), changePassword(data.uid)).then(function() {
@@ -1612,7 +1635,7 @@ function userFormController(endpoint, data) {
 };
 
 module.exports = userFormController;
-},{"./user.form.template.hbs":28,"cropit":47}],27:[function(require,module,exports){
+},{"./user.form.template.hbs":28,"bootbox":32,"cropit":47}],27:[function(require,module,exports){
 (function (global){
 
 function customerFormModule ($app) {
@@ -1659,7 +1682,9 @@ module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":f
     + ((stack1 = alias1(((stack1 = (depth0 != null ? depth0.zipInput : depth0)) != null ? stack1.formGroup : stack1), depth0)) != null ? stack1 : "")
     + "</div>\n                    <div class=\"col-md-6\">"
     + ((stack1 = alias1(((stack1 = (depth0 != null ? depth0.notesInput : depth0)) != null ? stack1.formGroup : stack1), depth0)) != null ? stack1 : "")
-    + "</div>\n                </form>\n            </div>\n        </div>\n    </fieldset>\n    <div class=\"row\">\n        <div class=\"col-md-2\">\n        </div>\n        <div class=\"col-md-5\">\n            <div class=\"row form-horizontal\">\n                <legend class=\"col-md-12\">Change Password</legend>\n                <div class=\"col-md-12\">\n                    <div class=\"form-group\">\n                        <label for=\"passwordOld\" class=\"col-xs-4 control-label \">Current Password</label>\n                        <div class=\"col-xs-8\">\n                            <input form=\"user-form\" type=\"password\" name=\"password\" id=\"password\" class=\"form-control valid\" value=\"\" aria-invalid=\"false\">\n                        </div>\n                    </div>\n                </div>\n                <div class=\"col-md-12\">\n                    <div class=\"form-group\">\n                        <label for=\"password\" class=\"col-xs-4 control-label \">New Password</label>\n                        <div class=\"col-xs-8\">\n                            <input form=\"user-form\" type=\"password\" name=\"passwordNew\" id=\"passwordNew\" class=\"form-control valid\" value=\"\" aria-invalid=\"false\">\n                        </div>\n                    </div>\n                </div>\n                <div class=\"col-md-12\">\n                    <div class=\"form-group\">\n                        <label for=\"password2\" class=\"col-xs-4 control-label \">Confirm Password</label>\n                        <div class=\"col-xs-8\">\n                            <input form=\"user-form\" type=\"password\" name=\"passwordConfirm\" id=\"passwordConfirm\" class=\"form-control valid\" value=\"\" aria-invalid=\"false\">\n                        </div>\n                    </div>\n                </div>\n            </div>\n        </div>\n        <div class=\"col-md-5\">\n            <div class=\"row form-horizontal\">\n                <legend class=\"col-md-12\">Danger Area</legend>\n                <div class=\"col-md-12 \">\n                    <div class=\"form-group\">\n                        <label for=\"removeUser\" class=\"col-xs-4 control-label\">Remove User</label>\n                        <div class=\"col-xs-8\">\n                            <button class=\"btn btn-danger\">Delete This User</button>\n                        </div>\n                    </div>\n                </div>\n            </div>\n        </div>\n    </div>\n</div>\n\n<div class=\"modal-footer\">\n    <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">Close</button>\n    <button type=\"submit\" form=\"user-form\" class=\"btn btn-primary\">Save changes</button>\n</div>\n";
+    + "</div>\n                </form>\n            </div>\n        </div>\n    </fieldset>\n    <div class=\"row\">\n        <div class=\"col-md-2\">\n        </div>\n        <div class=\"col-md-5\">\n            <div class=\"row form-horizontal\">\n                <legend class=\"col-md-12\">Change Password</legend>\n                <div class=\"col-md-12\">\n                    <div class=\"form-group\">\n                        <label for=\"passwordOld\" class=\"col-xs-4 control-label \">Current Password</label>\n                        <div class=\"col-xs-8\">\n                            <input form=\"user-form\" type=\"password\" name=\"password\" id=\"password\" class=\"form-control valid\" value=\"\" aria-invalid=\"false\">\n                        </div>\n                    </div>\n                </div>\n                <div class=\"col-md-12\">\n                    <div class=\"form-group\">\n                        <label for=\"password\" class=\"col-xs-4 control-label \">New Password</label>\n                        <div class=\"col-xs-8\">\n                            <input form=\"user-form\" type=\"password\" name=\"passwordNew\" id=\"passwordNew\" class=\"form-control valid\" value=\"\" aria-invalid=\"false\">\n                        </div>\n                    </div>\n                </div>\n                <div class=\"col-md-12\">\n                    <div class=\"form-group\">\n                        <label for=\"password2\" class=\"col-xs-4 control-label \">Confirm Password</label>\n                        <div class=\"col-xs-8\">\n                            <input form=\"user-form\" type=\"password\" name=\"passwordConfirm\" id=\"passwordConfirm\" class=\"form-control valid\" value=\"\" aria-invalid=\"false\">\n                        </div>\n                    </div>\n                </div>\n            </div>\n        </div>\n        <div class=\"col-md-5\">\n            <div class=\"row form-horizontal\">\n                <legend class=\"col-md-12\">Danger Area</legend>\n                <div class=\"col-md-12 \">\n                    <div class=\"form-group\">\n                        <label for=\"removeUser\" class=\"col-xs-4 control-label\">Delete User</label>\n                        <div class=\"col-xs-8\">\n                            <button id=\"removeUser\" class=\"btn btn-danger\" data-id=\""
+    + ((stack1 = alias1(((stack1 = (depth0 != null ? depth0.accountNumberInput : depth0)) != null ? stack1.value : stack1), depth0)) != null ? stack1 : "")
+    + "\">Delete This User</button>\n                        </div>\n                    </div>\n                </div>\n            </div>\n        </div>\n    </div>\n</div>\n\n<div class=\"modal-footer\">\n    <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">Close</button>\n    <button type=\"submit\" form=\"user-form\" class=\"btn btn-primary\">Save changes</button>\n</div>\n";
 },"useData":true});
 
 },{"hbsfy/runtime":92}],29:[function(require,module,exports){

@@ -158,15 +158,17 @@ func (ctrl userController) SetUserPhoto(w http.ResponseWriter, r *http.Request) 
 				userModel, err := ctrl.service.Get(userId)
 				respWriter.HandleApiError(err, http.StatusInternalServerError)
 
-				user := userModel.(*users.User)
-				user.Avatar = fileName
-
-				userService := ctrl.service.(users.UserService)
-				err = userService.UpdateUserPhoto(user)
-				respWriter.HandleApiError(err, http.StatusInternalServerError)
-
 				if err == nil {
-					respWriter.ReturnJson(user)
+					user := userModel.(*users.User)
+					user.Avatar = fileName
+	
+					userService := ctrl.service.(users.UserService)
+					err = userService.UpdateUserPhoto(user)
+					respWriter.HandleApiError(err, http.StatusInternalServerError)
+	
+					if err == nil {
+						respWriter.ReturnJson(user)
+					}
 				}
 			}
 		}

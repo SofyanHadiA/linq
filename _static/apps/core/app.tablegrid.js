@@ -10,6 +10,7 @@ function tableGridModule() {
         dataTable: {},
         render: render,
         getSelectedRows: getSelectedRows,
+        remove: remove,
         reload: reload,
         action: {
             delete: undefined,
@@ -73,11 +74,7 @@ function tableGridModule() {
         $(tableContainer + " tbody").on("click", '.btn-delete', function(event) {
             event.preventDefault();
             var id = $(this).data("id");
-            bootbox.confirm('Are you sure to delete this data?', function(result) {
-                if (result) {
-                    self.action.delete(id)
-                }
-            });
+            self.remove(id)
         });
 
         $('#delete-selected').click(function(event) {
@@ -114,6 +111,14 @@ function tableGridModule() {
         });
 
         return selectedRows;
+    }
+    
+    function remove(id){
+        bootbox.confirm('Are you sure to delete this?', function(result) {
+            if (result) {
+                self.action.delete(id)
+            }
+        });
     }
 
     function reload() {

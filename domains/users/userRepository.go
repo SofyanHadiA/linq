@@ -130,7 +130,7 @@ func (repo UserRepository) Update(model IModel) error {
 }
 
 func (repo UserRepository) UpdateUserPhoto(model IModel) error {
-	updateQuery := `UPDATE users SET avatar=:avatar WHERE uid=:uid`
+	updateQuery := "UPDATE users SET avatar=:avatar WHERE uid=:uid"
 
 	user, _ := model.(*User)
 
@@ -159,7 +159,7 @@ func (repo UserRepository) ValidatePassword(uid uuid.UUID, password string) (boo
 	isValidPasswordQuery := "SELECT EXISTS(SELECT * FROM users WHERE uid=? AND password=?)"
 
 	var result bool
-	row, err := repo.db.ResolveSingle(isValidPasswordQuery, uid.String(), password)
+	row, err := repo.db.ResolveSingle(isValidPasswordQuery, uid.String, password)
 	row.Scan(&result)
 
 	return result, err

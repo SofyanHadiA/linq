@@ -7,6 +7,7 @@ import (
 	. "linq/core"
 	"linq/core/database"
 	"linq/core/utils"
+	. "bitbucket.org/sofyan_a/linq.im"
 )
 
 func main() {

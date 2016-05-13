@@ -71,13 +71,10 @@ func (mysql mySqlDB) ResolveSingle(query string, args ...interface{}) (*sqlx.Row
 
 func (mysql mySqlDB) Resolve(query string, args ...interface{}) (*sqlx.Rows, error) {
 	db, err := sqlx.Connect("mysql", mysql.ConnectionString)
-	utils.HandleWarn(err)
 	defer db.Close()
 
 	if err == nil {
 		rows, err := db.Queryx(query, args...)
-		utils.HandleWarn(err)
-
 		return rows, err
 	} else {
 		return nil, dbConectError()
@@ -86,12 +83,10 @@ func (mysql mySqlDB) Resolve(query string, args ...interface{}) (*sqlx.Rows, err
 
 func (mysql mySqlDB) Execute(query string, model repository.IModel) (*sql.Result, error) {
 	db, err := sqlx.Connect("mysql", mysql.ConnectionString)
-	utils.HandleWarn(err)
 	defer db.Close()
 
 	if err == nil {
 		result, err := db.NamedExec(query, model)
-		utils.HandleWarn(err)
 		return &result, err
 	} else {
 		return nil, dbConectError()
@@ -100,12 +95,10 @@ func (mysql mySqlDB) Execute(query string, model repository.IModel) (*sql.Result
 
 func (mysql mySqlDB) ExecuteArgs(query string, params ...interface{}) (*sql.Result, error) {
 	db, err := sqlx.Connect("mysql", mysql.ConnectionString)
-	utils.HandleWarn(err)
 	defer db.Close()
 
 	if err == nil {
 		result, err := db.Exec(query, params...)
-		utils.HandleWarn(err)
 		return &result, err
 	} else {
 		return nil, dbConectError()
