@@ -2,7 +2,7 @@ package database
 
 import (
 	"database/sql"
-	"linq/core/repository"
+	"bitbucket.org/sofyan_a/linq.im/core/repository"
 
 	"github.com/jmoiron/sqlx"
 	"github.com/satori/go.uuid"

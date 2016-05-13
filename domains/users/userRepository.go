@@ -3,9 +3,9 @@ package users
 import (
 	"fmt"
 
-	. "linq/core/database"
-	. "linq/core/repository"
-	"linq/core/utils"
+	. "bitbucket.org/sofyan_a/linq.im/core/database"
+	. "bitbucket.org/sofyan_a/linq.im/core/repository"
+	"bitbucket.org/sofyan_a/linq.im/core/utils"
 
 	"github.com/jmoiron/sqlx"
 	"github.com/satori/go.uuid"

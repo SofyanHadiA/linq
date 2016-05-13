@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"linq/core/utils"
+	"bitbucket.org/sofyan_a/linq.im/core/utils"
 
 	"github.com/satori/go.uuid"
 )

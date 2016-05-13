@@ -1,8 +1,8 @@
 package services
 
 import (
-	. "linq/core/repository"
-	"linq/core/utils"
+	. "bitbucket.org/sofyan_a/linq.im/core/repository"
+	"bitbucket.org/sofyan_a/linq.im/core/utils"
 
 	"github.com/satori/go.uuid"
 )

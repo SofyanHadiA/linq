@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"strconv"
 
-	"linq/core/utils"
+	"bitbucket.org/sofyan_a/linq.im/core/utils"
 
 	"github.com/gorilla/mux"
 	"github.com/satori/go.uuid"

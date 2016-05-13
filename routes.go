@@ -1,16 +1,16 @@
 package main
 
 import (
-	. "linq/core"
-	"linq/core/database"
+	. "bitbucket.org/sofyan_a/linq.im/core"
+	"bitbucket.org/sofyan_a/linq.im/core/database"
 
-	"linq/domains/users"
+	"bitbucket.org/sofyan_a/linq.im/domains/users"
 
-	Auth "linq/apps/auth"
-	Chat "linq/apps/chat"
-	"linq/apps/controllers"
-	Dashboard "linq/apps/dashboard"
-	Todo "linq/apps/todo"
+	"bitbucket.org/sofyan_a/linq.im/apps/controllers"
+	Auth "bitbucket.org/sofyan_a/linq.im/apps/auth"
+	Chat "bitbucket.org/sofyan_a/linq.im/apps/chat"
+	Dashboard "bitbucket.org/sofyan_a/linq.im/apps/dashboard"
+	Todo "bitbucket.org/sofyan_a/linq.im/apps/todo"
 )
 
 func GetRoutes(db database.IDB) Routes {

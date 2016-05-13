@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"text/template"
 
-	"linq/core/utils"
+	"bitbucket.org/sofyan_a/linq.im/core/utils"
 )
 
 type ViewData struct {

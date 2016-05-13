@@ -9,10 +9,10 @@ import (
 	"strconv"
 	"strings"
 
-	"linq/core/api"
-	"linq/core/services"
-	"linq/core/utils"
-	"linq/domains/users"
+	"bitbucket.org/sofyan_a/linq.im/core/api"
+	"bitbucket.org/sofyan_a/linq.im/core/services"
+	"bitbucket.org/sofyan_a/linq.im/core/utils"
+	"bitbucket.org/sofyan_a/linq.im/domains/users"
 
 	"github.com/satori/go.uuid"
 )

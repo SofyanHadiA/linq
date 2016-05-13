@@ -4,27 +4,26 @@ import (
 	"net/http"
 	"strconv"
 
-	. "linq/core"
-	"linq/core/database"
-	"linq/core/utils"
-	. "bitbucket.org/sofyan_a/linq.im"
+	"bitbucket.org/sofyan_a/linq.im/core"
+	"bitbucket.org/sofyan_a/linq.im/core/database"
+	"bitbucket.org/sofyan_a/linq.im/core/utils"
 )
 
 func main() {
-	utils.SetLogLevel(GetIntConfig("app.logLevel"))
-	server := GetStrConfig("app.server") + ":" + strconv.Itoa(GetIntConfig("app.port"))
+	utils.SetLogLevel(core.GetIntConfig("app.logLevel"))
+	server := core.GetStrConfig("app.server") + ":" + strconv.Itoa(core.GetIntConfig("app.port"))
 
 	var db = database.MySqlDB(
-		GetStrConfig("db.host"),
-		GetStrConfig("db.username"),
-		GetStrConfig("db.password"),
-		GetStrConfig("db.database"),
-		GetIntConfig("db.port"),
+		core.GetStrConfig("db.host"),
+		core.GetStrConfig("db.username"),
+		core.GetStrConfig("db.password"),
+		core.GetStrConfig("db.database"),
+		core.GetIntConfig("db.port"),
 	)
 
-	router := NewRouter(GetRoutes(db))
+	router := core.NewRouter(GetRoutes(db))
 
-	staticDir := GetStrConfig("app.staticDir")
+	staticDir := core.GetStrConfig("app.staticDir")
 	router.PathPrefix("/uploads").Handler(http.StripPrefix("/uploads", http.FileServer(http.Dir("uploads/"))))
 	router.PathPrefix("/").Handler(http.FileServer(http.Dir(staticDir)))
 
