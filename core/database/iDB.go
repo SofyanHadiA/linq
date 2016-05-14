@@ -1,8 +1,8 @@
 package database
 
 import (
-	"database/sql"
 	"bitbucket.org/sofyan_a/linq.im/core/repository"
+	"database/sql"
 
 	"github.com/jmoiron/sqlx"
 	"github.com/satori/go.uuid"

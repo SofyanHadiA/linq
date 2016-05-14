@@ -21,7 +21,7 @@ type userController struct {
 	service services.IService
 }
 
-type RequestDataModel struct {
+type RequestUserDataModel struct {
 	Data  users.User `json:"data"`
 	Token string     `json:"token"`
 }
@@ -93,7 +93,7 @@ func (ctrl userController) Get(w http.ResponseWriter, r *http.Request) {
 func (ctrl userController) Create(w http.ResponseWriter, r *http.Request) {
 	respWriter := api.ApiService(w, r)
 
-	var requestData RequestDataModel
+	var requestData RequestUserDataModel
 	err := respWriter.DecodeBody(&requestData)
 
 	if err == nil {
@@ -113,7 +113,7 @@ func (ctrl userController) Modify(w http.ResponseWriter, r *http.Request) {
 	respWriter.HandleApiError(err, http.StatusBadRequest)
 
 	if err == nil {
-		var requestData RequestDataModel
+		var requestData RequestUserDataModel
 		err = respWriter.DecodeBody(&requestData)
 		respWriter.HandleApiError(err, http.StatusBadRequest)
 
@@ -160,7 +160,8 @@ func (ctrl userController) SetUserPhoto(w http.ResponseWriter, r *http.Request) 
 
 				if err == nil {
 					user := userModel.(*users.User)
-					user.Avatar = fileName
+					user.Avatar.String = fileName
+					user.Avatar.Valid = true
 	
 					userService := ctrl.service.(users.UserService)
 					err = userService.UpdateUserPhoto(user)

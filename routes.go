@@ -6,9 +6,9 @@ import (
 
 	"bitbucket.org/sofyan_a/linq.im/domains/users"
 
-	"bitbucket.org/sofyan_a/linq.im/apps/controllers"
 	Auth "bitbucket.org/sofyan_a/linq.im/apps/auth"
 	Chat "bitbucket.org/sofyan_a/linq.im/apps/chat"
+	"bitbucket.org/sofyan_a/linq.im/apps/controllers"
 	Dashboard "bitbucket.org/sofyan_a/linq.im/apps/dashboard"
 	Todo "bitbucket.org/sofyan_a/linq.im/apps/todo"
 )

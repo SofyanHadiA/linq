@@ -29,6 +29,6 @@ func main() {
 
 	http.Handle("/", router)
 	utils.Log.Info("Listen and serve to: " + server)
-
-	http.ListenAndServe(server, nil)
+	err := http.ListenAndServe(server, nil)
+	utils.HandleFatal(err)
 }

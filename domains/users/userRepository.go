@@ -95,7 +95,7 @@ func (repo UserRepository) GetAll(paging utils.Paging) (IModels, error) {
 }
 
 func (repo UserRepository) Get(id uuid.UUID) (IModel, error) {
-	selectQuery := "SELECT * FROM users WHERE uid = ? AND deleted=0 "
+	selectQuery := "SELECT * FROM users WHERE uid = ? AND deleted= 0 "
 
 	user := &User{}
 	rows, err := repo.db.ResolveSingle(selectQuery, id)
