@@ -5,8 +5,11 @@ Features
 - [x] User
 - [ ] Authentication/Authorization 
 - [ ] Product
+- [ ] Customer
 - [ ] Sales
 - [ ] Inventory
+- [ ] Chat, notif and messaging
+- [ ] POS
 - [ ] TODO: Will add more features
 
 ## Current Version
