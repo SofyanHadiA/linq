@@ -14,21 +14,13 @@ import (
 	"bitbucket.org/sofyan_a/linq.im/core/utils"
 	"bitbucket.org/sofyan_a/linq.im/domains/users"
 
+	. "bitbucket.org/sofyan_a/linq.im/apps/viewmodel"
+
 	"github.com/satori/go.uuid"
 )
 
 type userController struct {
 	service services.IService
-}
-
-type RequestUserDataModel struct {
-	Data  users.User `json:"data"`
-	Token string     `json:"token"`
-}
-
-type RequestDataUserCredential struct {
-	Data  users.UserCredential `json:"data"`
-	Token string               `json:"token"`
 }
 
 func UserController(service services.IService) userController {
@@ -162,11 +154,11 @@ func (ctrl userController) SetUserPhoto(w http.ResponseWriter, r *http.Request) 
 					user := userModel.(*users.User)
 					user.Avatar.String = fileName
 					user.Avatar.Valid = true
-	
+
 					userService := ctrl.service.(users.UserService)
 					err = userService.UpdateUserPhoto(user)
 					respWriter.HandleApiError(err, http.StatusInternalServerError)
-	
+
 					if err == nil {
 						respWriter.ReturnJson(user)
 					}
