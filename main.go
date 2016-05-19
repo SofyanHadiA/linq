@@ -4,9 +4,9 @@ import (
 	"net/http"
 	"strconv"
 
-	"bitbucket.org/sofyan_a/linq.im/core"
-	"bitbucket.org/sofyan_a/linq.im/core/database"
-	"bitbucket.org/sofyan_a/linq.im/core/utils"
+	"github.com/SofyanHadiA/linq/core"
+	"github.com/SofyanHadiA/linq/core/database"
+	"github.com/SofyanHadiA/linq/core/utils"
 )
 
 func main() {

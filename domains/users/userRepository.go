@@ -3,25 +3,25 @@ package users
 import (
 	"fmt"
 
-	. "bitbucket.org/sofyan_a/linq.im/core/database"
-	. "bitbucket.org/sofyan_a/linq.im/core/repository"
-	"bitbucket.org/sofyan_a/linq.im/core/utils"
+	. "github.com/SofyanHadiA/linq/core/database"
+	. "github.com/SofyanHadiA/linq/core/repository"
+	"github.com/SofyanHadiA/linq/core/utils"
 
 	"github.com/jmoiron/sqlx"
 	"github.com/satori/go.uuid"
 )
 
-type UserRepository struct {
+type userRepository struct {
 	db IDB
 }
 
 func NewUserRepository(db IDB) IRepository {
-	return UserRepository{
+	return userRepository{
 		db: db,
 	}
 }
 
-func (repo UserRepository) CountAll() (int, error) {
+func (repo userRepository) CountAll() (int, error) {
 	countQuery := "SELECT COUNT(*) FROM users WHERE deleted = 0"
 
 	var result int
@@ -31,7 +31,7 @@ func (repo UserRepository) CountAll() (int, error) {
 	return result, err
 }
 
-func (repo UserRepository) IsExist(id uuid.UUID) (bool, error) {
+func (repo userRepository) IsExist(id uuid.UUID) (bool, error) {
 	isExistQuery := "SELECT EXISTS(SELECT * FROM users WHERE uid=? AND deleted = 0)"
 
 	var result bool
@@ -40,7 +40,7 @@ func (repo UserRepository) IsExist(id uuid.UUID) (bool, error) {
 	return result, err
 }
 
-func (repo UserRepository) GetAll(paging utils.Paging) (IModels, error) {
+func (repo userRepository) GetAll(paging utils.Paging) (IModels, error) {
 	query := "SELECT * FROM users WHERE deleted=0 "
 
 	if paging.Keyword != "" {
@@ -94,7 +94,7 @@ func (repo UserRepository) GetAll(paging utils.Paging) (IModels, error) {
 	return &result, err
 }
 
-func (repo UserRepository) Get(id uuid.UUID) (IModel, error) {
+func (repo userRepository) Get(id uuid.UUID) (IModel, error) {
 	selectQuery := "SELECT * FROM users WHERE uid = ? AND deleted= 0 "
 
 	user := &User{}
@@ -105,7 +105,7 @@ func (repo UserRepository) Get(id uuid.UUID) (IModel, error) {
 	return user, err
 }
 
-func (repo UserRepository) Insert(model IModel) error {
+func (repo userRepository) Insert(model IModel) error {
 	insertQuery := `INSERT INTO users 
 		(uid, username, email, first_name, last_name, phone_number, address, country, city, state, zip ) 
 		VALUES(:uid, :username, :email, :first_name, :last_name, :phone_number, :address, :country, :city, :state, :zip)`
@@ -118,7 +118,7 @@ func (repo UserRepository) Insert(model IModel) error {
 	return err
 }
 
-func (repo UserRepository) Update(model IModel) error {
+func (repo userRepository) Update(model IModel) error {
 	updateQuery := `UPDATE users SET username=:username, email=:email, first_name=:first_name, last_name=:last_name, phone_number=:phone_number,
 		address=:address, country=:country, city=:city, state=:state, zip=:zip WHERE uid=:uid`
 
@@ -129,7 +129,7 @@ func (repo UserRepository) Update(model IModel) error {
 	return err
 }
 
-func (repo UserRepository) UpdateUserPhoto(model IModel) error {
+func (repo userRepository) UpdateUserPhoto(model IModel) error {
 	updateQuery := "UPDATE users SET avatar=:avatar WHERE uid=:uid"
 
 	user, _ := model.(*User)
@@ -139,7 +139,7 @@ func (repo UserRepository) UpdateUserPhoto(model IModel) error {
 	return err
 }
 
-func (repo UserRepository) Delete(model IModel) error {
+func (repo userRepository) Delete(model IModel) error {
 	deleteQuery := "UPDATE users SET deleted=1 WHERE uid=:uid"
 
 	user, _ := model.(*User)
@@ -148,14 +148,14 @@ func (repo UserRepository) Delete(model IModel) error {
 	return err
 }
 
-func (repo UserRepository) DeleteBulk(users []uuid.UUID) error {
+func (repo userRepository) DeleteBulk(users []uuid.UUID) error {
 	deleteQuery := "UPDATE users SET deleted=1 WHERE uid IN(?)"
 	_, err := repo.db.ExecuteBulk(deleteQuery, users)
 
 	return err
 }
 
-func (repo UserRepository) ValidatePassword(uid uuid.UUID, password string) (bool, error) {
+func (repo userRepository) ValidatePassword(uid uuid.UUID, password string) (bool, error) {
 	isValidPasswordQuery := "SELECT EXISTS(SELECT * FROM users WHERE uid=? AND password=?)"
 
 	var result bool
@@ -165,7 +165,7 @@ func (repo UserRepository) ValidatePassword(uid uuid.UUID, password string) (boo
 	return result, err
 }
 
-func (repo UserRepository) ChangePassword(uid uuid.UUID, password string) error {
+func (repo userRepository) ChangePassword(uid uuid.UUID, password string) error {
 	updatePasswordQuery := "UPDATE users SET password=? WHERE uid=?"
 
 	_, err := repo.db.ExecuteArgs(updatePasswordQuery, password, uid.String())

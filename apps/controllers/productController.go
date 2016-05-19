@@ -9,7 +9,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/SofyanHadiA/linq/domains/users"
+	"github.com/SofyanHadiA/linq/domains/products"
 	"github.com/SofyanHadiA/linq/core/api"
 	"github.com/SofyanHadiA/linq/core/services"
 	"github.com/SofyanHadiA/linq/core/utils"
@@ -18,17 +18,17 @@ import (
 	"github.com/satori/go.uuid"
 )
 
-type userController struct {
+type productController struct {
 	service services.IService
 }
 
-func UserController(service services.IService) userController {
-	return userController{
+func ProductController(service services.IService) productController {
+	return productController{
 		service: service,
 	}
 }
 
-func (ctrl userController) GetAll(w http.ResponseWriter, r *http.Request) {
+func (ctrl productController) GetAll(w http.ResponseWriter, r *http.Request) {
 	respWriter := api.ApiService(w, r)
 
 	length, err := strconv.Atoi(respWriter.FormValue("length"))
@@ -60,28 +60,28 @@ func (ctrl userController) GetAll(w http.ResponseWriter, r *http.Request) {
 		orderDir,
 	}
 
-	users, err := ctrl.service.GetAll(paging)
+	products, err := ctrl.service.GetAll(paging)
 	respWriter.HandleApiError(err, http.StatusInternalServerError)
 
 	count, err := ctrl.service.CountAll()
 	respWriter.HandleApiError(err, http.StatusInternalServerError)
 
-	respWriter.DTJsonResponse(users, (users != nil), count, users.GetLength(), draw)
+	respWriter.DTJsonResponse(products, (products != nil), count, products.GetLength(), draw)
 }
 
-func (ctrl userController) Get(w http.ResponseWriter, r *http.Request) {
+func (ctrl productController) Get(w http.ResponseWriter, r *http.Request) {
 	respWriter := api.ApiService(w, r)
 
-	userId, err := uuid.FromString(respWriter.MuxVars("id"))
+	productId, err := uuid.FromString(respWriter.MuxVars("id"))
 	respWriter.HandleApiError(err, http.StatusBadRequest)
 
-	user, err := ctrl.service.Get(userId)
+	product, err := ctrl.service.Get(productId)
 	respWriter.HandleApiError(err, http.StatusInternalServerError)
 
-	respWriter.ReturnJson(user)
+	respWriter.ReturnJson(product)
 }
 
-func (ctrl userController) Create(w http.ResponseWriter, r *http.Request) {
+func (ctrl productController) Create(w http.ResponseWriter, r *http.Request) {
 	respWriter := api.ApiService(w, r)
 
 	var requestData RequestUserDataModel
@@ -97,10 +97,10 @@ func (ctrl userController) Create(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (ctrl userController) Modify(w http.ResponseWriter, r *http.Request) {
+func (ctrl productController) Modify(w http.ResponseWriter, r *http.Request) {
 	respWriter := api.ApiService(w, r)
 
-	userId, err := uuid.FromString(respWriter.MuxVars("id"))
+	productId, err := uuid.FromString(respWriter.MuxVars("id"))
 	respWriter.HandleApiError(err, http.StatusBadRequest)
 
 	if err == nil {
@@ -109,7 +109,7 @@ func (ctrl userController) Modify(w http.ResponseWriter, r *http.Request) {
 		respWriter.HandleApiError(err, http.StatusBadRequest)
 
 		if err == nil {
-			requestData.Data.Uid = userId
+			requestData.Data.Uid = productId
 
 			err = ctrl.service.Modify(&requestData.Data)
 			if err == nil {
@@ -120,10 +120,10 @@ func (ctrl userController) Modify(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (ctrl userController) SetUserPhoto(w http.ResponseWriter, r *http.Request) {
+func (ctrl productController) SetProductPhoto(w http.ResponseWriter, r *http.Request) {
 	respWriter := api.ApiService(w, r)
 
-	userId, err := uuid.FromString(respWriter.MuxVars("id"))
+	productId, err := uuid.FromString(respWriter.MuxVars("id"))
 	respWriter.HandleApiError(err, http.StatusBadRequest)
 
 	if err == nil {
@@ -135,9 +135,9 @@ func (ctrl userController) SetUserPhoto(w http.ResponseWriter, r *http.Request) 
 
 		imageReader := base64.NewDecoder(base64.StdEncoding, strings.NewReader(plainBase64))
 
-		fileName := fmt.Sprintf("%s.png", userId)
+		fileName := fmt.Sprintf("%s.png", productId)
 
-		img, err := os.Create("./uploads/user_avatars/" + fileName)
+		img, err := os.Create("./uploads/product_avatars/" + fileName)
 		respWriter.HandleApiError(err, http.StatusInternalServerError)
 
 		if err == nil {
@@ -146,20 +146,20 @@ func (ctrl userController) SetUserPhoto(w http.ResponseWriter, r *http.Request) 
 			respWriter.HandleApiError(err, http.StatusInternalServerError)
 
 			if err == nil {
-				userModel, err := ctrl.service.Get(userId)
+				productModel, err := ctrl.service.Get(productId)
 				respWriter.HandleApiError(err, http.StatusInternalServerError)
 
 				if err == nil {
-					user := userModel.(*users.User)
-					user.Avatar.String = fileName
-					user.Avatar.Valid = true
+					product := productModel.(*products.Product)
+					product.Image.String = fileName
+					product.Image.Valid = true
 
-					UserService := ctrl.service.(users.UserService)
-					err = UserService.UpdateUserPhoto(user)
+					ProductService := ctrl.service.(products.ProductService)
+					err = ProductService.UpdateProductPhoto(product)
 					respWriter.HandleApiError(err, http.StatusInternalServerError)
 
 					if err == nil {
-						respWriter.ReturnJson(user)
+						respWriter.ReturnJson(product)
 					}
 				}
 			}
@@ -167,52 +167,27 @@ func (ctrl userController) SetUserPhoto(w http.ResponseWriter, r *http.Request) 
 	}
 }
 
-func (ctrl userController) ChangePassword(w http.ResponseWriter, r *http.Request) {
+func (ctrl productController) Remove(w http.ResponseWriter, r *http.Request) {
 	respWriter := api.ApiService(w, r)
 
-	userId, err := uuid.FromString(respWriter.MuxVars("id"))
-	respWriter.HandleApiError(err, http.StatusBadRequest)
-
-	var requestData RequestDataUserCredential
-
-	err = respWriter.DecodeBody(&requestData)
+	productId, err := uuid.FromString(respWriter.MuxVars("id"))
 	respWriter.HandleApiError(err, http.StatusBadRequest)
 
 	if err == nil {
-		requestData.Data.Uid = userId
-
-		UserService := ctrl.service.(users.UserService)
-
-		err := UserService.ChangePassword(&requestData.Data)
-		respWriter.HandleApiError(err, http.StatusBadRequest)
-
-		if err == nil {
-			respWriter.ReturnJson(requestData.Data)
-		}
-	}
-}
-
-func (ctrl userController) Remove(w http.ResponseWriter, r *http.Request) {
-	respWriter := api.ApiService(w, r)
-
-	userId, err := uuid.FromString(respWriter.MuxVars("id"))
-	respWriter.HandleApiError(err, http.StatusBadRequest)
-
-	if err == nil {
-		if exist, err := ctrl.service.IsExist(userId); !exist {
+		if exist, err := ctrl.service.IsExist(productId); !exist {
 			respWriter.HandleApiError(err, http.StatusBadRequest)
 		}
-		user, err := ctrl.service.Get(userId)
+		product, err := ctrl.service.Get(productId)
 		respWriter.HandleApiError(err, http.StatusBadRequest)
 
-		err = ctrl.service.Remove(user)
+		err = ctrl.service.Remove(product)
 		respWriter.HandleApiError(err, http.StatusInternalServerError)
 
-		respWriter.ReturnJson(user)
+		respWriter.ReturnJson(product)
 	}
 }
 
-func (ctrl userController) RemoveBulk(w http.ResponseWriter, r *http.Request) {
+func (ctrl productController) RemoveBulk(w http.ResponseWriter, r *http.Request) {
 	respWriter := api.ApiService(w, r)
 
 	var requestData api.RequestDataIds

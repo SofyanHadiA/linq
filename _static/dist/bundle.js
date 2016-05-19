@@ -168,7 +168,7 @@ var $app = {
 
 module.exports = $app;
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./../language/en.js":24,"./app.http.js":2,"./app.loader.js":4,"./app.module.js":5,"./app.notify.js":6,"./app.tablegrid.js":7,"./views/app.view.js":10,"bootstrap":34,"handlebars":78,"jquery":94}],4:[function(require,module,exports){
+},{"./../language/en.js":24,"./app.http.js":2,"./app.loader.js":4,"./app.module.js":5,"./app.notify.js":6,"./app.tablegrid.js":7,"./views/app.view.js":10,"bootstrap":40,"handlebars":87,"jquery":103}],4:[function(require,module,exports){
 /*
  * Page loader core module 
  */
@@ -206,7 +206,7 @@ function loaderModule() {
 };
 
 module.exports = loaderModule;
-},{"handlebars":78}],5:[function(require,module,exports){
+},{"handlebars":87}],5:[function(require,module,exports){
 function moduleModule() {
     var self = {
         modules: {},
@@ -261,7 +261,7 @@ function notifyModule() {
 }
 
 module.exports = notifyModule; 
-},{"bootstrap-notify":33}],7:[function(require,module,exports){
+},{"bootstrap-notify":39}],7:[function(require,module,exports){
 var bootbox = require('bootbox');
 require('./../../vendors/datatables/media/js/jquery.dataTables.js');
 require('./../../vendors/datatables/media/js/dataTables.bootstrap.js');
@@ -391,7 +391,7 @@ function tableGridModule() {
 };
 
 module.exports = tableGridModule;
-},{"./../../vendors/datatables/media/js/dataTables.bootstrap.js":98,"./../../vendors/datatables/media/js/jquery.dataTables.js":99,"bootbox":32}],8:[function(require,module,exports){
+},{"./../../vendors/datatables/media/js/dataTables.bootstrap.js":104,"./../../vendors/datatables/media/js/jquery.dataTables.js":105,"bootbox":38}],8:[function(require,module,exports){
 var $ = jQuery;
 require('../../../node_modules/jquery-validation/dist/jquery.validate.js');
 
@@ -495,7 +495,7 @@ var formModule = function() {
 
 module.exports = formModule();
 
-},{"../../../node_modules/jquery-validation/dist/jquery.validate.js":93}],9:[function(require,module,exports){
+},{"../../../node_modules/jquery-validation/dist/jquery.validate.js":102}],9:[function(require,module,exports){
 var $ = jQuery;
 
 function modalModule() {
@@ -571,7 +571,7 @@ function viewModule() {
 }
 
 module.exports = viewModule();
-},{"./../../language/en.js":24,"./app.form.js":8,"./app.modal.js":9,"handlebars":78}],11:[function(require,module,exports){
+},{"./../../language/en.js":24,"./app.form.js":8,"./app.modal.js":9,"handlebars":87}],11:[function(require,module,exports){
 function customerController() {
 
     var $ = $app.$;
@@ -658,7 +658,7 @@ module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":f
     + "\n                            </button>\n\n                            <a class=\"btn btn-success\" id=\"import-excel\" href=\"../customers/excel_import\" data-target=\"#modal-container\">\n                                <i class=\"fa fa-file-excel-o\"></i> Excel Import\n                            </a>\n                        </div>\n                    </div>\n                </div>\n\n                <div class=\"box-body \">\n                    <table id=\"customer-table\" class=\"table table-bordered table-hover\">\n                        <thead>\n                            <tr>\n                                <th width=\"10px\">\n                                    <input type=\"checkbox\" id=\"select-all\" />\n                                </th>\n                                <th>Last Name</th>\n                                <th>First Name</th>\n                                <th>Email</th>\n                                <th>Phone</th>\n                                <th width=\"50px\">Action</th>\n                            </tr>\n                        </thead>\n                    </table>\n                </div>\n\n                <div id=\"feedback_bar\"></div>\n            </div>\n        </div>\n    </div>\n</section>";
 },"useData":true});
 
-},{"hbsfy/runtime":92}],15:[function(require,module,exports){
+},{"hbsfy/runtime":101}],15:[function(require,module,exports){
 function customerFormController() {
 
     var $modal = $app.$modal;
@@ -744,7 +744,7 @@ module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":f
     + "\" />                        \n                    </div>\n                </div>\n            </div>\n\n            <?php $this->load->view(\"people/form_basic_info\"); ?>\n\n            <div class=\"col-sm-6\">\n                <div class=\"form-group\">\n                    <?php echo form_label($this->lang->line('customers_taxable'), 'taxable', array('class' => 'col-sm-4 control-label')); ?>\n                    <div class='col-sm-8'>\n                        <div class=\"checkbox\">\n                            <label>\n                                <?php echo form_checkbox('taxable', '1', $person_info->taxable == '' ? TRUE : (boolean)$person_info->taxable); ?>\n                            </label>\n                        </div>\n                    </div>\n                </div>\n            </div>\n        </div>\n\n    </fieldset>    \n    </form>    \n</div>\n\n<div class=\"modal-footer\">\n    <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">Close</button>\n    <button type=\"submit\" form=\"customer_form\" class=\"btn btn-primary\">Save changes</button>\n</div>\n\n";
 },"useData":true});
 
-},{"hbsfy/runtime":92}],18:[function(require,module,exports){
+},{"hbsfy/runtime":101}],18:[function(require,module,exports){
 module.exports = {
 	controller: {},
 	model:{},
@@ -838,7 +838,7 @@ module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":f
     return "<section class=\"content-header\"></section> \n<section class=\"content\"> \n    <div class=\"row\"> \n        <div class=\"col-md-12\"> \n            <div class=\"box\"> \n                <div class=\"box-body\"> \n                    <dashboard-content/> \n                </div> \n            </div> \n        </div> \n    </div> \n</section>";
 },"useData":true});
 
-},{"hbsfy/runtime":92}],24:[function(require,module,exports){
+},{"hbsfy/runtime":101}],24:[function(require,module,exports){
 module.exports = {
 	uid: "Account #",
 	alpha: "The %s field may only contain alphabetical characters.",
@@ -1465,6 +1465,7 @@ var $app = require('./core/app.js');
 // load modules
 $app.$module.register('home', require('./home/home.js')($app));
 $app.$module.register('user', require('./user/user.js')($app));
+$app.$module.register('product', require('./product/product.js')($app));
 $app.$module.register('customers', require('./customer/customer.js')($app));
 
 // load config
@@ -1472,7 +1473,335 @@ var config = require('./config.js');
 
 // start the application
 $app.start(config);
-},{"./config.js":1,"./core/app.js":3,"./customer/customer.js":12,"./home/home.js":21,"./user/user.js":30}],26:[function(require,module,exports){
+},{"./config.js":1,"./core/app.js":3,"./customer/customer.js":12,"./home/home.js":21,"./product/product.js":30,"./user/user.js":36}],26:[function(require,module,exports){
+/*global $app $*/
+
+require('cropit');
+var bootbox = require('bootbox');
+
+
+function productFormController(endpoint, data) {
+    var $modal = $app.$view.$modal;
+    var $form = $app.$view.$form;
+    var $http = $app.$http;
+    var $notify = $app.$notify;
+
+    var self = {
+        load: onLoad,
+        close: onClose,
+        modal: $app.$view.$modal,
+        formId: "#product-form",
+        data: data || {},
+        isPhotoChanged: false,
+        promise: {},
+        defer: $.Deferred(),
+        formConfig: {
+            rules: {
+                productname: {
+                    minlength: 5,
+                    required: true
+                },
+                firstName: {
+                    minlength: 3,
+                    required: true
+                },
+                email: {
+                    email: true
+                }
+            }
+        }
+    }
+
+    self.load();
+
+    return self;
+
+    function onLoad() {
+        var modalConfig = {
+            size: 'lg',
+            modalId: self.modal.generateId()
+        }
+
+        var input = {
+            accountNumberInput: $form.input("uid").setValue(self.data["uid"] || "AUTO"),
+            productNameInput: $form.input("productname").setValue(self.data["productname"] || "").setClass("required"),
+            emailInput: $form.input("email").setValue(self.data["email"] || ""),
+            passwordInput: $form.input("password").setValue(self.data["password"] || ""),
+            firstNameInput: $form.input("firstName").setValue(self.data["firstName"] || "").setClass("required"),
+            lastNameInput: $form.input("lastName").setValue(self.data["lastName"] || ""),
+            phoneNumberInput: $form.input("phone", "number").setValue(self.data["phone"] || ""),
+            addressInput: $form.input("address").setValue(self.data["address"] || ""),
+            countryInput: $form.input("country").setValue(self.data["country"] || ""),
+            stateInput: $form.input("state").setValue(self.data["state"] || ""),
+            cityInput: $form.input("city").setValue(self.data["city"] || ""),
+            zipInput: $form.input("zip", "number").setValue(self.data["zip"] || ""),
+        };
+
+        self.modal = $modal.show(require('./product.form.template.hbs'), input, modalConfig);
+
+        $form.create(self.formId)
+            .config(self.formConfig)
+            .onSubmit(function() {
+                event.preventDefault();
+                if (!data) {
+                    $http.post(endpoint, $(self.formId).serializeObject()).success(function(data) {
+                        onDone(data.data[0])
+                    });
+                }
+                else {
+                    $http.put(endpoint + "/" + self.data["uid"], $(self.formId).serializeObject()).success(function(data) {
+                        onDone(data.data[0])
+                    });
+                }
+            });
+
+        $('#removeUser').click(function() {
+            var id = $(this).data("id");
+            bootbox.confirm('Are you sure to delete this product?', function(result) {
+                if (result) {
+                    doDelete(id);
+                }
+            });
+        });
+
+        $('#product-photo').cropit({
+            onFileChange: function() {
+                self.isPhotoChanged = true;
+            }
+        });
+
+        if (self.data.photo) {
+            $('#product-photo').cropit('imageSrc', './uploads/product_avatars/' + self.data.photo);
+        };
+
+        $('#select-image-btn').click(function() {
+            $("#product-form.cropit-image-input").prop('disabled', false);
+            $('.cropit-image-input').click();
+        });
+
+        return self;
+    }
+
+    function uploadUserPhoto(productId) {
+        if (self.isPhotoChanged) {
+            var imageData = $('#product-photo').cropit('export');
+            return $http.post(endpoint + "/" + productId + "/photo", imageData);
+        }
+        else {
+            return null
+        }
+    }
+
+    function changePassword(productId) {
+        var password = $("#password").val();
+        var passwordNew = $("#passwordNew").val();
+        var passwordConfirm = $("#passwordConfirm").val();
+
+        if (passwordNew) {
+            if (passwordNew != passwordConfirm) {
+                $notify.warning("Password and password confirmation not match");
+                return $.Deferred().fail();
+            }else{
+                return $http.put(endpoint + "/" + productId + "/password", {
+                    password: password,
+                    passwordNew: passwordNew,
+                    passwordConfirm: passwordConfirm
+                });
+            }
+        }
+        else {
+            return null
+        }
+    }
+    
+    function doDelete(id) {
+        $http.delete(endpoint + "/" + id).success(function(model) {
+            self.modal.hide();
+            onClose();
+        });
+    }
+
+    function onDone(data) {
+        $.when(uploadUserPhoto(data.uid), changePassword(data.uid)).then(function() {
+            self.modal.hide();
+            self.defer.resolve();
+        }, function() {
+            // do nothing
+        });
+    }
+
+    function onClose() {
+        return $.when(self.defer.promise());
+    }
+};
+
+module.exports = productFormController;
+},{"./product.form.template.hbs":28,"bootbox":38,"cropit":56}],27:[function(require,module,exports){
+(function (global){
+
+function customerFormModule ($app) {
+	
+	global.$app = $app;
+	
+	return {		
+		'controller': require('./product.form.controller.js'),		
+		'template': require('./product.form.template.hbs'),
+	}
+};
+
+module.exports = customerFormModule; 
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{"./product.form.controller.js":26,"./product.form.template.hbs":28}],28:[function(require,module,exports){
+// hbsfy compiled Handlebars template
+var HandlebarsCompiler = require('hbsfy/runtime');
+module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
+    var stack1, alias1=container.lambda;
+
+  return "<div class=\"modal-header\">\n    <button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-hidden=\"true\">&times;</button>\n    <h4 class=\"modal-title\">roduct Form</h4>\n</div>\n\n<div class=\"modal-body\">\n    <fieldset id=\"product_basic_info\">\n        <div class=\"row\">\n            <div class=\"col-md-2 col-xs-12 form-horizontal\">\n                <div class=\"form-group\">\n                    <div class=\"col-md-12\">\n                        <div id=\"product-photo\" class=\"image-editor center-block\">\n                            <div class=\"cropit-preview\"></div>\n                            <input type=\"range\" class=\"cropit-image-zoom-input\" />\n                            <input id=\"product-photo-file\" type=\"file\" class=\"cropit-image-input\" />\n                            <button id=\"select-image-btn\" class=\"btn btn-primary btn-block btn-xs\">Change Product Photo</button>\n                        </div>\n                    </div>\n                </div>\n            </div>\n            <div class=\"col-md-10 col-xs-12\">\n                <legend class=\"col-md-12\">Basic Info</legend>\n                <form id=\"product-form\" name=\"product-form\" class=\"form-horizontal\">\n                    <div class=\"col-md-12\">\n                        <div class=\"form-group\">\n                            <label class=\"col-md-2 col-xs-4 control-label\">"
+    + ((stack1 = alias1(((stack1 = (depth0 != null ? depth0.accountNumberInput : depth0)) != null ? stack1.label : stack1), depth0)) != null ? stack1 : "")
+    + "</label>\n                            <div class=\"col-md-4 col-xs-8\">\n                                <input type=\"disabled\" class=\"form-control\" disabled value=\""
+    + ((stack1 = alias1(((stack1 = (depth0 != null ? depth0.accountNumberInput : depth0)) != null ? stack1.value : stack1), depth0)) != null ? stack1 : "")
+    + "\" />\n                            </div>\n                        </div>\n                    </div>\n                    <div class=\"col-md-6\">"
+    + ((stack1 = alias1(((stack1 = (depth0 != null ? depth0.productNameInput : depth0)) != null ? stack1.formGroup : stack1), depth0)) != null ? stack1 : "")
+    + "</div>\n                    <div class=\"col-md-6\">"
+    + ((stack1 = alias1(((stack1 = (depth0 != null ? depth0.emailInput : depth0)) != null ? stack1.formGroup : stack1), depth0)) != null ? stack1 : "")
+    + "</div>\n                    <div class=\"col-md-6\">"
+    + ((stack1 = alias1(((stack1 = (depth0 != null ? depth0.firstNameInput : depth0)) != null ? stack1.formGroup : stack1), depth0)) != null ? stack1 : "")
+    + "</div>\n                    <div class=\"col-md-6\">"
+    + ((stack1 = alias1(((stack1 = (depth0 != null ? depth0.lastNameInput : depth0)) != null ? stack1.formGroup : stack1), depth0)) != null ? stack1 : "")
+    + "</div>\n                    <div class=\"col-md-6\">"
+    + ((stack1 = alias1(((stack1 = (depth0 != null ? depth0.phoneNumberInput : depth0)) != null ? stack1.formGroup : stack1), depth0)) != null ? stack1 : "")
+    + "</div>\n                    <div class=\"col-md-6\">"
+    + ((stack1 = alias1(((stack1 = (depth0 != null ? depth0.addressInput : depth0)) != null ? stack1.formGroupTextArea : stack1), depth0)) != null ? stack1 : "")
+    + "</div>\n                    <div class=\"col-md-6\">"
+    + ((stack1 = alias1(((stack1 = (depth0 != null ? depth0.countryInput : depth0)) != null ? stack1.formGroup : stack1), depth0)) != null ? stack1 : "")
+    + "</div>\n                    <div class=\"col-md-6\">"
+    + ((stack1 = alias1(((stack1 = (depth0 != null ? depth0.cityInput : depth0)) != null ? stack1.formGroup : stack1), depth0)) != null ? stack1 : "")
+    + "</div>\n                    <div class=\"col-md-6\">"
+    + ((stack1 = alias1(((stack1 = (depth0 != null ? depth0.stateInput : depth0)) != null ? stack1.formGroup : stack1), depth0)) != null ? stack1 : "")
+    + "</div>\n                    <div class=\"col-md-6\">"
+    + ((stack1 = alias1(((stack1 = (depth0 != null ? depth0.zipInput : depth0)) != null ? stack1.formGroup : stack1), depth0)) != null ? stack1 : "")
+    + "</div>\n                    <div class=\"col-md-6\">"
+    + ((stack1 = alias1(((stack1 = (depth0 != null ? depth0.notesInput : depth0)) != null ? stack1.formGroup : stack1), depth0)) != null ? stack1 : "")
+    + "</div>\n                </form>\n            </div>\n        </div>\n    </fieldset>\n    <div class=\"row\">\n        <div class=\"col-md-2\">\n        </div>\n        <div class=\"col-md-5\">\n            <div class=\"row form-horizontal\">\n                <legend class=\"col-md-12\">Change Password</legend>\n                <div class=\"col-md-12\">\n                    <div class=\"form-group\">\n                        <label for=\"passwordOld\" class=\"col-xs-4 control-label \">Current Password</label>\n                        <div class=\"col-xs-8\">\n                            <input form=\"product-form\" type=\"password\" name=\"password\" id=\"password\" class=\"form-control valid\" value=\"\" aria-invalid=\"false\">\n                        </div>\n                    </div>\n                </div>\n                <div class=\"col-md-12\">\n                    <div class=\"form-group\">\n                        <label for=\"password\" class=\"col-xs-4 control-label \">New Password</label>\n                        <div class=\"col-xs-8\">\n                            <input form=\"product-form\" type=\"password\" name=\"passwordNew\" id=\"passwordNew\" class=\"form-control valid\" value=\"\" aria-invalid=\"false\">\n                        </div>\n                    </div>\n                </div>\n                <div class=\"col-md-12\">\n                    <div class=\"form-group\">\n                        <label for=\"password2\" class=\"col-xs-4 control-label \">Confirm Password</label>\n                        <div class=\"col-xs-8\">\n                            <input form=\"product-form\" type=\"password\" name=\"passwordConfirm\" id=\"passwordConfirm\" class=\"form-control valid\" value=\"\" aria-invalid=\"false\">\n                        </div>\n                    </div>\n                </div>\n            </div>\n        </div>\n        <div class=\"col-md-5\">\n            <div class=\"row form-horizontal\">\n                <legend class=\"col-md-12\">Danger Area</legend>\n                <div class=\"col-md-12 \">\n                    <div class=\"form-group\">\n                        <label for=\"removeProduct\" class=\"col-xs-4 control-label\">Delete Product</label>\n                        <div class=\"col-xs-8\">\n                            <button id=\"removeProduct\" class=\"btn btn-danger\" data-id=\""
+    + ((stack1 = alias1(((stack1 = (depth0 != null ? depth0.accountNumberInput : depth0)) != null ? stack1.value : stack1), depth0)) != null ? stack1 : "")
+    + "\">Delete This Product</button>\n                        </div>\n                    </div>\n                </div>\n            </div>\n        </div>\n    </div>\n</div>\n\n<div class=\"modal-footer\">\n    <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">Close</button>\n    <button type=\"submit\" form=\"product-form\" class=\"btn btn-primary\">Save changes</button>\n</div>\n";
+},"useData":true});
+
+},{"hbsfy/runtime":101}],29:[function(require,module,exports){
+/*global $app $*/
+'use strict'
+
+function productController() {
+    var $ = $app.$;
+    var $notify = $app.$notify;
+    var $tablegrid = $app.$tablegrid;
+    var $modal = $app.$modal;
+    var $http = $app.$http;
+    var $form = $app.$form;
+    var productForm = require('./form/product.form.js')($app);
+
+    var self = {
+        tableGrid: {},
+        table: '#manage-table ',
+        form: productForm,
+        load: onLoad,
+        endpoint: 'api/v1/products'
+    };
+
+    self.load();
+
+    return self;
+
+    function onLoad() {
+        self.tableGrid = $tablegrid.render("#product-table", self.endpoint, 
+        [
+            {data: 'code'}, 
+            {data: 'title'},
+            {data: 'stock'}
+
+        ], 
+        'uid');
+        
+        self.tableGrid.action.delete = doDelete;
+        self.tableGrid.action.deleteBulk = doDeleteBulk;
+        
+        $('body').on('click', '#product-add', function() {
+            showFormCreate();
+        });
+        
+        $('#product-table').on('click', '.edit-data', function() {
+            var productId = $(this).data("id");
+            showFormEdit(productId);
+        });
+    }
+
+    function showFormCreate() {
+        var modalForm = self.form.controller(self.endpoint)
+        modalForm.close().done(function(){
+            self.tableGrid.reload();
+        });
+    }
+
+    function showFormEdit(id) {
+        $http.get(self.endpoint + "/" + id).done(function(model) {
+            var modalForm = self.form.controller(self.endpoint, model.data[0])
+            modalForm.close().done(function(){
+                self.tableGrid.reload();
+            })
+        });
+    }
+    
+    function doDelete(id) {
+        $http.delete(self.endpoint + "/" + id).done(function(model) {
+            self.tableGrid.reload();
+        });
+    }
+    
+    function doDeleteBulk(ids) {
+        $http.post(self.endpoint + "/bulkdelete", { ids:ids}).done(function(ids) {
+            self.tableGrid.reload();
+        });
+    }
+};
+
+module.exports = productController;
+},{"./form/product.form.js":27}],30:[function(require,module,exports){
+(function (global){
+function productModule($app) {
+
+	global.$app = $app;
+
+	return {
+		'controller': require('./product.controller.js'),
+		'template': require('./product.template.hbs'),
+	}
+};
+
+module.exports = productModule;
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{"./product.controller.js":29,"./product.template.hbs":31}],31:[function(require,module,exports){
+// hbsfy compiled Handlebars template
+var HandlebarsCompiler = require('hbsfy/runtime');
+module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
+    var stack1, alias1=container.lambda, alias2=container.escapeExpression;
+
+  return "<section class=\"content-header\">\n    <h1>\n        "
+    + alias2(alias1(((stack1 = (depth0 != null ? depth0.lang : depth0)) != null ? stack1.module_products : stack1), depth0))
+    + "\n        <small>\n            "
+    + alias2(alias1(((stack1 = (depth0 != null ? depth0.lang : depth0)) != null ? stack1.module_products_desc : stack1), depth0))
+    + "\n        </small>\n    </h1>\n    <ol class=\"breadcrumb\">\n        <li><a href=\"#\"><i class=\"fa fa-dashboard\"></i>Home</a></li>\n        <li class=\"active\">"
+    + alias2(alias1(((stack1 = (depth0 != null ? depth0.lang : depth0)) != null ? stack1.module_products : stack1), depth0))
+    + "</li>\n    </ol>\n</section>\n\n<section class=\"content\">\n    <div class=\"row\">\n        <div class=\"col-md-12\">\n            <div class=\"box\">\n                <div class=\"box-header\">\n                    <div class=\"row\">\n                        <div class=\"col-sm-6 \">\n                            <div class=\"btn-group\">\n                                <a href=\"../customers/delete\" id=\"delete-selected\" class=\"btn btn-sm btn-default\">\n                                    <i class=\"fa fa-trash\"></i> "
+    + alias2(alias1(((stack1 = (depth0 != null ? depth0.lang : depth0)) != null ? stack1.common_delete : stack1), depth0))
+    + "\n                                </a>\n                                <button class=\"btn btn-sm btn-default\" id=\"email\">\n                                    <i class=\"fa fa-send\"></i> "
+    + alias2(alias1(((stack1 = (depth0 != null ? depth0.lang : depth0)) != null ? stack1.common_email : stack1), depth0))
+    + "\n                                </button>\n                            </div>\n                        </div>\n\n                        <div class=\"col-sm-6 text-right\">\n                            <button id=\"product-add\" class=\"btn btn-primary\">\n                                <i class=\"fa fa-plus\"></i> "
+    + alias2(alias1(((stack1 = (depth0 != null ? depth0.lang : depth0)) != null ? stack1.product_new : stack1), depth0))
+    + "\n                            </button>\n\n                            <a class=\"btn btn-success\" id=\"import-excel\" href=\"../customers/excel_import\" data-target=\"#modal-container\">\n                                <i class=\"fa fa-file-excel-o\"></i> Excel Import\n                            </a>\n                        </div>\n                    </div>\n                </div>\n\n                <div class=\"box-body \">\n                    <table id=\"product-table\" class=\"table table-bordered table-hover\">\n                        <thead>\n                            <tr>\n                                <th width=\"10px\">\n                                    <input type=\"checkbox\" id=\"select-all\" />\n                                </th>\n                                <th>SKU</th>\n                                <th>Title</th>\n                                <th>Stock</th>\n                                <th width=\"50px\">Action</th>\n                            </tr>\n                        </thead>\n                    </table>\n                </div>\n\n                <div id=\"feedback_bar\"></div>\n            </div>\n        </div>\n    </div>\n</section>";
+},"useData":true});
+
+},{"hbsfy/runtime":101}],32:[function(require,module,exports){
 /*global $app $*/
 
 require('cropit');
@@ -1635,7 +1964,7 @@ function userFormController(endpoint, data) {
 };
 
 module.exports = userFormController;
-},{"./user.form.template.hbs":28,"bootbox":32,"cropit":47}],27:[function(require,module,exports){
+},{"./user.form.template.hbs":34,"bootbox":38,"cropit":56}],33:[function(require,module,exports){
 (function (global){
 
 function customerFormModule ($app) {
@@ -1650,7 +1979,7 @@ function customerFormModule ($app) {
 
 module.exports = customerFormModule; 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./user.form.controller.js":26,"./user.form.template.hbs":28}],28:[function(require,module,exports){
+},{"./user.form.controller.js":32,"./user.form.template.hbs":34}],34:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
@@ -1687,7 +2016,7 @@ module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":f
     + "\">Delete This User</button>\n                        </div>\n                    </div>\n                </div>\n            </div>\n        </div>\n    </div>\n</div>\n\n<div class=\"modal-footer\">\n    <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">Close</button>\n    <button type=\"submit\" form=\"user-form\" class=\"btn btn-primary\">Save changes</button>\n</div>\n";
 },"useData":true});
 
-},{"hbsfy/runtime":92}],29:[function(require,module,exports){
+},{"hbsfy/runtime":101}],35:[function(require,module,exports){
 /*global $app $*/
 'use strict'
 
@@ -1764,7 +2093,7 @@ function userController() {
 };
 
 module.exports = userController;
-},{"./form/user.form.js":27}],30:[function(require,module,exports){
+},{"./form/user.form.js":33}],36:[function(require,module,exports){
 (function (global){
 function userModule($app) {
 
@@ -1778,7 +2107,7 @@ function userModule($app) {
 
 module.exports = userModule;
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./user.controller.js":29,"./user.template.hbs":31}],31:[function(require,module,exports){
+},{"./user.controller.js":35,"./user.template.hbs":37}],37:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
@@ -1799,7 +2128,7 @@ module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":f
     + "\n                            </button>\n\n                            <a class=\"btn btn-success\" id=\"import-excel\" href=\"../customers/excel_import\" data-target=\"#modal-container\">\n                                <i class=\"fa fa-file-excel-o\"></i> Excel Import\n                            </a>\n                        </div>\n                    </div>\n                </div>\n\n                <div class=\"box-body \">\n                    <table id=\"user-table\" class=\"table table-bordered table-hover\">\n                        <thead>\n                            <tr>\n                                <th width=\"10px\">\n                                    <input type=\"checkbox\" id=\"select-all\" />\n                                </th>\n                                <th>Username</th>\n                                <th>Email</th>\n                                <th>Full Name</th>\n                                <th width=\"50px\">Action</th>\n                            </tr>\n                        </thead>\n                    </table>\n                </div>\n\n                <div id=\"feedback_bar\"></div>\n            </div>\n        </div>\n    </div>\n</section>";
 },"useData":true});
 
-},{"hbsfy/runtime":92}],32:[function(require,module,exports){
+},{"hbsfy/runtime":101}],38:[function(require,module,exports){
 /**
  * bootbox.js [v4.4.0]
  *
@@ -2786,7 +3115,7 @@ module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":f
   return exports;
 }));
 
-},{"jquery":94}],33:[function(require,module,exports){
+},{"jquery":103}],39:[function(require,module,exports){
 /*
 * Project: Bootstrap Notify = v3.1.3
 * Description: Turns standard Bootstrap alerts into "Growl-like" notifications.
@@ -3141,7 +3470,7 @@ module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":f
 
 }));
 
-},{"jquery":94}],34:[function(require,module,exports){
+},{"jquery":103}],40:[function(require,module,exports){
 // This file is autogenerated via the `commonjs` Grunt task. You can require() this file in a CommonJS environment.
 require('../../js/transition.js')
 require('../../js/alert.js')
@@ -3155,7 +3484,7 @@ require('../../js/popover.js')
 require('../../js/scrollspy.js')
 require('../../js/tab.js')
 require('../../js/affix.js')
-},{"../../js/affix.js":35,"../../js/alert.js":36,"../../js/button.js":37,"../../js/carousel.js":38,"../../js/collapse.js":39,"../../js/dropdown.js":40,"../../js/modal.js":41,"../../js/popover.js":42,"../../js/scrollspy.js":43,"../../js/tab.js":44,"../../js/tooltip.js":45,"../../js/transition.js":46}],35:[function(require,module,exports){
+},{"../../js/affix.js":41,"../../js/alert.js":42,"../../js/button.js":43,"../../js/carousel.js":44,"../../js/collapse.js":45,"../../js/dropdown.js":46,"../../js/modal.js":47,"../../js/popover.js":48,"../../js/scrollspy.js":49,"../../js/tab.js":50,"../../js/tooltip.js":51,"../../js/transition.js":52}],41:[function(require,module,exports){
 /* ========================================================================
  * Bootstrap: affix.js v3.3.6
  * http://getbootstrap.com/javascript/#affix
@@ -3319,7 +3648,7 @@ require('../../js/affix.js')
 
 }(jQuery);
 
-},{}],36:[function(require,module,exports){
+},{}],42:[function(require,module,exports){
 /* ========================================================================
  * Bootstrap: alert.js v3.3.6
  * http://getbootstrap.com/javascript/#alerts
@@ -3415,7 +3744,7 @@ require('../../js/affix.js')
 
 }(jQuery);
 
-},{}],37:[function(require,module,exports){
+},{}],43:[function(require,module,exports){
 /* ========================================================================
  * Bootstrap: button.js v3.3.6
  * http://getbootstrap.com/javascript/#buttons
@@ -3537,7 +3866,7 @@ require('../../js/affix.js')
 
 }(jQuery);
 
-},{}],38:[function(require,module,exports){
+},{}],44:[function(require,module,exports){
 /* ========================================================================
  * Bootstrap: carousel.js v3.3.6
  * http://getbootstrap.com/javascript/#carousel
@@ -3776,7 +4105,7 @@ require('../../js/affix.js')
 
 }(jQuery);
 
-},{}],39:[function(require,module,exports){
+},{}],45:[function(require,module,exports){
 /* ========================================================================
  * Bootstrap: collapse.js v3.3.6
  * http://getbootstrap.com/javascript/#collapse
@@ -3989,7 +4318,7 @@ require('../../js/affix.js')
 
 }(jQuery);
 
-},{}],40:[function(require,module,exports){
+},{}],46:[function(require,module,exports){
 /* ========================================================================
  * Bootstrap: dropdown.js v3.3.6
  * http://getbootstrap.com/javascript/#dropdowns
@@ -4156,7 +4485,7 @@ require('../../js/affix.js')
 
 }(jQuery);
 
-},{}],41:[function(require,module,exports){
+},{}],47:[function(require,module,exports){
 /* ========================================================================
  * Bootstrap: modal.js v3.3.6
  * http://getbootstrap.com/javascript/#modals
@@ -4495,7 +4824,7 @@ require('../../js/affix.js')
 
 }(jQuery);
 
-},{}],42:[function(require,module,exports){
+},{}],48:[function(require,module,exports){
 /* ========================================================================
  * Bootstrap: popover.js v3.3.6
  * http://getbootstrap.com/javascript/#popovers
@@ -4605,7 +4934,7 @@ require('../../js/affix.js')
 
 }(jQuery);
 
-},{}],43:[function(require,module,exports){
+},{}],49:[function(require,module,exports){
 /* ========================================================================
  * Bootstrap: scrollspy.js v3.3.6
  * http://getbootstrap.com/javascript/#scrollspy
@@ -4779,7 +5108,7 @@ require('../../js/affix.js')
 
 }(jQuery);
 
-},{}],44:[function(require,module,exports){
+},{}],50:[function(require,module,exports){
 /* ========================================================================
  * Bootstrap: tab.js v3.3.6
  * http://getbootstrap.com/javascript/#tabs
@@ -4936,7 +5265,7 @@ require('../../js/affix.js')
 
 }(jQuery);
 
-},{}],45:[function(require,module,exports){
+},{}],51:[function(require,module,exports){
 /* ========================================================================
  * Bootstrap: tooltip.js v3.3.6
  * http://getbootstrap.com/javascript/#tooltip
@@ -5452,7 +5781,7 @@ require('../../js/affix.js')
 
 }(jQuery);
 
-},{}],46:[function(require,module,exports){
+},{}],52:[function(require,module,exports){
 /* ========================================================================
  * Bootstrap: transition.js v3.3.6
  * http://getbootstrap.com/javascript/#transitions
@@ -5513,7 +5842,333 @@ require('../../js/affix.js')
 
 }(jQuery);
 
-},{}],47:[function(require,module,exports){
+},{}],53:[function(require,module,exports){
+
+},{}],54:[function(require,module,exports){
+(function (process){
+// Copyright Joyent, Inc. and other Node contributors.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to permit
+// persons to whom the Software is furnished to do so, subject to the
+// following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
+// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+// USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+// resolves . and .. elements in a path array with directory names there
+// must be no slashes, empty elements, or device names (c:\) in the array
+// (so also no leading and trailing slashes - it does not distinguish
+// relative and absolute paths)
+function normalizeArray(parts, allowAboveRoot) {
+  // if the path tries to go above the root, `up` ends up > 0
+  var up = 0;
+  for (var i = parts.length - 1; i >= 0; i--) {
+    var last = parts[i];
+    if (last === '.') {
+      parts.splice(i, 1);
+    } else if (last === '..') {
+      parts.splice(i, 1);
+      up++;
+    } else if (up) {
+      parts.splice(i, 1);
+      up--;
+    }
+  }
+
+  // if the path is allowed to go above the root, restore leading ..s
+  if (allowAboveRoot) {
+    for (; up--; up) {
+      parts.unshift('..');
+    }
+  }
+
+  return parts;
+}
+
+// Split a filename into [root, dir, basename, ext], unix version
+// 'root' is just a slash, or nothing.
+var splitPathRe =
+    /^(\/?|)([\s\S]*?)((?:\.{1,2}|[^\/]+?|)(\.[^.\/]*|))(?:[\/]*)$/;
+var splitPath = function(filename) {
+  return splitPathRe.exec(filename).slice(1);
+};
+
+// path.resolve([from ...], to)
+// posix version
+exports.resolve = function() {
+  var resolvedPath = '',
+      resolvedAbsolute = false;
+
+  for (var i = arguments.length - 1; i >= -1 && !resolvedAbsolute; i--) {
+    var path = (i >= 0) ? arguments[i] : process.cwd();
+
+    // Skip empty and invalid entries
+    if (typeof path !== 'string') {
+      throw new TypeError('Arguments to path.resolve must be strings');
+    } else if (!path) {
+      continue;
+    }
+
+    resolvedPath = path + '/' + resolvedPath;
+    resolvedAbsolute = path.charAt(0) === '/';
+  }
+
+  // At this point the path should be resolved to a full absolute path, but
+  // handle relative paths to be safe (might happen when process.cwd() fails)
+
+  // Normalize the path
+  resolvedPath = normalizeArray(filter(resolvedPath.split('/'), function(p) {
+    return !!p;
+  }), !resolvedAbsolute).join('/');
+
+  return ((resolvedAbsolute ? '/' : '') + resolvedPath) || '.';
+};
+
+// path.normalize(path)
+// posix version
+exports.normalize = function(path) {
+  var isAbsolute = exports.isAbsolute(path),
+      trailingSlash = substr(path, -1) === '/';
+
+  // Normalize the path
+  path = normalizeArray(filter(path.split('/'), function(p) {
+    return !!p;
+  }), !isAbsolute).join('/');
+
+  if (!path && !isAbsolute) {
+    path = '.';
+  }
+  if (path && trailingSlash) {
+    path += '/';
+  }
+
+  return (isAbsolute ? '/' : '') + path;
+};
+
+// posix version
+exports.isAbsolute = function(path) {
+  return path.charAt(0) === '/';
+};
+
+// posix version
+exports.join = function() {
+  var paths = Array.prototype.slice.call(arguments, 0);
+  return exports.normalize(filter(paths, function(p, index) {
+    if (typeof p !== 'string') {
+      throw new TypeError('Arguments to path.join must be strings');
+    }
+    return p;
+  }).join('/'));
+};
+
+
+// path.relative(from, to)
+// posix version
+exports.relative = function(from, to) {
+  from = exports.resolve(from).substr(1);
+  to = exports.resolve(to).substr(1);
+
+  function trim(arr) {
+    var start = 0;
+    for (; start < arr.length; start++) {
+      if (arr[start] !== '') break;
+    }
+
+    var end = arr.length - 1;
+    for (; end >= 0; end--) {
+      if (arr[end] !== '') break;
+    }
+
+    if (start > end) return [];
+    return arr.slice(start, end - start + 1);
+  }
+
+  var fromParts = trim(from.split('/'));
+  var toParts = trim(to.split('/'));
+
+  var length = Math.min(fromParts.length, toParts.length);
+  var samePartsLength = length;
+  for (var i = 0; i < length; i++) {
+    if (fromParts[i] !== toParts[i]) {
+      samePartsLength = i;
+      break;
+    }
+  }
+
+  var outputParts = [];
+  for (var i = samePartsLength; i < fromParts.length; i++) {
+    outputParts.push('..');
+  }
+
+  outputParts = outputParts.concat(toParts.slice(samePartsLength));
+
+  return outputParts.join('/');
+};
+
+exports.sep = '/';
+exports.delimiter = ':';
+
+exports.dirname = function(path) {
+  var result = splitPath(path),
+      root = result[0],
+      dir = result[1];
+
+  if (!root && !dir) {
+    // No dirname whatsoever
+    return '.';
+  }
+
+  if (dir) {
+    // It has a dirname, strip trailing slash
+    dir = dir.substr(0, dir.length - 1);
+  }
+
+  return root + dir;
+};
+
+
+exports.basename = function(path, ext) {
+  var f = splitPath(path)[2];
+  // TODO: make this comparison case-insensitive on windows?
+  if (ext && f.substr(-1 * ext.length) === ext) {
+    f = f.substr(0, f.length - ext.length);
+  }
+  return f;
+};
+
+
+exports.extname = function(path) {
+  return splitPath(path)[3];
+};
+
+function filter (xs, f) {
+    if (xs.filter) return xs.filter(f);
+    var res = [];
+    for (var i = 0; i < xs.length; i++) {
+        if (f(xs[i], i, xs)) res.push(xs[i]);
+    }
+    return res;
+}
+
+// String.prototype.substr - negative index don't work in IE8
+var substr = 'ab'.substr(-1) === 'b'
+    ? function (str, start, len) { return str.substr(start, len) }
+    : function (str, start, len) {
+        if (start < 0) start = str.length + start;
+        return str.substr(start, len);
+    }
+;
+
+}).call(this,require('_process'))
+},{"_process":55}],55:[function(require,module,exports){
+// shim for using process in browser
+
+var process = module.exports = {};
+var queue = [];
+var draining = false;
+var currentQueue;
+var queueIndex = -1;
+
+function cleanUpNextTick() {
+    if (!draining || !currentQueue) {
+        return;
+    }
+    draining = false;
+    if (currentQueue.length) {
+        queue = currentQueue.concat(queue);
+    } else {
+        queueIndex = -1;
+    }
+    if (queue.length) {
+        drainQueue();
+    }
+}
+
+function drainQueue() {
+    if (draining) {
+        return;
+    }
+    var timeout = setTimeout(cleanUpNextTick);
+    draining = true;
+
+    var len = queue.length;
+    while(len) {
+        currentQueue = queue;
+        queue = [];
+        while (++queueIndex < len) {
+            if (currentQueue) {
+                currentQueue[queueIndex].run();
+            }
+        }
+        queueIndex = -1;
+        len = queue.length;
+    }
+    currentQueue = null;
+    draining = false;
+    clearTimeout(timeout);
+}
+
+process.nextTick = function (fun) {
+    var args = new Array(arguments.length - 1);
+    if (arguments.length > 1) {
+        for (var i = 1; i < arguments.length; i++) {
+            args[i - 1] = arguments[i];
+        }
+    }
+    queue.push(new Item(fun, args));
+    if (queue.length === 1 && !draining) {
+        setTimeout(drainQueue, 0);
+    }
+};
+
+// v8 likes predictible objects
+function Item(fun, array) {
+    this.fun = fun;
+    this.array = array;
+}
+Item.prototype.run = function () {
+    this.fun.apply(null, this.array);
+};
+process.title = 'browser';
+process.browser = true;
+process.env = {};
+process.argv = [];
+process.version = ''; // empty string to avoid regexp issues
+process.versions = {};
+
+function noop() {}
+
+process.on = noop;
+process.addListener = noop;
+process.once = noop;
+process.off = noop;
+process.removeListener = noop;
+process.removeAllListeners = noop;
+process.emit = noop;
+
+process.binding = function (name) {
+    throw new Error('process.binding is not supported');
+};
+
+process.cwd = function () { return '/' };
+process.chdir = function (dir) {
+    throw new Error('process.chdir is not supported');
+};
+process.umask = function() { return 0; };
+
+},{}],56:[function(require,module,exports){
 /*! cropit - v0.5.0 <https://github.com/scottcheng/cropit> */
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
@@ -6724,7 +7379,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ ])
 });
 ;
-},{"jquery":94}],48:[function(require,module,exports){
+},{"jquery":103}],57:[function(require,module,exports){
 /*! DataTables 1.10.11
  * ©2008-2015 SpryMedia Ltd - datatables.net/license
  */
@@ -21993,7 +22648,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	return $.fn.dataTable;
 }));
 
-},{"jquery":94}],49:[function(require,module,exports){
+},{"jquery":103}],58:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -22060,7 +22715,7 @@ exports['default'] = inst;
 module.exports = exports['default'];
 
 
-},{"./handlebars.runtime":50,"./handlebars/compiler/ast":52,"./handlebars/compiler/base":53,"./handlebars/compiler/compiler":55,"./handlebars/compiler/javascript-compiler":57,"./handlebars/compiler/visitor":60,"./handlebars/no-conflict":74}],50:[function(require,module,exports){
+},{"./handlebars.runtime":59,"./handlebars/compiler/ast":61,"./handlebars/compiler/base":62,"./handlebars/compiler/compiler":64,"./handlebars/compiler/javascript-compiler":66,"./handlebars/compiler/visitor":69,"./handlebars/no-conflict":83}],59:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -22128,7 +22783,7 @@ exports['default'] = inst;
 module.exports = exports['default'];
 
 
-},{"./handlebars/base":51,"./handlebars/exception":64,"./handlebars/no-conflict":74,"./handlebars/runtime":75,"./handlebars/safe-string":76,"./handlebars/utils":77}],51:[function(require,module,exports){
+},{"./handlebars/base":60,"./handlebars/exception":73,"./handlebars/no-conflict":83,"./handlebars/runtime":84,"./handlebars/safe-string":85,"./handlebars/utils":86}],60:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -22234,7 +22889,7 @@ exports.createFrame = _utils.createFrame;
 exports.logger = _logger2['default'];
 
 
-},{"./decorators":62,"./exception":64,"./helpers":65,"./logger":73,"./utils":77}],52:[function(require,module,exports){
+},{"./decorators":71,"./exception":73,"./helpers":74,"./logger":82,"./utils":86}],61:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -22267,7 +22922,7 @@ exports['default'] = AST;
 module.exports = exports['default'];
 
 
-},{}],53:[function(require,module,exports){
+},{}],62:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -22317,7 +22972,7 @@ function parse(input, options) {
 }
 
 
-},{"../utils":77,"./helpers":56,"./parser":58,"./whitespace-control":61}],54:[function(require,module,exports){
+},{"../utils":86,"./helpers":65,"./parser":67,"./whitespace-control":70}],63:[function(require,module,exports){
 /* global define */
 'use strict';
 
@@ -22485,7 +23140,7 @@ exports['default'] = CodeGen;
 module.exports = exports['default'];
 
 
-},{"../utils":77,"source-map":79}],55:[function(require,module,exports){
+},{"../utils":86,"source-map":88}],64:[function(require,module,exports){
 /* eslint-disable new-cap */
 
 'use strict';
@@ -23059,7 +23714,7 @@ function transformLiteralToPath(sexpr) {
 }
 
 
-},{"../exception":64,"../utils":77,"./ast":52}],56:[function(require,module,exports){
+},{"../exception":73,"../utils":86,"./ast":61}],65:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -23291,7 +23946,7 @@ function preparePartialBlock(open, program, close, locInfo) {
 }
 
 
-},{"../exception":64}],57:[function(require,module,exports){
+},{"../exception":73}],66:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -24419,7 +25074,7 @@ exports['default'] = JavaScriptCompiler;
 module.exports = exports['default'];
 
 
-},{"../base":51,"../exception":64,"../utils":77,"./code-gen":54}],58:[function(require,module,exports){
+},{"../base":60,"../exception":73,"../utils":86,"./code-gen":63}],67:[function(require,module,exports){
 /* istanbul ignore next */
 /* Jison generated parser */
 "use strict";
@@ -25159,7 +25814,7 @@ var handlebars = (function () {
 exports['default'] = handlebars;
 
 
-},{}],59:[function(require,module,exports){
+},{}],68:[function(require,module,exports){
 /* eslint-disable new-cap */
 'use strict';
 
@@ -25347,7 +26002,7 @@ PrintVisitor.prototype.HashPair = function (pair) {
 /* eslint-enable new-cap */
 
 
-},{"./visitor":60}],60:[function(require,module,exports){
+},{"./visitor":69}],69:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -25489,7 +26144,7 @@ exports['default'] = Visitor;
 module.exports = exports['default'];
 
 
-},{"../exception":64}],61:[function(require,module,exports){
+},{"../exception":73}],70:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -25712,7 +26367,7 @@ exports['default'] = WhitespaceControl;
 module.exports = exports['default'];
 
 
-},{"./visitor":60}],62:[function(require,module,exports){
+},{"./visitor":69}],71:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -25730,7 +26385,7 @@ function registerDefaultDecorators(instance) {
 }
 
 
-},{"./decorators/inline":63}],63:[function(require,module,exports){
+},{"./decorators/inline":72}],72:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -25761,7 +26416,7 @@ exports['default'] = function (instance) {
 module.exports = exports['default'];
 
 
-},{"../utils":77}],64:[function(require,module,exports){
+},{"../utils":86}],73:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -25803,7 +26458,7 @@ exports['default'] = Exception;
 module.exports = exports['default'];
 
 
-},{}],65:[function(require,module,exports){
+},{}],74:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -25851,7 +26506,7 @@ function registerDefaultHelpers(instance) {
 }
 
 
-},{"./helpers/block-helper-missing":66,"./helpers/each":67,"./helpers/helper-missing":68,"./helpers/if":69,"./helpers/log":70,"./helpers/lookup":71,"./helpers/with":72}],66:[function(require,module,exports){
+},{"./helpers/block-helper-missing":75,"./helpers/each":76,"./helpers/helper-missing":77,"./helpers/if":78,"./helpers/log":79,"./helpers/lookup":80,"./helpers/with":81}],75:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -25892,7 +26547,7 @@ exports['default'] = function (instance) {
 module.exports = exports['default'];
 
 
-},{"../utils":77}],67:[function(require,module,exports){
+},{"../utils":86}],76:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -25988,7 +26643,7 @@ exports['default'] = function (instance) {
 module.exports = exports['default'];
 
 
-},{"../exception":64,"../utils":77}],68:[function(require,module,exports){
+},{"../exception":73,"../utils":86}],77:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -26015,7 +26670,7 @@ exports['default'] = function (instance) {
 module.exports = exports['default'];
 
 
-},{"../exception":64}],69:[function(require,module,exports){
+},{"../exception":73}],78:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -26046,7 +26701,7 @@ exports['default'] = function (instance) {
 module.exports = exports['default'];
 
 
-},{"../utils":77}],70:[function(require,module,exports){
+},{"../utils":86}],79:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -26074,7 +26729,7 @@ exports['default'] = function (instance) {
 module.exports = exports['default'];
 
 
-},{}],71:[function(require,module,exports){
+},{}],80:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -26088,7 +26743,7 @@ exports['default'] = function (instance) {
 module.exports = exports['default'];
 
 
-},{}],72:[function(require,module,exports){
+},{}],81:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -26123,7 +26778,7 @@ exports['default'] = function (instance) {
 module.exports = exports['default'];
 
 
-},{"../utils":77}],73:[function(require,module,exports){
+},{"../utils":86}],82:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -26172,7 +26827,7 @@ exports['default'] = logger;
 module.exports = exports['default'];
 
 
-},{"./utils":77}],74:[function(require,module,exports){
+},{"./utils":86}],83:[function(require,module,exports){
 (function (global){
 /* global window */
 'use strict';
@@ -26196,7 +26851,7 @@ module.exports = exports['default'];
 
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],75:[function(require,module,exports){
+},{}],84:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -26490,7 +27145,7 @@ function executeDecorators(fn, prog, container, depths, data, blockParams) {
 }
 
 
-},{"./base":51,"./exception":64,"./utils":77}],76:[function(require,module,exports){
+},{"./base":60,"./exception":73,"./utils":86}],85:[function(require,module,exports){
 // Build out our basic SafeString type
 'use strict';
 
@@ -26507,7 +27162,7 @@ exports['default'] = SafeString;
 module.exports = exports['default'];
 
 
-},{}],77:[function(require,module,exports){
+},{}],86:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -26633,7 +27288,7 @@ function appendContextPath(contextPath, id) {
 }
 
 
-},{}],78:[function(require,module,exports){
+},{}],87:[function(require,module,exports){
 // USAGE:
 // var handlebars = require('handlebars');
 /* eslint-disable no-var */
@@ -26660,7 +27315,7 @@ if (typeof require !== 'undefined' && require.extensions) {
   require.extensions['.hbs'] = extension;
 }
 
-},{"../dist/cjs/handlebars":49,"../dist/cjs/handlebars/compiler/printer":59,"fs":95}],79:[function(require,module,exports){
+},{"../dist/cjs/handlebars":58,"../dist/cjs/handlebars/compiler/printer":68,"fs":53}],88:[function(require,module,exports){
 /*
  * Copyright 2009-2011 Mozilla Foundation and contributors
  * Licensed under the New BSD license. See LICENSE.txt or:
@@ -26670,7 +27325,7 @@ exports.SourceMapGenerator = require('./source-map/source-map-generator').Source
 exports.SourceMapConsumer = require('./source-map/source-map-consumer').SourceMapConsumer;
 exports.SourceNode = require('./source-map/source-node').SourceNode;
 
-},{"./source-map/source-map-consumer":86,"./source-map/source-map-generator":87,"./source-map/source-node":88}],80:[function(require,module,exports){
+},{"./source-map/source-map-consumer":95,"./source-map/source-map-generator":96,"./source-map/source-node":97}],89:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2011 Mozilla Foundation and contributors
@@ -26779,7 +27434,7 @@ define(function (require, exports, module) {
 
 });
 
-},{"./util":89,"amdefine":90}],81:[function(require,module,exports){
+},{"./util":98,"amdefine":99}],90:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2011 Mozilla Foundation and contributors
@@ -26927,7 +27582,7 @@ define(function (require, exports, module) {
 
 });
 
-},{"./base64":82,"amdefine":90}],82:[function(require,module,exports){
+},{"./base64":91,"amdefine":99}],91:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2011 Mozilla Foundation and contributors
@@ -27002,7 +27657,7 @@ define(function (require, exports, module) {
 
 });
 
-},{"amdefine":90}],83:[function(require,module,exports){
+},{"amdefine":99}],92:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2011 Mozilla Foundation and contributors
@@ -27121,7 +27776,7 @@ define(function (require, exports, module) {
 
 });
 
-},{"amdefine":90}],84:[function(require,module,exports){
+},{"amdefine":99}],93:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2014 Mozilla Foundation and contributors
@@ -27209,7 +27864,7 @@ define(function (require, exports, module) {
 
 });
 
-},{"./util":89,"amdefine":90}],85:[function(require,module,exports){
+},{"./util":98,"amdefine":99}],94:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2011 Mozilla Foundation and contributors
@@ -27331,7 +27986,7 @@ define(function (require, exports, module) {
 
 });
 
-},{"amdefine":90}],86:[function(require,module,exports){
+},{"amdefine":99}],95:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2011 Mozilla Foundation and contributors
@@ -28410,7 +29065,7 @@ define(function (require, exports, module) {
 
 });
 
-},{"./array-set":80,"./base64-vlq":81,"./binary-search":83,"./quick-sort":85,"./util":89,"amdefine":90}],87:[function(require,module,exports){
+},{"./array-set":89,"./base64-vlq":90,"./binary-search":92,"./quick-sort":94,"./util":98,"amdefine":99}],96:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2011 Mozilla Foundation and contributors
@@ -28811,7 +29466,7 @@ define(function (require, exports, module) {
 
 });
 
-},{"./array-set":80,"./base64-vlq":81,"./mapping-list":84,"./util":89,"amdefine":90}],88:[function(require,module,exports){
+},{"./array-set":89,"./base64-vlq":90,"./mapping-list":93,"./util":98,"amdefine":99}],97:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2011 Mozilla Foundation and contributors
@@ -29227,7 +29882,7 @@ define(function (require, exports, module) {
 
 });
 
-},{"./source-map-generator":87,"./util":89,"amdefine":90}],89:[function(require,module,exports){
+},{"./source-map-generator":96,"./util":98,"amdefine":99}],98:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2011 Mozilla Foundation and contributors
@@ -29599,7 +30254,7 @@ define(function (require, exports, module) {
 
 });
 
-},{"amdefine":90}],90:[function(require,module,exports){
+},{"amdefine":99}],99:[function(require,module,exports){
 (function (process,__filename){
 /** vim: et:ts=4:sw=4:sts=4
  * @license amdefine 1.0.0 Copyright (c) 2011-2015, The Dojo Foundation All Rights Reserved.
@@ -29904,15 +30559,15 @@ function amdefine(module, requireFn) {
 module.exports = amdefine;
 
 }).call(this,require('_process'),"/node_modules/handlebars/node_modules/source-map/node_modules/amdefine/amdefine.js")
-},{"_process":97,"path":96}],91:[function(require,module,exports){
+},{"_process":55,"path":54}],100:[function(require,module,exports){
 // Create a simple path alias to allow browserify to resolve
 // the runtime on a supported path.
 module.exports = require('./dist/cjs/handlebars.runtime')['default'];
 
-},{"./dist/cjs/handlebars.runtime":50}],92:[function(require,module,exports){
+},{"./dist/cjs/handlebars.runtime":59}],101:[function(require,module,exports){
 module.exports = require("handlebars/runtime")["default"];
 
-},{"handlebars/runtime":91}],93:[function(require,module,exports){
+},{"handlebars/runtime":100}],102:[function(require,module,exports){
 /*!
  * jQuery Validation Plugin v1.15.0
  *
@@ -31445,9 +32100,9 @@ if ( $.ajaxPrefilter ) {
 }
 
 }));
-},{"jquery":94}],94:[function(require,module,exports){
+},{"jquery":103}],103:[function(require,module,exports){
 /*!
- * jQuery JavaScript Library v2.2.2
+ * jQuery JavaScript Library v2.2.3
  * http://jquery.com/
  *
  * Includes Sizzle.js
@@ -31457,7 +32112,7 @@ if ( $.ajaxPrefilter ) {
  * Released under the MIT license
  * http://jquery.org/license
  *
- * Date: 2016-03-17T17:51Z
+ * Date: 2016-04-05T19:26Z
  */
 
 (function( global, factory ) {
@@ -31513,7 +32168,7 @@ var support = {};
 
 
 var
-	version = "2.2.2",
+	version = "2.2.3",
 
 	// Define a local copy of jQuery
 	jQuery = function( selector, context ) {
@@ -40923,7 +41578,7 @@ jQuery.fn.load = function( url, params, callback ) {
 		// If it fails, this function gets "jqXHR", "status", "error"
 		} ).always( callback && function( jqXHR, status ) {
 			self.each( function() {
-				callback.apply( self, response || [ jqXHR.responseText, status, jqXHR ] );
+				callback.apply( this, response || [ jqXHR.responseText, status, jqXHR ] );
 			} );
 		} );
 	}
@@ -41289,330 +41944,7 @@ if ( !noGlobal ) {
 return jQuery;
 }));
 
-},{}],95:[function(require,module,exports){
-
-},{}],96:[function(require,module,exports){
-(function (process){
-// Copyright Joyent, Inc. and other Node contributors.
-//
-// Permission is hereby granted, free of charge, to any person obtaining a
-// copy of this software and associated documentation files (the
-// "Software"), to deal in the Software without restriction, including
-// without limitation the rights to use, copy, modify, merge, publish,
-// distribute, sublicense, and/or sell copies of the Software, and to permit
-// persons to whom the Software is furnished to do so, subject to the
-// following conditions:
-//
-// The above copyright notice and this permission notice shall be included
-// in all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
-// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
-// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
-// USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-// resolves . and .. elements in a path array with directory names there
-// must be no slashes, empty elements, or device names (c:\) in the array
-// (so also no leading and trailing slashes - it does not distinguish
-// relative and absolute paths)
-function normalizeArray(parts, allowAboveRoot) {
-  // if the path tries to go above the root, `up` ends up > 0
-  var up = 0;
-  for (var i = parts.length - 1; i >= 0; i--) {
-    var last = parts[i];
-    if (last === '.') {
-      parts.splice(i, 1);
-    } else if (last === '..') {
-      parts.splice(i, 1);
-      up++;
-    } else if (up) {
-      parts.splice(i, 1);
-      up--;
-    }
-  }
-
-  // if the path is allowed to go above the root, restore leading ..s
-  if (allowAboveRoot) {
-    for (; up--; up) {
-      parts.unshift('..');
-    }
-  }
-
-  return parts;
-}
-
-// Split a filename into [root, dir, basename, ext], unix version
-// 'root' is just a slash, or nothing.
-var splitPathRe =
-    /^(\/?|)([\s\S]*?)((?:\.{1,2}|[^\/]+?|)(\.[^.\/]*|))(?:[\/]*)$/;
-var splitPath = function(filename) {
-  return splitPathRe.exec(filename).slice(1);
-};
-
-// path.resolve([from ...], to)
-// posix version
-exports.resolve = function() {
-  var resolvedPath = '',
-      resolvedAbsolute = false;
-
-  for (var i = arguments.length - 1; i >= -1 && !resolvedAbsolute; i--) {
-    var path = (i >= 0) ? arguments[i] : process.cwd();
-
-    // Skip empty and invalid entries
-    if (typeof path !== 'string') {
-      throw new TypeError('Arguments to path.resolve must be strings');
-    } else if (!path) {
-      continue;
-    }
-
-    resolvedPath = path + '/' + resolvedPath;
-    resolvedAbsolute = path.charAt(0) === '/';
-  }
-
-  // At this point the path should be resolved to a full absolute path, but
-  // handle relative paths to be safe (might happen when process.cwd() fails)
-
-  // Normalize the path
-  resolvedPath = normalizeArray(filter(resolvedPath.split('/'), function(p) {
-    return !!p;
-  }), !resolvedAbsolute).join('/');
-
-  return ((resolvedAbsolute ? '/' : '') + resolvedPath) || '.';
-};
-
-// path.normalize(path)
-// posix version
-exports.normalize = function(path) {
-  var isAbsolute = exports.isAbsolute(path),
-      trailingSlash = substr(path, -1) === '/';
-
-  // Normalize the path
-  path = normalizeArray(filter(path.split('/'), function(p) {
-    return !!p;
-  }), !isAbsolute).join('/');
-
-  if (!path && !isAbsolute) {
-    path = '.';
-  }
-  if (path && trailingSlash) {
-    path += '/';
-  }
-
-  return (isAbsolute ? '/' : '') + path;
-};
-
-// posix version
-exports.isAbsolute = function(path) {
-  return path.charAt(0) === '/';
-};
-
-// posix version
-exports.join = function() {
-  var paths = Array.prototype.slice.call(arguments, 0);
-  return exports.normalize(filter(paths, function(p, index) {
-    if (typeof p !== 'string') {
-      throw new TypeError('Arguments to path.join must be strings');
-    }
-    return p;
-  }).join('/'));
-};
-
-
-// path.relative(from, to)
-// posix version
-exports.relative = function(from, to) {
-  from = exports.resolve(from).substr(1);
-  to = exports.resolve(to).substr(1);
-
-  function trim(arr) {
-    var start = 0;
-    for (; start < arr.length; start++) {
-      if (arr[start] !== '') break;
-    }
-
-    var end = arr.length - 1;
-    for (; end >= 0; end--) {
-      if (arr[end] !== '') break;
-    }
-
-    if (start > end) return [];
-    return arr.slice(start, end - start + 1);
-  }
-
-  var fromParts = trim(from.split('/'));
-  var toParts = trim(to.split('/'));
-
-  var length = Math.min(fromParts.length, toParts.length);
-  var samePartsLength = length;
-  for (var i = 0; i < length; i++) {
-    if (fromParts[i] !== toParts[i]) {
-      samePartsLength = i;
-      break;
-    }
-  }
-
-  var outputParts = [];
-  for (var i = samePartsLength; i < fromParts.length; i++) {
-    outputParts.push('..');
-  }
-
-  outputParts = outputParts.concat(toParts.slice(samePartsLength));
-
-  return outputParts.join('/');
-};
-
-exports.sep = '/';
-exports.delimiter = ':';
-
-exports.dirname = function(path) {
-  var result = splitPath(path),
-      root = result[0],
-      dir = result[1];
-
-  if (!root && !dir) {
-    // No dirname whatsoever
-    return '.';
-  }
-
-  if (dir) {
-    // It has a dirname, strip trailing slash
-    dir = dir.substr(0, dir.length - 1);
-  }
-
-  return root + dir;
-};
-
-
-exports.basename = function(path, ext) {
-  var f = splitPath(path)[2];
-  // TODO: make this comparison case-insensitive on windows?
-  if (ext && f.substr(-1 * ext.length) === ext) {
-    f = f.substr(0, f.length - ext.length);
-  }
-  return f;
-};
-
-
-exports.extname = function(path) {
-  return splitPath(path)[3];
-};
-
-function filter (xs, f) {
-    if (xs.filter) return xs.filter(f);
-    var res = [];
-    for (var i = 0; i < xs.length; i++) {
-        if (f(xs[i], i, xs)) res.push(xs[i]);
-    }
-    return res;
-}
-
-// String.prototype.substr - negative index don't work in IE8
-var substr = 'ab'.substr(-1) === 'b'
-    ? function (str, start, len) { return str.substr(start, len) }
-    : function (str, start, len) {
-        if (start < 0) start = str.length + start;
-        return str.substr(start, len);
-    }
-;
-
-}).call(this,require('_process'))
-},{"_process":97}],97:[function(require,module,exports){
-// shim for using process in browser
-
-var process = module.exports = {};
-var queue = [];
-var draining = false;
-var currentQueue;
-var queueIndex = -1;
-
-function cleanUpNextTick() {
-    draining = false;
-    if (currentQueue.length) {
-        queue = currentQueue.concat(queue);
-    } else {
-        queueIndex = -1;
-    }
-    if (queue.length) {
-        drainQueue();
-    }
-}
-
-function drainQueue() {
-    if (draining) {
-        return;
-    }
-    var timeout = setTimeout(cleanUpNextTick);
-    draining = true;
-
-    var len = queue.length;
-    while(len) {
-        currentQueue = queue;
-        queue = [];
-        while (++queueIndex < len) {
-            if (currentQueue) {
-                currentQueue[queueIndex].run();
-            }
-        }
-        queueIndex = -1;
-        len = queue.length;
-    }
-    currentQueue = null;
-    draining = false;
-    clearTimeout(timeout);
-}
-
-process.nextTick = function (fun) {
-    var args = new Array(arguments.length - 1);
-    if (arguments.length > 1) {
-        for (var i = 1; i < arguments.length; i++) {
-            args[i - 1] = arguments[i];
-        }
-    }
-    queue.push(new Item(fun, args));
-    if (queue.length === 1 && !draining) {
-        setTimeout(drainQueue, 0);
-    }
-};
-
-// v8 likes predictible objects
-function Item(fun, array) {
-    this.fun = fun;
-    this.array = array;
-}
-Item.prototype.run = function () {
-    this.fun.apply(null, this.array);
-};
-process.title = 'browser';
-process.browser = true;
-process.env = {};
-process.argv = [];
-process.version = ''; // empty string to avoid regexp issues
-process.versions = {};
-
-function noop() {}
-
-process.on = noop;
-process.addListener = noop;
-process.once = noop;
-process.off = noop;
-process.removeListener = noop;
-process.removeAllListeners = noop;
-process.emit = noop;
-
-process.binding = function (name) {
-    throw new Error('process.binding is not supported');
-};
-
-process.cwd = function () { return '/' };
-process.chdir = function (dir) {
-    throw new Error('process.chdir is not supported');
-};
-process.umask = function() { return 0; };
-
-},{}],98:[function(require,module,exports){
+},{}],104:[function(require,module,exports){
 /*! DataTables Bootstrap 3 integration
  * ©2011-2015 SpryMedia Ltd - datatables.net/license
  */
@@ -41795,7 +42127,7 @@ DataTable.ext.renderer.pageButton.bootstrap = function ( settings, host, idx, bu
 
 return DataTable;
 }));
-},{"datatables.net":48}],99:[function(require,module,exports){
+},{"datatables.net":57}],105:[function(require,module,exports){
 /*! DataTables 1.10.11
  * ©2008-2015 SpryMedia Ltd - datatables.net/license
  */
@@ -57065,4 +57397,4 @@ return DataTable;
 	return $.fn.dataTable;
 }));
 
-},{"jquery":94}]},{},[25]);
+},{"jquery":103}]},{},[25]);

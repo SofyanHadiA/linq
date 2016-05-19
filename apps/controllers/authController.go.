@@ -2,13 +2,10 @@ package controllers
 
 import (
 	"net/http"
-	// "strconv"
-
-	"bitbucket.org/sofyan_a/linq.im/core/api"
-	"bitbucket.org/sofyan_a/linq.im/core/services"
-	// "bitbucket.org/sofyan_a/linq.im/core/utils"
-	// "bitbucket.org/sofyan_a/linq.im/domains/users"
-	// "bitbucket.org/sofyan_a/linq.im/apps/viewmodel"
+	
+	"github.com/SofyanHadiA/linq/core/api"
+	"github.com/SofyanHadiA/linq/core/services"
+	. "github.com/SofyanHadiA/linq/apps/viewmodels"
 
 	"github.com/satori/go.uuid"
 )

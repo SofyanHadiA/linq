@@ -5,8 +5,8 @@ import (
 	"errors"
 	"fmt"
 
-	"bitbucket.org/sofyan_a/linq.im/core/repository"
-	"bitbucket.org/sofyan_a/linq.im/core/utils"
+	"github.com/SofyanHadiA/linq/core/repository"
+	"github.com/SofyanHadiA/linq/core/utils"
 
 	"github.com/satori/go.uuid"
 )
@@ -51,7 +51,7 @@ func (service UserService) Modify(model repository.IModel) error {
 
 func (service UserService) UpdateUserPhoto(model repository.IModel) error {
 	if exist, _ := service.repo.IsExist(model.GetId()); exist {
-		userRepo := service.repo.(UserRepository)
+		userRepo := service.repo.(userRepository)
 
 		err := userRepo.UpdateUserPhoto(model)
 
@@ -83,12 +83,12 @@ func (service UserService) RemoveBulk(userIds []uuid.UUID) error {
 }
 
 func (service UserService) ValidatePassword(uid uuid.UUID, password string) (bool, error) {
-	userRepo := service.repo.(UserRepository)
+	userRepo := service.repo.(userRepository)
 	return userRepo.ValidatePassword(uid, password)
 }
 
 func (service UserService) ChangePassword(userCred *UserCredential) error {
-	userRepo := service.repo.(UserRepository)
+	userRepo := service.repo.(userRepository)
 
 	if userCred.PasswordNew != userCred.PasswordConfirm {
 		return errors.New("PasswordConfirmNotMatch")

@@ -1,7 +1,7 @@
-package viewmodel
+package viewmodels
 
-import (
-	"bitbucket.org/sofyan_a/linq.im/domains/users"
+import(
+	"github.com/SofyanHadiA/linq/domains/users"
 )
 
 type RequestUserDataModel struct {

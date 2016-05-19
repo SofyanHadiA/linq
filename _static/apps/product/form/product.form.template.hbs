@@ -1,0 +1,98 @@
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+    <h4 class="modal-title">roduct Form</h4>
+</div>
+
+<div class="modal-body">
+    <fieldset id="product_basic_info">
+        <div class="row">
+            <div class="col-md-2 col-xs-12 form-horizontal">
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <div id="product-photo" class="image-editor center-block">
+                            <div class="cropit-preview"></div>
+                            <input type="range" class="cropit-image-zoom-input" />
+                            <input id="product-photo-file" type="file" class="cropit-image-input" />
+                            <button id="select-image-btn" class="btn btn-primary btn-block btn-xs">Change Product Photo</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-10 col-xs-12">
+                <legend class="col-md-12">Basic Info</legend>
+                <form id="product-form" name="product-form" class="form-horizontal">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label class="col-md-2 col-xs-4 control-label">{{{accountNumberInput.label}}}</label>
+                            <div class="col-md-4 col-xs-8">
+                                <input type="disabled" class="form-control" disabled value="{{{accountNumberInput.value}}}" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">{{{productNameInput.formGroup}}}</div>
+                    <div class="col-md-6">{{{emailInput.formGroup}}}</div>
+                    <div class="col-md-6">{{{firstNameInput.formGroup}}}</div>
+                    <div class="col-md-6">{{{lastNameInput.formGroup}}}</div>
+                    <div class="col-md-6">{{{phoneNumberInput.formGroup}}}</div>
+                    <div class="col-md-6">{{{addressInput.formGroupTextArea}}}</div>
+                    <div class="col-md-6">{{{countryInput.formGroup}}}</div>
+                    <div class="col-md-6">{{{cityInput.formGroup}}}</div>
+                    <div class="col-md-6">{{{stateInput.formGroup}}}</div>
+                    <div class="col-md-6">{{{zipInput.formGroup}}}</div>
+                    <div class="col-md-6">{{{notesInput.formGroup}}}</div>
+                </form>
+            </div>
+        </div>
+    </fieldset>
+    <div class="row">
+        <div class="col-md-2">
+        </div>
+        <div class="col-md-5">
+            <div class="row form-horizontal">
+                <legend class="col-md-12">Change Password</legend>
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label for="passwordOld" class="col-xs-4 control-label ">Current Password</label>
+                        <div class="col-xs-8">
+                            <input form="product-form" type="password" name="password" id="password" class="form-control valid" value="" aria-invalid="false">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label for="password" class="col-xs-4 control-label ">New Password</label>
+                        <div class="col-xs-8">
+                            <input form="product-form" type="password" name="passwordNew" id="passwordNew" class="form-control valid" value="" aria-invalid="false">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label for="password2" class="col-xs-4 control-label ">Confirm Password</label>
+                        <div class="col-xs-8">
+                            <input form="product-form" type="password" name="passwordConfirm" id="passwordConfirm" class="form-control valid" value="" aria-invalid="false">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-5">
+            <div class="row form-horizontal">
+                <legend class="col-md-12">Danger Area</legend>
+                <div class="col-md-12 ">
+                    <div class="form-group">
+                        <label for="removeProduct" class="col-xs-4 control-label">Delete Product</label>
+                        <div class="col-xs-8">
+                            <button id="removeProduct" class="btn btn-danger" data-id="{{{accountNumberInput.value}}}">Delete This Product</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal-footer">
+    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+    <button type="submit" form="product-form" class="btn btn-primary">Save changes</button>
+</div>
