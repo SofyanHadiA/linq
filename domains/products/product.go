@@ -2,7 +2,7 @@ package products
 
 import (
 	"time"
-	
+
 	"github.com/SofyanHadiA/linq/core/datatype"
 
 	"github.com/satori/go.uuid"
@@ -20,6 +20,7 @@ type Product struct {
 	Deleted   bool                    `json:"-" db:"deleted"`
 	Created   time.Time               `json:"created" db:"created"`
 	Updated   time.Time               `json:"updated" db:"updated"`
+	Category  string         		  `json:"category" db:"category"`
 }
 
 type Products []Product

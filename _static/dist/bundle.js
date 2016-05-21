@@ -447,13 +447,14 @@ var formModule = function() {
             setClass: setClass,
             formGroup: formGroup,
             formGroupPassword: formGroupPassword,
-            formGroupTextArea: formGroupTextArea
+            formGroupNumber: formGroupNumber,
+            formGroupTextArea: formGroupTextArea,
         }
 
         return self;
 
-        function setValue(val) {
-            self.value = val || "";
+        function setValue(value, defaultValue) {
+            self.value = value || defaultValue || "";
             return self;
         }
 
@@ -463,7 +464,11 @@ var formModule = function() {
         }
         
         function formGroup(inputWidth = 8, labelWidth = 4){
-            return '<div class="form-group">' + formLabel(labelWidth) + inputText(inputWidth) + '</div>'
+            return '<div class="form-group">' + formLabel(labelWidth) + inputText("text", inputWidth) + '</div>'
+        }
+        
+         function formGroupNumber(inputWidth = 8, labelWidth = 4){
+            return '<div class="form-group">' + formLabel(labelWidth) + inputText("number", inputWidth) + '</div>'
         }
         
         function formGroupPassword(inputWidth = 8, labelWidth = 4){
@@ -473,8 +478,18 @@ var formModule = function() {
         function formGroupTextArea(inputWidth = 8, labelWidth = 4){
             return '<div class="form-group">' + formLabel(labelWidth) + inputTextArea() + '</div>'
         }
+        
+        function formGroupDropDown(inputWidth = 8, labelWidth = 4){
+            return '<div class="form-group">' + formLabel(labelWidth) + inputDropDown() + '</div>'
+        }
 
         function inputText(type="text", inputWidth = '8') {
+            return '<div class="col-xs-'+inputWidth+'">' +
+                '<input type="'+type+'" name="' + self.name + '" id="' + self.name + '" class="form-control" value="' + self.value + '" />' +
+                '</div>'
+        }
+        
+        function inputDropDown(type="text", inputWidth = '8') {
             return '<div class="col-xs-'+inputWidth+'">' +
                 '<input type="'+type+'" name="' + self.name + '" id="' + self.name + '" class="form-control" value="' + self.value + '" />' +
                 '</div>'
@@ -1011,7 +1026,7 @@ module.exports = {
 	giftcards_change_all_to_unserialized: "Change All To Unserialized",
 	giftcards_confirm_bulk_edit: "Are you sure you want to edit all the giftcards selected?",
 	giftcards_confirm_delete: "Are you sure you want to delete the selected giftcards?",
-	giftcards_cost_price: "Cost Price",
+	giftcards_buy_price: "Buy Price",
 	giftcards_count: "Update Inventory",
 	giftcards_current_quantity: "Current Quantity",
 	giftcards_description: "Description",
@@ -1057,7 +1072,7 @@ module.exports = {
 	giftcards_tax_2: "Tax 2",
 	giftcards_tax_percent: "Tax Percent",
 	giftcards_tax_percents: "Tax Percent(s)",
-	giftcards_unit_price: "Unit Price",
+	giftcards_sell_price: "Unit Price",
 	giftcards_upc_database: "UPC Database",
 	giftcards_update: "Update Giftcard",
 	giftcards_use_inventory_menu: "Use Inv. Menu",
@@ -1070,102 +1085,103 @@ module.exports = {
 	is_numeric: "The %s field must contain only numeric characters.",
 	is_unique: "The %s field must contain a unique value.",
 	isset: "The %s field must have a value.",
-	item_kits_add_item: "Add Item",
-	item_kits_cannot_be_deleted: "Could not delete item kit(s)",
-	item_kits_confirm_delete: "Are you sure you want to delete the selected item kits?",
-	item_kits_description: "Item Kit Description",
-	item_kits_error_adding_updating: "Error adding/updating Item Kit",
-	item_kits_info: "Item Kit Info",
-	item_kits_item: "Item",
-	item_kits_items: "Items",
-	item_kits_name: "Item Kit Name",
-	item_kits_new: "New Item Kit",
-	item_kits_no_item_kits_to_display: "No item kits to display",
-	item_kits_none_selected: "You have not selected any item kits",
-	item_kits_one_or_multiple: "Item Kit(s)",
-	item_kits_quantity: "Quantity",
-	item_kits_successful_adding: "You have successfully added Item Kit",
-	item_kits_successful_deleted: "You have successfully deleted",
-	item_kits_successful_updating: "You have successfully updated Item Kit",
-	item_kits_update: "Update Item Kit",
-	items_add_minus: "Inventory to add/subtract",
-	items_allow_alt_description: "Allow Alt Description",
-	items_amazon: "Amazon",
-	items_basic_information: "Item Information",
-	items_bulk_edit: "Bulk Edit",
-	items_buy_price_required: "Purchase price is a required field",
-	items_cannot_be_deleted: "Could not deleted selected items, one or more of the selected items has sales.",
-	items_cannot_find_item: "Cannot find any information about item",
-	items_category: "Category",
-	items_category_required: "Category is a required field",
-	items_change_all_to_allow_alt_desc: " Allow Alt Desc For All",
-	items_change_all_to_not_allow_allow_desc: "Not Allow Alt Desc For All",
-	items_change_all_to_serialized: "Change All To Serialized",
-	items_change_all_to_unserialized: "Change All To Unserialized",
-	items_confirm_bulk_edit: "Are you sure you want to edit all the items selected?",
-	items_confirm_delete: "Are you sure you want to delete the selected items?",
-	items_cost_price: "Cost Price",
-	items_cost_price_number: "Cost price must be a number",
-	items_cost_price_required: "Cost Price is a required field",
-	items_count: "Update Inv.",
-	items_current_quantity: "Current Quantity",
-	items_description: "Description",
-	items_details_count: "Inventory Count Details",
-	items_do_nothing: "Do Nothing",
-	items_edit_fields_you_want_to_update: "Edit the fields you want to edit for ALL selected items",
-	items_edit_multiple_items: "Editing Multiple Items",
-	items_error_adding_updating: "Error adding/updating item",
-	items_error_updating_multiple: "Error updating items",
-	items_excel_import_failed: "Excel import failed",
-	items_generate_barcodes: "Generate Barcodes",
-	items_info_provided_by: "Info provided by",
-	items_inventory: "Inv",
-	items_inventory_comments: "Comments",
-	items_is_deleted: "Deleted",
-	items_is_serialized: "Item has Serial Number",
-	items_item: "Item",
-	items_item_number: "Barcode",
-	items_location: "Location",
-	items_manually_editing_of_quantity: "Manual Edit of Quantity",
-	items_must_select_item_for_barcode: "You must select at least 1 item to generate barcodes",
-	items_name: "Name",
-	items_name_required: "Item Name is a required field",
-	items_new: "New Item",
-	items_no_description_items: "No Description Items",
-	items_no_items_to_display: "No Items to display",
-	items_none: "None",
-	items_none_selected: "You have not selected any items to edit",
-	items_number_information: "Number",
-	items_one_or_multiple: "item(s)",
-	items_quantity: "Qty",
-	items_quantity_number: "Quantity must be a number",
-	items_quantity_required: "Quantity is a required field. Please Close ( X ) to cancel",
-	items_receiving_quantity: "Receiving quantity",
-	items_reorder_level: "Reorder Level",
-	items_reorder_level_number: "Reorder level must be a number",
-	items_reorder_level_required: "Reorder level is a required field",
-	items_retrive_item_info: "Retrive Item Info",
-	items_sales_tax_1: "Sales Tax",
-	items_sales_tax_2: "Sales Tax 2",
-	items_search_custom_items: "Search Custom Fields",
-	items_serialized_items: "Serialized Items",
-	items_stock_location: "Stock location",
-	items_successful_adding: "You have successfully added item",
-	items_successful_bulk_edit: "You have successfully updated the selected items",
-	items_successful_deleted: "You have successfully deleted",
-	items_successful_updating: "You have successfully updated item",
-	items_supplier: "Supplier",
-	items_tax_1: "Tax 1",
-	items_tax_2: "Tax 2",
-	items_tax_percent: "Tax",
-	items_tax_percent_required: "Tax Percent is a required field",
-	items_tax_percents: "Tax",
-	items_unit_price: "Retail Price",
-	items_unit_price_number: "Unit price must be a number",
-	items_unit_price_required: "Retail Price is a required field",
-	items_upc_database: "UPC Database",
-	items_update: "Update Item",
-	items_use_inventory_menu: "Use Inv. Menu",
+	product_kits_add_product: "Add Item",
+	product_kits_cannot_be_deleted: "Could not delete product kit(s)",
+	product_kits_confirm_delete: "Are you sure you want to delete the selected product kits?",
+	product_kits_description: "Item Kit Description",
+	product_kits_error_adding_updating: "Error adding/updating Item Kit",
+	product_kits_info: "Item Kit Info",
+	product_kits_product: "Item",
+	product_kits_product: "Items",
+	product_kits_name: "Item Kit Name",
+	product_kits_new: "New Item Kit",
+	product_kits_no_product_kits_to_display: "No product kits to display",
+	product_kits_none_selected: "You have not selected any product kits",
+	product_kits_one_or_multiple: "Item Kit(s)",
+	product_kits_quantity: "Quantity",
+	product_kits_successful_adding: "You have successfully added Item Kit",
+	product_kits_successful_deleted: "You have successfully deleted",
+	product_kits_successful_updating: "You have successfully updated Item Kit",
+	product_kits_update: "Update Item Kit",
+	product_add_minus: "Inventory to add/subtract",
+	product_allow_alt_description: "Allow Alt Description",
+	product_amazon: "Amazon",
+	product_basic_information: "Item Information",
+	product_bulk_edit: "Bulk Edit",
+	product_buy_price_required: "Purchase price is a required field",
+	product_cannot_be_deleted: "Could not deleted selected product, one or more of the selected product has sales.",
+	product_cannot_find_product: "Cannot find any information about product",
+	product_category: "Category",
+	product_category_required: "Category is a required field",
+	product_change_all_to_allow_alt_desc: " Allow Alt Desc For All",
+	product_change_all_to_not_allow_allow_desc: "Not Allow Alt Desc For All",
+	product_change_all_to_serialized: "Change All To Serialized",
+	product_change_all_to_unserialized: "Change All To Unserialized",
+	product_confirm_bulk_edit: "Are you sure you want to edit all the product selected?",
+	product_confirm_delete: "Are you sure you want to delete the selected product?",
+	buyPrice: "Buy Price",
+	product_buy_price_number: "Buy price must be a number",
+	product_buy_price_required: "Buy Price is a required field",
+	product_count: "Update Inv.",
+	product_current_quantity: "Current Quantity",
+	product_description: "Description",
+	product_details_count: "Inventory Count Details",
+	product_do_nothing: "Do Nothing",
+	product_edit_fields_you_want_to_update: "Edit the fields you want to edit for ALL selected product",
+	product_edit_multiple_product: "Editing Multiple Items",
+	product_error_adding_updating: "Error adding/updating product",
+	product_error_updating_multiple: "Error updating product",
+	product_excel_import_failed: "Excel import failed",
+	product_generate_barcodes: "Generate Barcodes",
+	product_info_provided_by: "Info provided by",
+	product_inventory: "Inv",
+	product_inventory_comments: "Comments",
+	product_is_deleted: "Deleted",
+	product_is_serialized: "Item has Serial Number",
+	product: "Product",
+	product_code: "Barcode",
+	product_location: "Location",
+	product_manually_editing_of_quantity: "Manual Edit of Quantity",
+	product_must_select_product_for_barcode: "You must select at least 1 product to generate barcodes",
+	
+	title: "Title",
+	product_name_required: "Item Name is a required field",
+	product_new: "New Item",
+	product_no_description_product: "No Description Items",
+	product_no_product_to_display: "No Items to display",
+	product_none: "None",
+	product_none_selected: "You have not selected any product to edit",
+	product_number_information: "Number",
+	product_one_or_multiple: "product(s)",
+	stock: "Qty",
+	product_quantity_number: "Quantity must be a number",
+	product_quantity_required: "Quantity is a required field. Please Close ( X ) to cancel",
+	product_receiving_quantity: "Receiving quantity",
+	product_reorder_level: "Reorder Level",
+	product_reorder_level_number: "Reorder level must be a number",
+	product_reorder_level_required: "Reorder level is a required field",
+	product_retrive_product_info: "Retrive Item Info",
+	product_sales_tax_1: "Sales Tax",
+	product_sales_tax_2: "Sales Tax 2",
+	product_search_custom_product: "Search Custom Fields",
+	product_serialized_product: "Serialized Items",
+	product_stock_location: "Stock location",
+	product_successful_adding: "You have successfully added product",
+	product_successful_bulk_edit: "You have successfully updated the selected product",
+	product_successful_deleted: "You have successfully deleted",
+	product_successful_updating: "You have successfully updated product",
+	product_supplier: "Supplier",
+	product_tax_1: "Tax 1",
+	product_tax_2: "Tax 2",
+	product_tax_percent: "Tax",
+	product_tax_percent_required: "Tax Percent is a required field",
+	product_tax_percents: "Tax",
+	sellPrice: "Retail Price",
+	product_sell_price_number: "Unit price must be a number",
+	product_sell_price_required: "Retail Price is a required field",
+	product_upc_database: "UPC Database",
+	product_update: "Update Item",
+	product_use_inventory_menu: "Use Inv. Menu",
 	less_than: "The %s field must contain a number less than %s.",
 	login_go: "Go",
 	login_invalid_username_and_password: "Invalid username/password",
@@ -1187,10 +1203,10 @@ module.exports = {
 	module_giftcards: "Gift Cards",
 	module_giftcards_desc: "Add, Update, Delete and Search gift cards",
 	module_home: "Home",
-	module_item_kits: "Item Kits",
-	module_item_kits_desc: "Add, Update, Delete and Search Item Kits",
-	module_items: "Items",
-	module_items_desc: "Add, Update, Delete, and Search items",
+	module_product_kits: "Item Kits",
+	module_product_kits_desc: "Add, Update, Delete and Search Item Kits",
+	module_product: "Items",
+	module_product_desc: "Add, Update, Delete, and Search product",
 	module_receivings: "Receivings",
 	module_receivings_desc: "Process Purchase orders",
 	module_reports: "Reports",
@@ -1210,9 +1226,9 @@ module.exports = {
 	recvs_cannot_be_deleted: "Receiving(s) could not be deleted",
 	recvs_comments: "Comments",
 	recvs_complete_receiving: "Finish",
-	recvs_confirm_cancel_receiving: "Are you sure you want to clear this receiving? All items will cleared.",
+	recvs_confirm_cancel_receiving: "Are you sure you want to clear this receiving? All product will cleared.",
 	recvs_confirm_finish_receiving: "Are you sure you want to submit this receiving? This cannot be undone.",
-	recvs_cost: "Cost",
+	recvs_cost: "Buy",
 	recvs_date: "Receiving Date",
 	recvs_date_required: "A correct date needs to be filled in",
 	recvs_date_type: "Date field is required",
@@ -1222,15 +1238,15 @@ module.exports = {
 	recvs_edit: "Edit",
 	recvs_edit_sale: "Edit Receiving",
 	recvs_employee: "Employee",
-	recvs_error_editing_item: "Error editing item",
+	recvs_error_editing_product: "Error editing product",
 	recvs_error_requisition: "Unable to move inventory from and to the same stock location",
-	recvs_find_or_scan_item: "Find/Scan Item",
-	recvs_find_or_scan_item_or_receipt: "Find/Scan Item OR Receipt",
+	recvs_find_or_scan_product: "Find/Scan Item",
+	recvs_find_or_scan_product_or_receipt: "Find/Scan Item OR Receipt",
 	recvs_id: "Receiving ID",
 	recvs_invoice_enable: "Create Invoice",
 	recvs_invoice_number: "Invoice #",
 	recvs_invoice_number_duplicate: "Please enter an unique invoice number",
-	recvs_item_name: "Item Name",
+	recvs_product_name: "Item Name",
 	recvs_mode: "Receiving Mode",
 	recvs_new_supplier: "New Supplier",
 	recvs_one_or_multiple: "receiving(s)",
@@ -1250,7 +1266,7 @@ module.exports = {
 	recvs_successfully_updated: "Receiving successfully updated",
 	recvs_supplier: "Supplier",
 	recvs_total: "Total",
-	recvs_unable_to_add_item: "Unable to add item to receiving",
+	recvs_unable_to_add_product: "Unable to add product to receiving",
 	recvs_unsuccessfully_updated: "Receiving unsuccessfully updated",
 	regex_match: "The %s field is not in the correct format.",
 	reports_all: "All",
@@ -1283,13 +1299,13 @@ module.exports = {
 	reports_inventory_reports: "Inventory Reports",
 	reports_inventory_summary: " Inventory Summary",
 	reports_inventory_summary_report: "Inventory Summary Report",
-	reports_item: "Item",
-	reports_item_name: "Item Name",
-	reports_item_number: "Item Number",
-	reports_items: "Items",
-	reports_items_purchased: "Items Purchased",
-	reports_items_received: "Items Received",
-	reports_items_summary_report: "Items Summary Report",
+	reports_product: "Item",
+	reports_product_name: "Item Name",
+	reports_product_number: "Item Number",
+	reports_product: "Items",
+	reports_product_purchased: "Items Purchased",
+	reports_product_received: "Items Received",
+	reports_product_summary_report: "Items Summary Report",
 	reports_last_7: "Last 7 Days",
 	reports_last_month: "Last Month",
 	reports_last_year: "Last Year",
@@ -1338,10 +1354,10 @@ module.exports = {
 	reports_yesterday: "Yesterday",
 	reqs_quantity: "Qty.",
 	reqs_receipt: "Requisition Receipt",
-	reqs_related_item: "Related item",
-	reqs_related_item_quantity: "Related item qty.",
+	reqs_related_product: "Related product",
+	reqs_related_product_quantity: "Related product qty.",
 	reqs_transaction_failed: "Requisition Transactions Failed",
-	reqs_unable_to_add_item: "Unable to add item to requisition",
+	reqs_unable_to_add_product: "Unable to add product to requisition",
 	reqs_unit_quantity: "Unit qty.",
 	reqs_unit_quantity_total: "Total qty.",
 	required: "The %s field is required.",
@@ -1357,7 +1373,7 @@ module.exports = {
 	sales_comment: "Comment",
 	sales_comments: "Comments",
 	sales_complete_sale: "Complete Sale",
-	sales_confirm_cancel_sale: "Are you sure you want to clear this sale? All items will cleared.",
+	sales_confirm_cancel_sale: "Are you sure you want to clear this sale? All product will cleared.",
 	sales_confirm_finish_sale: "Are you sure you want to submit this sale? This cannot be undone.",
 	sales_confirm_suspend_sale: "Are you sure you want to suspend this sale?",
 	sales_credit: "Credit Card",
@@ -1375,29 +1391,29 @@ module.exports = {
 	sales_discount_included: "% Discount",
 	sales_discount_short: "%",
 	sales_edit: "Edit",
-	sales_edit_item: "Edit Item",
+	sales_edit_product: "Edit Item",
 	sales_edit_sale: "Edit Sale",
 	sales_email_receipt: "E-Mail Receipt",
 	sales_employee: "Employee",
-	sales_error_editing_item: "Error editing item",
-	sales_find_or_scan_item: "Find/Scan Item",
-	sales_find_or_scan_item_or_receipt: "Find/Scan Item OR Receipt",
+	sales_error_editing_product: "Error editing product",
+	sales_find_or_scan_product: "Find/Scan Item",
+	sales_find_or_scan_product_or_receipt: "Find/Scan Item OR Receipt",
 	sales_giftcard: "Gift Card",
 	sales_giftcard_number: "Gift Card Number",
 	sales_id: "Sale ID",
 	sales_invoice_enable: "Create Invoice",
 	sales_invoice_number: "Invoice #",
 	sales_invoice_number_duplicate: "Please enter an unique invoice number",
-	sales_item_insufficient_of_stock: "Item is Insufficient of Stock",
-	sales_item_name: "Item Name",
-	sales_item_number: "Item #",
-	sales_item_out_of_stock: "Item is Out of Stock",
+	sales_product_insufficient_of_stock: "Item is Insufficient of Stock",
+	sales_product_name: "Item Name",
+	sales_product_number: "Item #",
+	sales_product_out_of_stock: "Item is Out of Stock",
 	sales_mode: "Register Mode",
 	sales_must_enter_numeric: "Must enter numeric value for amount tendered",
 	sales_must_enter_numeric_giftcard: "Must enter numeric value for giftcard number",
 	sales_new_customer: "New Customer",
-	sales_new_item: "New Item",
-	sales_no_items_in_cart: "There are no items in the cart",
+	sales_new_product: "New Item",
+	sales_no_product_in_cart: "There are no product in the cart",
 	sales_one_or_multiple: "sale(s)",
 	sales_payment: "Payment Type",
 	sales_payment_amount: "Amount",
@@ -1418,7 +1434,7 @@ module.exports = {
 	sales_select_customer: "Select Customer (Optional)",
 	sales_serial: "Serial",
 	sales_start_typing_customer_name: "Start Typing customer's name...",
-	sales_start_typing_item_name: "Start Typing item's name or scan barcode...",
+	sales_start_typing_product_name: "Start Typing product's name or scan barcode...",
 	sales_stock_location: "Stock location",
 	sales_sub_total: "Sub Total",
 	sales_successfully_deleted: "You have successfully deleted",
@@ -1431,7 +1447,7 @@ module.exports = {
 	sales_tax_percent: "Tax %",
 	sales_total: "Total",
 	sales_transaction_failed: "Sales Transaction Failed",
-	sales_unable_to_add_item: "Unable to add item to sale",
+	sales_unable_to_add_product: "Unable to add product to sale",
 	sales_unsuccessfully_updated: "Sale unsuccessfully updated",
 	sales_unsuspend: "Unsuspend",
 	sales_unsuspend_and_delete: "",
@@ -1497,16 +1513,15 @@ function productFormController(endpoint, data) {
         defer: $.Deferred(),
         formConfig: {
             rules: {
-                productname: {
+                product_title: {
                     minlength: 5,
                     required: true
                 },
-                firstName: {
-                    minlength: 3,
+                product_sell_price: {
                     required: true
                 },
-                email: {
-                    email: true
+                product_category: {
+                    required: true
                 }
             }
         }
@@ -1523,18 +1538,13 @@ function productFormController(endpoint, data) {
         }
 
         var input = {
-            accountNumberInput: $form.input("uid").setValue(self.data["uid"] || "AUTO"),
-            productNameInput: $form.input("productname").setValue(self.data["productname"] || "").setClass("required"),
-            emailInput: $form.input("email").setValue(self.data["email"] || ""),
-            passwordInput: $form.input("password").setValue(self.data["password"] || ""),
-            firstNameInput: $form.input("firstName").setValue(self.data["firstName"] || "").setClass("required"),
-            lastNameInput: $form.input("lastName").setValue(self.data["lastName"] || ""),
-            phoneNumberInput: $form.input("phone", "number").setValue(self.data["phone"] || ""),
-            addressInput: $form.input("address").setValue(self.data["address"] || ""),
-            countryInput: $form.input("country").setValue(self.data["country"] || ""),
-            stateInput: $form.input("state").setValue(self.data["state"] || ""),
-            cityInput: $form.input("city").setValue(self.data["city"] || ""),
-            zipInput: $form.input("zip", "number").setValue(self.data["zip"] || ""),
+            uidInput: $form.input("uid").setValue(self.data["uid"] || "AUTO"),
+            skuInput: $form.input("sku").setValue(self.data["sku"]),
+            titleInput: $form.input("title").setValue(self.data["title"]).setClass("required"),
+            buyPriceInput: $form.input("buyPrice").setValue(self.data["buyPrice"], 0),
+            sellPriceInput: $form.input("sellPrice").setValue(self.data["sellPrice"], 0).setClass("required"),
+            stockInput: $form.input("stock").setValue(self.data["stock"], 0).setClass("required"),
+            categoryInput: $form.input("category").setValue(self.data["category"]).setClass("required")
         };
 
         self.modal = $modal.show(require('./product.form.template.hbs'), input, modalConfig);
@@ -1543,13 +1553,18 @@ function productFormController(endpoint, data) {
             .config(self.formConfig)
             .onSubmit(function() {
                 event.preventDefault();
+                var newData = $(self.formId).serializeObject();
+                newData.buyPrice = parseFloat(newData.buyPrice);
+                newData.sellPrice = parseFloat(newData.sellPrice);
+                newData.stock = parseFloat(newData.buyPrice);
+
                 if (!data) {
-                    $http.post(endpoint, $(self.formId).serializeObject()).success(function(data) {
+                    $http.post(endpoint, newData).success(function(data) {
                         onDone(data.data[0])
                     });
                 }
                 else {
-                    $http.put(endpoint + "/" + self.data["uid"], $(self.formId).serializeObject()).success(function(data) {
+                    $http.put(endpoint + "/" + self.data["uid"], newData).success(function(data) {
                         onDone(data.data[0])
                     });
                 }
@@ -1582,32 +1597,10 @@ function productFormController(endpoint, data) {
         return self;
     }
 
-    function uploadUserPhoto(productId) {
+    function uploadPhoto(productId) {
         if (self.isPhotoChanged) {
             var imageData = $('#product-photo').cropit('export');
-            return $http.post(endpoint + "/" + productId + "/photo", imageData);
-        }
-        else {
-            return null
-        }
-    }
-
-    function changePassword(productId) {
-        var password = $("#password").val();
-        var passwordNew = $("#passwordNew").val();
-        var passwordConfirm = $("#passwordConfirm").val();
-
-        if (passwordNew) {
-            if (passwordNew != passwordConfirm) {
-                $notify.warning("Password and password confirmation not match");
-                return $.Deferred().fail();
-            }else{
-                return $http.put(endpoint + "/" + productId + "/password", {
-                    password: password,
-                    passwordNew: passwordNew,
-                    passwordConfirm: passwordConfirm
-                });
-            }
+            return $http.put(endpoint + "/" + productId + "/photo", imageData);
         }
         else {
             return null
@@ -1622,7 +1615,7 @@ function productFormController(endpoint, data) {
     }
 
     function onDone(data) {
-        $.when(uploadUserPhoto(data.uid), changePassword(data.uid)).then(function() {
+        $.when(uploadPhoto(data.uid)).then(function() {
             self.modal.hide();
             self.defer.resolve();
         }, function() {
@@ -1657,35 +1650,23 @@ var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
     var stack1, alias1=container.lambda;
 
-  return "<div class=\"modal-header\">\n    <button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-hidden=\"true\">&times;</button>\n    <h4 class=\"modal-title\">roduct Form</h4>\n</div>\n\n<div class=\"modal-body\">\n    <fieldset id=\"product_basic_info\">\n        <div class=\"row\">\n            <div class=\"col-md-2 col-xs-12 form-horizontal\">\n                <div class=\"form-group\">\n                    <div class=\"col-md-12\">\n                        <div id=\"product-photo\" class=\"image-editor center-block\">\n                            <div class=\"cropit-preview\"></div>\n                            <input type=\"range\" class=\"cropit-image-zoom-input\" />\n                            <input id=\"product-photo-file\" type=\"file\" class=\"cropit-image-input\" />\n                            <button id=\"select-image-btn\" class=\"btn btn-primary btn-block btn-xs\">Change Product Photo</button>\n                        </div>\n                    </div>\n                </div>\n            </div>\n            <div class=\"col-md-10 col-xs-12\">\n                <legend class=\"col-md-12\">Basic Info</legend>\n                <form id=\"product-form\" name=\"product-form\" class=\"form-horizontal\">\n                    <div class=\"col-md-12\">\n                        <div class=\"form-group\">\n                            <label class=\"col-md-2 col-xs-4 control-label\">"
-    + ((stack1 = alias1(((stack1 = (depth0 != null ? depth0.accountNumberInput : depth0)) != null ? stack1.label : stack1), depth0)) != null ? stack1 : "")
+  return "<div class=\"modal-header\">\n    <button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-hidden=\"true\">&times;</button>\n    <h4 class=\"modal-title\">Product Form</h4>\n</div>\n\n<div class=\"modal-body\">\n    <fieldset id=\"product_basic_info\">\n        <div class=\"row\">\n            <div class=\"col-md-2 col-xs-12 form-horizontal\">\n                <div class=\"form-group\">\n                    <div class=\"col-md-12\">\n                        <div id=\"product-photo\" class=\"image-editor center-block\">\n                            <div class=\"cropit-preview\"></div>\n                            <input type=\"range\" class=\"cropit-image-zoom-input\" />\n                            <input id=\"product-photo-file\" type=\"file\" class=\"cropit-image-input\" />\n                            <button id=\"select-image-btn\" class=\"btn btn-primary btn-block btn-xs\">Change Product Photo</button>\n                        </div>\n                    </div>\n                </div>\n            </div>\n            <div class=\"col-md-10 col-xs-12\">\n                <form id=\"product-form\" name=\"product-form\" class=\"form-horizontal\">\n                    <div class=\"col-md-12\">\n                        <div class=\"form-group\">\n                            <label class=\"col-md-2 col-xs-4 control-label\">"
+    + ((stack1 = alias1(((stack1 = (depth0 != null ? depth0.uidInput : depth0)) != null ? stack1.label : stack1), depth0)) != null ? stack1 : "")
     + "</label>\n                            <div class=\"col-md-4 col-xs-8\">\n                                <input type=\"disabled\" class=\"form-control\" disabled value=\""
-    + ((stack1 = alias1(((stack1 = (depth0 != null ? depth0.accountNumberInput : depth0)) != null ? stack1.value : stack1), depth0)) != null ? stack1 : "")
+    + ((stack1 = alias1(((stack1 = (depth0 != null ? depth0.uidInput : depth0)) != null ? stack1.value : stack1), depth0)) != null ? stack1 : "")
     + "\" />\n                            </div>\n                        </div>\n                    </div>\n                    <div class=\"col-md-6\">"
-    + ((stack1 = alias1(((stack1 = (depth0 != null ? depth0.productNameInput : depth0)) != null ? stack1.formGroup : stack1), depth0)) != null ? stack1 : "")
+    + ((stack1 = alias1(((stack1 = (depth0 != null ? depth0.skuInput : depth0)) != null ? stack1.formGroup : stack1), depth0)) != null ? stack1 : "")
     + "</div>\n                    <div class=\"col-md-6\">"
-    + ((stack1 = alias1(((stack1 = (depth0 != null ? depth0.emailInput : depth0)) != null ? stack1.formGroup : stack1), depth0)) != null ? stack1 : "")
+    + ((stack1 = alias1(((stack1 = (depth0 != null ? depth0.titleInput : depth0)) != null ? stack1.formGroup : stack1), depth0)) != null ? stack1 : "")
     + "</div>\n                    <div class=\"col-md-6\">"
-    + ((stack1 = alias1(((stack1 = (depth0 != null ? depth0.firstNameInput : depth0)) != null ? stack1.formGroup : stack1), depth0)) != null ? stack1 : "")
+    + ((stack1 = alias1(((stack1 = (depth0 != null ? depth0.buyPriceInput : depth0)) != null ? stack1.formGroupNumber : stack1), depth0)) != null ? stack1 : "")
     + "</div>\n                    <div class=\"col-md-6\">"
-    + ((stack1 = alias1(((stack1 = (depth0 != null ? depth0.lastNameInput : depth0)) != null ? stack1.formGroup : stack1), depth0)) != null ? stack1 : "")
+    + ((stack1 = alias1(((stack1 = (depth0 != null ? depth0.sellPriceInput : depth0)) != null ? stack1.formGroupNumber : stack1), depth0)) != null ? stack1 : "")
     + "</div>\n                    <div class=\"col-md-6\">"
-    + ((stack1 = alias1(((stack1 = (depth0 != null ? depth0.phoneNumberInput : depth0)) != null ? stack1.formGroup : stack1), depth0)) != null ? stack1 : "")
+    + ((stack1 = alias1(((stack1 = (depth0 != null ? depth0.stockInput : depth0)) != null ? stack1.formGroupNumber : stack1), depth0)) != null ? stack1 : "")
     + "</div>\n                    <div class=\"col-md-6\">"
-    + ((stack1 = alias1(((stack1 = (depth0 != null ? depth0.addressInput : depth0)) != null ? stack1.formGroupTextArea : stack1), depth0)) != null ? stack1 : "")
-    + "</div>\n                    <div class=\"col-md-6\">"
-    + ((stack1 = alias1(((stack1 = (depth0 != null ? depth0.countryInput : depth0)) != null ? stack1.formGroup : stack1), depth0)) != null ? stack1 : "")
-    + "</div>\n                    <div class=\"col-md-6\">"
-    + ((stack1 = alias1(((stack1 = (depth0 != null ? depth0.cityInput : depth0)) != null ? stack1.formGroup : stack1), depth0)) != null ? stack1 : "")
-    + "</div>\n                    <div class=\"col-md-6\">"
-    + ((stack1 = alias1(((stack1 = (depth0 != null ? depth0.stateInput : depth0)) != null ? stack1.formGroup : stack1), depth0)) != null ? stack1 : "")
-    + "</div>\n                    <div class=\"col-md-6\">"
-    + ((stack1 = alias1(((stack1 = (depth0 != null ? depth0.zipInput : depth0)) != null ? stack1.formGroup : stack1), depth0)) != null ? stack1 : "")
-    + "</div>\n                    <div class=\"col-md-6\">"
-    + ((stack1 = alias1(((stack1 = (depth0 != null ? depth0.notesInput : depth0)) != null ? stack1.formGroup : stack1), depth0)) != null ? stack1 : "")
-    + "</div>\n                </form>\n            </div>\n        </div>\n    </fieldset>\n    <div class=\"row\">\n        <div class=\"col-md-2\">\n        </div>\n        <div class=\"col-md-5\">\n            <div class=\"row form-horizontal\">\n                <legend class=\"col-md-12\">Change Password</legend>\n                <div class=\"col-md-12\">\n                    <div class=\"form-group\">\n                        <label for=\"passwordOld\" class=\"col-xs-4 control-label \">Current Password</label>\n                        <div class=\"col-xs-8\">\n                            <input form=\"product-form\" type=\"password\" name=\"password\" id=\"password\" class=\"form-control valid\" value=\"\" aria-invalid=\"false\">\n                        </div>\n                    </div>\n                </div>\n                <div class=\"col-md-12\">\n                    <div class=\"form-group\">\n                        <label for=\"password\" class=\"col-xs-4 control-label \">New Password</label>\n                        <div class=\"col-xs-8\">\n                            <input form=\"product-form\" type=\"password\" name=\"passwordNew\" id=\"passwordNew\" class=\"form-control valid\" value=\"\" aria-invalid=\"false\">\n                        </div>\n                    </div>\n                </div>\n                <div class=\"col-md-12\">\n                    <div class=\"form-group\">\n                        <label for=\"password2\" class=\"col-xs-4 control-label \">Confirm Password</label>\n                        <div class=\"col-xs-8\">\n                            <input form=\"product-form\" type=\"password\" name=\"passwordConfirm\" id=\"passwordConfirm\" class=\"form-control valid\" value=\"\" aria-invalid=\"false\">\n                        </div>\n                    </div>\n                </div>\n            </div>\n        </div>\n        <div class=\"col-md-5\">\n            <div class=\"row form-horizontal\">\n                <legend class=\"col-md-12\">Danger Area</legend>\n                <div class=\"col-md-12 \">\n                    <div class=\"form-group\">\n                        <label for=\"removeProduct\" class=\"col-xs-4 control-label\">Delete Product</label>\n                        <div class=\"col-xs-8\">\n                            <button id=\"removeProduct\" class=\"btn btn-danger\" data-id=\""
-    + ((stack1 = alias1(((stack1 = (depth0 != null ? depth0.accountNumberInput : depth0)) != null ? stack1.value : stack1), depth0)) != null ? stack1 : "")
-    + "\">Delete This Product</button>\n                        </div>\n                    </div>\n                </div>\n            </div>\n        </div>\n    </div>\n</div>\n\n<div class=\"modal-footer\">\n    <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">Close</button>\n    <button type=\"submit\" form=\"product-form\" class=\"btn btn-primary\">Save changes</button>\n</div>\n";
+    + ((stack1 = alias1(((stack1 = (depth0 != null ? depth0.categoryInput : depth0)) != null ? stack1.formGroupDropDown : stack1), depth0)) != null ? stack1 : "")
+    + "</div>\n                </form>\n            </div>\n        </div>\n    </fieldset>\n</div>\n\n<div class=\"modal-footer\">\n    <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">Close</button>\n    <button type=\"submit\" form=\"product-form\" class=\"btn btn-primary\">Save changes</button>\n</div>\n";
 },"useData":true});
 
 },{"hbsfy/runtime":101}],29:[function(require,module,exports){
@@ -1716,7 +1697,11 @@ function productController() {
     function onLoad() {
         self.tableGrid = $tablegrid.render("#product-table", self.endpoint, 
         [
-            {data: 'code'}, 
+            {data: 'sku'}, 
+            {data: null, 
+            "render" : function ( data, type, full ) { 
+                return '<img src="./uploads/product_photos/' + full['image'] + '" width="40" />' 
+            }}, 
             {data: 'title'},
             {data: 'stock'}
 
@@ -1798,7 +1783,7 @@ module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":f
     + alias2(alias1(((stack1 = (depth0 != null ? depth0.lang : depth0)) != null ? stack1.common_email : stack1), depth0))
     + "\n                                </button>\n                            </div>\n                        </div>\n\n                        <div class=\"col-sm-6 text-right\">\n                            <button id=\"product-add\" class=\"btn btn-primary\">\n                                <i class=\"fa fa-plus\"></i> "
     + alias2(alias1(((stack1 = (depth0 != null ? depth0.lang : depth0)) != null ? stack1.product_new : stack1), depth0))
-    + "\n                            </button>\n\n                            <a class=\"btn btn-success\" id=\"import-excel\" href=\"../customers/excel_import\" data-target=\"#modal-container\">\n                                <i class=\"fa fa-file-excel-o\"></i> Excel Import\n                            </a>\n                        </div>\n                    </div>\n                </div>\n\n                <div class=\"box-body \">\n                    <table id=\"product-table\" class=\"table table-bordered table-hover\">\n                        <thead>\n                            <tr>\n                                <th width=\"10px\">\n                                    <input type=\"checkbox\" id=\"select-all\" />\n                                </th>\n                                <th>SKU</th>\n                                <th>Title</th>\n                                <th>Stock</th>\n                                <th width=\"50px\">Action</th>\n                            </tr>\n                        </thead>\n                    </table>\n                </div>\n\n                <div id=\"feedback_bar\"></div>\n            </div>\n        </div>\n    </div>\n</section>";
+    + "\n                            </button>\n\n                            <a class=\"btn btn-success\" id=\"import-excel\" href=\"../customers/excel_import\" data-target=\"#modal-container\">\n                                <i class=\"fa fa-file-excel-o\"></i> Excel Import\n                            </a>\n                        </div>\n                    </div>\n                </div>\n\n                <div class=\"box-body \">\n                    <table id=\"product-table\" class=\"table table-bordered table-hover\">\n                        <thead>\n                            <tr>\n                                <th width=\"10px\">\n                                    <input type=\"checkbox\" id=\"select-all\" />\n                                </th>\n                                <th>SKU</th>\n                                <th>Image</th>\n                                <th>Title</th>\n                                <th>Stock</th>\n                                <th width=\"50px\">Action</th>\n                            </tr>\n                        </thead>\n                    </table>\n                </div>\n\n                <div id=\"feedback_bar\"></div>\n            </div>\n        </div>\n    </div>\n</section>";
 },"useData":true});
 
 },{"hbsfy/runtime":101}],32:[function(require,module,exports){
@@ -1913,7 +1898,7 @@ function userFormController(endpoint, data) {
     function uploadUserPhoto(userId) {
         if (self.isPhotoChanged) {
             var imageData = $('#user-photo').cropit('export');
-            return $http.post(endpoint + "/" + userId + "/photo", imageData);
+            return $http.put(endpoint + "/" + userId + "/photo", imageData);
         }
         else {
             return null

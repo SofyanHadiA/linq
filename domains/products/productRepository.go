@@ -108,9 +108,9 @@ func (repo productRepository) Insert(model IModel) error {
 		(uid, title, buy_price, sell_price, stock, code, created ) 
 		VALUES(:uid, :title, :buy_price, :sell_price, :stock, :code, now())`
 
-	product, _ := model.(*Product)
+	product := *model.(*Product)
 	product.Uid = uuid.NewV4()
-	_, err := repo.db.Execute(insertQuery, product)
+	_, err := repo.db.Execute(insertQuery, &product)
 
 	return err
 }

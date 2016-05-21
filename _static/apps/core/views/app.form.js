@@ -53,13 +53,14 @@ var formModule = function() {
             setClass: setClass,
             formGroup: formGroup,
             formGroupPassword: formGroupPassword,
-            formGroupTextArea: formGroupTextArea
+            formGroupNumber: formGroupNumber,
+            formGroupTextArea: formGroupTextArea,
         }
 
         return self;
 
-        function setValue(val) {
-            self.value = val || "";
+        function setValue(value, defaultValue) {
+            self.value = value || defaultValue || "";
             return self;
         }
 
@@ -69,7 +70,11 @@ var formModule = function() {
         }
         
         function formGroup(inputWidth = 8, labelWidth = 4){
-            return '<div class="form-group">' + formLabel(labelWidth) + inputText(inputWidth) + '</div>'
+            return '<div class="form-group">' + formLabel(labelWidth) + inputText("text", inputWidth) + '</div>'
+        }
+        
+         function formGroupNumber(inputWidth = 8, labelWidth = 4){
+            return '<div class="form-group">' + formLabel(labelWidth) + inputText("number", inputWidth) + '</div>'
         }
         
         function formGroupPassword(inputWidth = 8, labelWidth = 4){
@@ -79,8 +84,18 @@ var formModule = function() {
         function formGroupTextArea(inputWidth = 8, labelWidth = 4){
             return '<div class="form-group">' + formLabel(labelWidth) + inputTextArea() + '</div>'
         }
+        
+        function formGroupDropDown(inputWidth = 8, labelWidth = 4){
+            return '<div class="form-group">' + formLabel(labelWidth) + inputDropDown() + '</div>'
+        }
 
         function inputText(type="text", inputWidth = '8') {
+            return '<div class="col-xs-'+inputWidth+'">' +
+                '<input type="'+type+'" name="' + self.name + '" id="' + self.name + '" class="form-control" value="' + self.value + '" />' +
+                '</div>'
+        }
+        
+        function inputDropDown(type="text", inputWidth = '8') {
             return '<div class="col-xs-'+inputWidth+'">' +
                 '<input type="'+type+'" name="' + self.name + '" id="' + self.name + '" class="form-control" value="' + self.value + '" />' +
                 '</div>'

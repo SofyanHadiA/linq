@@ -9,11 +9,11 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/SofyanHadiA/linq/domains/users"
+	. "github.com/SofyanHadiA/linq/apps/viewmodels"
 	"github.com/SofyanHadiA/linq/core/api"
 	"github.com/SofyanHadiA/linq/core/services"
 	"github.com/SofyanHadiA/linq/core/utils"
-	. "github.com/SofyanHadiA/linq/apps/viewmodels"
+	"github.com/SofyanHadiA/linq/domains/users"
 
 	"github.com/satori/go.uuid"
 )

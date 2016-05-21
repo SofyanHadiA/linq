@@ -5,16 +5,15 @@ import (
 	"github.com/SofyanHadiA/linq/core/database"
 
 	"github.com/SofyanHadiA/linq/apps/controllers"
-	Chat "github.com/SofyanHadiA/linq/apps/chat"
 	Dashboard "github.com/SofyanHadiA/linq/apps/dashboard"
-	"github.com/SofyanHadiA/linq/domains/users"
+	"github.com/SofyanHadiA/linq/core/services"
 	"github.com/SofyanHadiA/linq/domains/products"
-
+	"github.com/SofyanHadiA/linq/domains/users"
 )
 
 func GetRoutes(db database.IDB) Routes {
 	var userController = controllers.UserController(users.NewUserService(users.NewUserRepository(db)))
-	var productController = controllers.ProductController(products.NewProductService(products.NewProductRepository(db)))
+	var productController = controllers.ProductController(products.NewProductService(products.NewProductRepository(db), services.UploadService("./uploads/product_photos/")))
 
 	var routes = Routes{
 		Route{"DashboardIndex", "GET", "/", Dashboard.Index},
@@ -28,7 +27,7 @@ func GetRoutes(db database.IDB) Routes {
 		Route{"UserUpdatePhoto", "PUT", "/api/v1/users/{id}/photo", userController.SetUserPhoto},
 		Route{"UserRemove", "DELETE", "/api/v1/users/{id}", userController.Remove},
 		Route{"UserBulkRemove", "POST", "/api/v1/users/bulkdelete", userController.RemoveBulk},
-		
+
 		Route{"ProductList", "GET", "/api/v1/products", productController.GetAll},
 		Route{"ProductSingle", "GET", "/api/v1/products/{id}", productController.Get},
 		Route{"ProductCreate", "POST", "/api/v1/products", productController.Create},
@@ -37,8 +36,8 @@ func GetRoutes(db database.IDB) Routes {
 		Route{"ProductRemove", "DELETE", "/api/v1/products/{id}", productController.Remove},
 		Route{"ProductBulkRemove", "POST", "/api/v1/products/bulkdelete", productController.RemoveBulk},
 
-		Route{"ChatIndex", "GET", "/chat", Chat.ServeHome},
-		Route{"ChatWs", "GET", "/ws", Chat.ServeWs},
+		// Route{"ChatIndex", "GET", "/chat", Chat.ServeHome},
+		// Route{"ChatWs", "GET", "/ws", Chat.ServeWs},
 	}
 
 	return routes

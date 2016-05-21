@@ -1,9 +1,8 @@
 package dashboard
 
 import (
+	"github.com/SofyanHadiA/linq/core"
 	"net/http"
-
-	core "linq/core"
 )
 
 func Index(w http.ResponseWriter, r *http.Request) {

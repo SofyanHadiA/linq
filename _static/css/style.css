@@ -48,7 +48,7 @@ form{
     color: #ddd;
 }
 
-#user-photo{
+.image-editor{
     width: 150px;
     height: 210px;
 }

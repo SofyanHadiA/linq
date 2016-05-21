@@ -1,6 +1,6 @@
 package viewmodels
 
-import(
+import (
 	"github.com/SofyanHadiA/linq/domains/users"
 )
 

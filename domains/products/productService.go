@@ -5,18 +5,21 @@ import (
 	"fmt"
 
 	"github.com/SofyanHadiA/linq/core/repository"
+	"github.com/SofyanHadiA/linq/core/services"
 	"github.com/SofyanHadiA/linq/core/utils"
 
 	"github.com/satori/go.uuid"
 )
 
 type ProductService struct {
-	repo repository.IRepository
+	repo          repository.IRepository
+	uploadService services.IUploadService
 }
 
-func NewProductService(repo repository.IRepository) ProductService {
+func NewProductService(repo repository.IRepository, uploadService services.IUploadService) ProductService {
 	return ProductService{
-		repo: repo,
+		repo:          repo,
+		uploadService: uploadService,
 	}
 }
 
@@ -48,11 +51,20 @@ func (service ProductService) Modify(model repository.IModel) error {
 	}
 }
 
-func (service ProductService) UpdateProductPhoto(model repository.IModel) error {
+func (service ProductService) UpdateProductPhoto(model repository.IModel, imageString string) error {
 	if exist, _ := service.repo.IsExist(model.GetId()); exist {
-		productRepo := service.repo.(productRepository)
+		fileName := model.GetId().String() + ".png"
+		err := service.uploadService.UploadImage(imageString, fileName)
 
-		err := productRepo.UpdateProductPhoto(model)
+		if err == nil {
+			product, _ := model.(*Product)
+
+			product.Image.String = fileName
+			product.Image.Valid = true
+
+			productRepo := service.repo.(productRepository)
+			err = productRepo.UpdateProductPhoto(product)
+		}
 
 		return err
 	} else {

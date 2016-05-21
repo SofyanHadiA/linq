@@ -21,16 +21,15 @@ function productFormController(endpoint, data) {
         defer: $.Deferred(),
         formConfig: {
             rules: {
-                productname: {
+                product_title: {
                     minlength: 5,
                     required: true
                 },
-                firstName: {
-                    minlength: 3,
+                product_sell_price: {
                     required: true
                 },
-                email: {
-                    email: true
+                product_category: {
+                    required: true
                 }
             }
         }
@@ -47,18 +46,13 @@ function productFormController(endpoint, data) {
         }
 
         var input = {
-            accountNumberInput: $form.input("uid").setValue(self.data["uid"] || "AUTO"),
-            productNameInput: $form.input("productname").setValue(self.data["productname"] || "").setClass("required"),
-            emailInput: $form.input("email").setValue(self.data["email"] || ""),
-            passwordInput: $form.input("password").setValue(self.data["password"] || ""),
-            firstNameInput: $form.input("firstName").setValue(self.data["firstName"] || "").setClass("required"),
-            lastNameInput: $form.input("lastName").setValue(self.data["lastName"] || ""),
-            phoneNumberInput: $form.input("phone", "number").setValue(self.data["phone"] || ""),
-            addressInput: $form.input("address").setValue(self.data["address"] || ""),
-            countryInput: $form.input("country").setValue(self.data["country"] || ""),
-            stateInput: $form.input("state").setValue(self.data["state"] || ""),
-            cityInput: $form.input("city").setValue(self.data["city"] || ""),
-            zipInput: $form.input("zip", "number").setValue(self.data["zip"] || ""),
+            uidInput: $form.input("uid").setValue(self.data["uid"] || "AUTO"),
+            skuInput: $form.input("sku").setValue(self.data["sku"]),
+            titleInput: $form.input("title").setValue(self.data["title"]).setClass("required"),
+            buyPriceInput: $form.input("buyPrice").setValue(self.data["buyPrice"], 0),
+            sellPriceInput: $form.input("sellPrice").setValue(self.data["sellPrice"], 0).setClass("required"),
+            stockInput: $form.input("stock").setValue(self.data["stock"], 0).setClass("required"),
+            categoryInput: $form.input("category").setValue(self.data["category"]).setClass("required")
         };
 
         self.modal = $modal.show(require('./product.form.template.hbs'), input, modalConfig);
@@ -67,13 +61,18 @@ function productFormController(endpoint, data) {
             .config(self.formConfig)
             .onSubmit(function() {
                 event.preventDefault();
+                var newData = $(self.formId).serializeObject();
+                newData.buyPrice = parseFloat(newData.buyPrice);
+                newData.sellPrice = parseFloat(newData.sellPrice);
+                newData.stock = parseFloat(newData.buyPrice);
+
                 if (!data) {
-                    $http.post(endpoint, $(self.formId).serializeObject()).success(function(data) {
+                    $http.post(endpoint, newData).success(function(data) {
                         onDone(data.data[0])
                     });
                 }
                 else {
-                    $http.put(endpoint + "/" + self.data["uid"], $(self.formId).serializeObject()).success(function(data) {
+                    $http.put(endpoint + "/" + self.data["uid"], newData).success(function(data) {
                         onDone(data.data[0])
                     });
                 }
@@ -106,32 +105,10 @@ function productFormController(endpoint, data) {
         return self;
     }
 
-    function uploadUserPhoto(productId) {
+    function uploadPhoto(productId) {
         if (self.isPhotoChanged) {
             var imageData = $('#product-photo').cropit('export');
-            return $http.post(endpoint + "/" + productId + "/photo", imageData);
-        }
-        else {
-            return null
-        }
-    }
-
-    function changePassword(productId) {
-        var password = $("#password").val();
-        var passwordNew = $("#passwordNew").val();
-        var passwordConfirm = $("#passwordConfirm").val();
-
-        if (passwordNew) {
-            if (passwordNew != passwordConfirm) {
-                $notify.warning("Password and password confirmation not match");
-                return $.Deferred().fail();
-            }else{
-                return $http.put(endpoint + "/" + productId + "/password", {
-                    password: password,
-                    passwordNew: passwordNew,
-                    passwordConfirm: passwordConfirm
-                });
-            }
+            return $http.put(endpoint + "/" + productId + "/photo", imageData);
         }
         else {
             return null
@@ -146,7 +123,7 @@ function productFormController(endpoint, data) {
     }
 
     function onDone(data) {
-        $.when(uploadUserPhoto(data.uid), changePassword(data.uid)).then(function() {
+        $.when(uploadPhoto(data.uid)).then(function() {
             self.modal.hide();
             self.defer.resolve();
         }, function() {

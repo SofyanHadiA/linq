@@ -1,19 +1,14 @@
 package controllers
 
 import (
-	"encoding/base64"
-	"fmt"
-	"io"
 	"net/http"
-	"os"
 	"strconv"
-	"strings"
 
-	"github.com/SofyanHadiA/linq/domains/products"
+	. "github.com/SofyanHadiA/linq/apps/viewmodels"
 	"github.com/SofyanHadiA/linq/core/api"
 	"github.com/SofyanHadiA/linq/core/services"
 	"github.com/SofyanHadiA/linq/core/utils"
-	. "github.com/SofyanHadiA/linq/apps/viewmodels"
+	"github.com/SofyanHadiA/linq/domains/products"
 
 	"github.com/satori/go.uuid"
 )
@@ -84,7 +79,7 @@ func (ctrl productController) Get(w http.ResponseWriter, r *http.Request) {
 func (ctrl productController) Create(w http.ResponseWriter, r *http.Request) {
 	respWriter := api.ApiService(w, r)
 
-	var requestData RequestUserDataModel
+	var requestData RequestProductDataModel
 	err := respWriter.DecodeBody(&requestData)
 
 	if err == nil {
@@ -104,7 +99,7 @@ func (ctrl productController) Modify(w http.ResponseWriter, r *http.Request) {
 	respWriter.HandleApiError(err, http.StatusBadRequest)
 
 	if err == nil {
-		var requestData RequestUserDataModel
+		var requestData RequestProductDataModel
 		err = respWriter.DecodeBody(&requestData)
 		respWriter.HandleApiError(err, http.StatusBadRequest)
 
@@ -131,36 +126,19 @@ func (ctrl productController) SetProductPhoto(w http.ResponseWriter, r *http.Req
 
 		respWriter.DecodeBody(&requestData)
 
-		plainBase64 := strings.Replace(requestData.Data, "data:image/png;base64,", "", 1)
-
-		imageReader := base64.NewDecoder(base64.StdEncoding, strings.NewReader(plainBase64))
-
-		fileName := fmt.Sprintf("%s.png", productId)
-
-		img, err := os.Create("./uploads/product_avatars/" + fileName)
-		respWriter.HandleApiError(err, http.StatusInternalServerError)
-
 		if err == nil {
-			defer img.Close()
-			_, err = io.Copy(img, imageReader)
+			productModel, err := ctrl.service.Get(productId)
 			respWriter.HandleApiError(err, http.StatusInternalServerError)
 
 			if err == nil {
-				productModel, err := ctrl.service.Get(productId)
+				product := productModel.(*products.Product)
+
+				ProductService := ctrl.service.(products.ProductService)
+				err = ProductService.UpdateProductPhoto(product, requestData.Data)
 				respWriter.HandleApiError(err, http.StatusInternalServerError)
 
 				if err == nil {
-					product := productModel.(*products.Product)
-					product.Image.String = fileName
-					product.Image.Valid = true
-
-					ProductService := ctrl.service.(products.ProductService)
-					err = ProductService.UpdateProductPhoto(product)
-					respWriter.HandleApiError(err, http.StatusInternalServerError)
-
-					if err == nil {
-						respWriter.ReturnJson(product)
-					}
+					respWriter.ReturnJson(product)
 				}
 			}
 		}
