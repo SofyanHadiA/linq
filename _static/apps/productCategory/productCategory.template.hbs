@@ -1,0 +1,62 @@
+<section class="content-header">
+    <h1>
+        {{lang.module_productCategories}}
+        <small>
+            {{lang.module_productCategories_desc}}
+        </small>
+    </h1>
+    <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i>Home</a></li>
+        <li class="active">{{lang.module_productCategories}}</li>
+    </ol>
+</section>
+
+<section class="content">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box">
+                <div class="box-header">
+                    <div class="row">
+                        <div class="col-sm-6 ">
+                            <div class="btn-group">
+                                <a href="../customers/delete" id="delete-selected" class="btn btn-sm btn-default">
+                                    <i class="fa fa-trash"></i> {{lang.common_delete}}
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-6 text-right">
+                            <button id="productCategory-add" class="btn btn-primary">
+                                <i class="fa fa-plus"></i> {{lang.productCategory_new}}
+                            </button>
+
+                            <a class="btn btn-success" id="import-excel" href="../customers/excel_import" data-target="#modal-container">
+                                <i class="fa fa-file-excel-o"></i> Excel Import
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="box-body ">
+                    <table id="productCategory-table" class="table table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th width="10px">
+                                    <input type="checkbox" id="select-all" />
+                                </th>
+                                <th>Image</th>
+                                <th>SKU</th>
+                                <th>Title</th>
+                                <th>Sell Price</th>
+                                <th>Stock</th>
+                                <th width="50px">Action</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+
+                <div id="feedback_bar"></div>
+            </div>
+        </div>
+    </div>
+</section>

@@ -5,7 +5,7 @@ import (
 	"os"
 	"strings"
 
-	"bitbucket.org/sofyan_a/linq.im/core/utils"
+	"github.com/SofyanHadiA/linq/core/utils"
 
 	"gopkg.in/yaml.v2"
 )

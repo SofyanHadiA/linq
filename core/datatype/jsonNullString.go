@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"encoding/json"
 
-	"bitbucket.org/sofyan_a/linq.im/core/utils"
+	"github.com/SofyanHadiA/linq/core/utils"
 )
 
 type JsonNullString struct {

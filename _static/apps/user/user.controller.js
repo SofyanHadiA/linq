@@ -24,11 +24,13 @@ function userController() {
 
     function onLoad() {
         self.tableGrid = $tablegrid.render("#user-table", self.endpoint, 
-        [{data: 'username'}, {data: 'email'},
-        {data: null, 
-        "render" : function ( data, type, full ) { 
-            return full['firstName']+' '+full['lastName'];}
-        }], 
+        [
+            {data: null,
+            "render" : function ( data, type, full ) { 
+                return '<img class="table-image" src="./uploads/user_avatars/' + full['photo'] + '" />' + full['username']
+            }},
+            {data: 'email'}
+        ], 
         'uid');
         
         self.tableGrid.action.delete = doDelete;

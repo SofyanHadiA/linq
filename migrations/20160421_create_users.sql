@@ -1,25 +1,21 @@
--- up!
-
-CREATE TABLE users
-(
-  `uid` varchar(16),
-  `email` varchar(100),
-  `username` varchar(25),
-  `first_name` varchar(25),
-  `last_name` varchar(25),
-  `password` varchar(100),
-  `lastLogin` int(11),
-  `forgot_code` text NOT NULL,
-  `notification_created` int(11) DEFAULT NULL,
-  `last_login` int(13) DEFAULT NULL,
-  `address` varchar(100),
-  
-  PRIMARY KEY (`uid`)
-);
-ALTER TABLE users ADD city varchar(100);
-ALTER TABLE users ADD state varchar(100);
-ALTER TABLE users ADD country varchar(100);
-ALTER TABLE users ADD zip varchar(10);
-ALTER TABLE users ADD phone_number varchar(20);
-ALTER TABLE users modify uid varchar(36) not null;
-ALTER TABLE users ADD photo varchar(200) ;
+CREATE TABLE `users` (
+ `uid` varchar(36) NOT NULL,
+ `email` varchar(100) DEFAULT NULL,
+ `username` varchar(25) NOT NULL,
+ `first_name` varchar(25) NOT NULL,
+ `last_name` varchar(25) DEFAULT NULL,
+ `password` varchar(100) NOT NULL,
+ `avatar` varchar(200) DEFAULT NULL,
+ `forgot_code` varchar(100) DEFAULT NULL,
+ `last_login` int(13) DEFAULT '0',
+ `address` varchar(100) DEFAULT NULL,
+ `city` varchar(100) DEFAULT NULL,
+ `state` varchar(100) DEFAULT NULL,
+ `country` varchar(100) DEFAULT NULL,
+ `zip` varchar(10) DEFAULT NULL,
+ `phone_number` varchar(20) DEFAULT NULL,
+ `deleted` tinyint(1) NOT NULL DEFAULT '0',
+ `created` datetime NOT NULL,
+ `updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+ PRIMARY KEY (`uid`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1

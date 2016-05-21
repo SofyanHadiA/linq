@@ -1,7 +1,7 @@
 package repository
 
 import (
-	"bitbucket.org/sofyan_a/linq.im/core/utils"
+	"github.com/SofyanHadiA/linq/core/utils"
 
 	"github.com/satori/go.uuid"
 )

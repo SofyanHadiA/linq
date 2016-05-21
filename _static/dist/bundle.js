@@ -168,7 +168,7 @@ var $app = {
 
 module.exports = $app;
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./../language/en.js":24,"./app.http.js":2,"./app.loader.js":4,"./app.module.js":5,"./app.notify.js":6,"./app.tablegrid.js":7,"./views/app.view.js":10,"bootstrap":34,"handlebars":78,"jquery":94}],4:[function(require,module,exports){
+},{"./../language/en.js":24,"./app.http.js":2,"./app.loader.js":4,"./app.module.js":5,"./app.notify.js":6,"./app.tablegrid.js":7,"./views/app.view.js":10,"bootstrap":46,"handlebars":93,"jquery":109}],4:[function(require,module,exports){
 /*
  * Page loader core module 
  */
@@ -206,7 +206,7 @@ function loaderModule() {
 };
 
 module.exports = loaderModule;
-},{"handlebars":78}],5:[function(require,module,exports){
+},{"handlebars":93}],5:[function(require,module,exports){
 function moduleModule() {
     var self = {
         modules: {},
@@ -261,7 +261,7 @@ function notifyModule() {
 }
 
 module.exports = notifyModule; 
-},{"bootstrap-notify":33}],7:[function(require,module,exports){
+},{"bootstrap-notify":45}],7:[function(require,module,exports){
 var bootbox = require('bootbox');
 require('./../../vendors/datatables/media/js/jquery.dataTables.js');
 require('./../../vendors/datatables/media/js/dataTables.bootstrap.js');
@@ -391,7 +391,7 @@ function tableGridModule() {
 };
 
 module.exports = tableGridModule;
-},{"./../../vendors/datatables/media/js/dataTables.bootstrap.js":98,"./../../vendors/datatables/media/js/jquery.dataTables.js":99,"bootbox":32}],8:[function(require,module,exports){
+},{"./../../vendors/datatables/media/js/dataTables.bootstrap.js":110,"./../../vendors/datatables/media/js/jquery.dataTables.js":111,"bootbox":44}],8:[function(require,module,exports){
 var $ = jQuery;
 require('../../../node_modules/jquery-validation/dist/jquery.validate.js');
 
@@ -447,13 +447,14 @@ var formModule = function() {
             setClass: setClass,
             formGroup: formGroup,
             formGroupPassword: formGroupPassword,
-            formGroupTextArea: formGroupTextArea
+            formGroupNumber: formGroupNumber,
+            formGroupTextArea: formGroupTextArea,
         }
 
         return self;
 
-        function setValue(val) {
-            self.value = val || "";
+        function setValue(value, defaultValue) {
+            self.value = value || defaultValue || "";
             return self;
         }
 
@@ -463,7 +464,11 @@ var formModule = function() {
         }
         
         function formGroup(inputWidth = 8, labelWidth = 4){
-            return '<div class="form-group">' + formLabel(labelWidth) + inputText(inputWidth) + '</div>'
+            return '<div class="form-group">' + formLabel(labelWidth) + inputText("text", inputWidth) + '</div>'
+        }
+        
+         function formGroupNumber(inputWidth = 8, labelWidth = 4){
+            return '<div class="form-group">' + formLabel(labelWidth) + inputText("number", inputWidth) + '</div>'
         }
         
         function formGroupPassword(inputWidth = 8, labelWidth = 4){
@@ -473,8 +478,18 @@ var formModule = function() {
         function formGroupTextArea(inputWidth = 8, labelWidth = 4){
             return '<div class="form-group">' + formLabel(labelWidth) + inputTextArea() + '</div>'
         }
+        
+        function formGroupDropDown(inputWidth = 8, labelWidth = 4){
+            return '<div class="form-group">' + formLabel(labelWidth) + inputDropDown() + '</div>'
+        }
 
         function inputText(type="text", inputWidth = '8') {
+            return '<div class="col-xs-'+inputWidth+'">' +
+                '<input type="'+type+'" name="' + self.name + '" id="' + self.name + '" class="form-control" value="' + self.value + '" />' +
+                '</div>'
+        }
+        
+        function inputDropDown(type="text", inputWidth = '8') {
             return '<div class="col-xs-'+inputWidth+'">' +
                 '<input type="'+type+'" name="' + self.name + '" id="' + self.name + '" class="form-control" value="' + self.value + '" />' +
                 '</div>'
@@ -495,7 +510,7 @@ var formModule = function() {
 
 module.exports = formModule();
 
-},{"../../../node_modules/jquery-validation/dist/jquery.validate.js":93}],9:[function(require,module,exports){
+},{"../../../node_modules/jquery-validation/dist/jquery.validate.js":108}],9:[function(require,module,exports){
 var $ = jQuery;
 
 function modalModule() {
@@ -571,7 +586,7 @@ function viewModule() {
 }
 
 module.exports = viewModule();
-},{"./../../language/en.js":24,"./app.form.js":8,"./app.modal.js":9,"handlebars":78}],11:[function(require,module,exports){
+},{"./../../language/en.js":24,"./app.form.js":8,"./app.modal.js":9,"handlebars":93}],11:[function(require,module,exports){
 function customerController() {
 
     var $ = $app.$;
@@ -658,7 +673,7 @@ module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":f
     + "\n                            </button>\n\n                            <a class=\"btn btn-success\" id=\"import-excel\" href=\"../customers/excel_import\" data-target=\"#modal-container\">\n                                <i class=\"fa fa-file-excel-o\"></i> Excel Import\n                            </a>\n                        </div>\n                    </div>\n                </div>\n\n                <div class=\"box-body \">\n                    <table id=\"customer-table\" class=\"table table-bordered table-hover\">\n                        <thead>\n                            <tr>\n                                <th width=\"10px\">\n                                    <input type=\"checkbox\" id=\"select-all\" />\n                                </th>\n                                <th>Last Name</th>\n                                <th>First Name</th>\n                                <th>Email</th>\n                                <th>Phone</th>\n                                <th width=\"50px\">Action</th>\n                            </tr>\n                        </thead>\n                    </table>\n                </div>\n\n                <div id=\"feedback_bar\"></div>\n            </div>\n        </div>\n    </div>\n</section>";
 },"useData":true});
 
-},{"hbsfy/runtime":92}],15:[function(require,module,exports){
+},{"hbsfy/runtime":107}],15:[function(require,module,exports){
 function customerFormController() {
 
     var $modal = $app.$modal;
@@ -744,7 +759,7 @@ module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":f
     + "\" />                        \n                    </div>\n                </div>\n            </div>\n\n            <?php $this->load->view(\"people/form_basic_info\"); ?>\n\n            <div class=\"col-sm-6\">\n                <div class=\"form-group\">\n                    <?php echo form_label($this->lang->line('customers_taxable'), 'taxable', array('class' => 'col-sm-4 control-label')); ?>\n                    <div class='col-sm-8'>\n                        <div class=\"checkbox\">\n                            <label>\n                                <?php echo form_checkbox('taxable', '1', $person_info->taxable == '' ? TRUE : (boolean)$person_info->taxable); ?>\n                            </label>\n                        </div>\n                    </div>\n                </div>\n            </div>\n        </div>\n\n    </fieldset>    \n    </form>    \n</div>\n\n<div class=\"modal-footer\">\n    <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">Close</button>\n    <button type=\"submit\" form=\"customer_form\" class=\"btn btn-primary\">Save changes</button>\n</div>\n\n";
 },"useData":true});
 
-},{"hbsfy/runtime":92}],18:[function(require,module,exports){
+},{"hbsfy/runtime":107}],18:[function(require,module,exports){
 module.exports = {
 	controller: {},
 	model:{},
@@ -838,7 +853,7 @@ module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":f
     return "<section class=\"content-header\"></section> \n<section class=\"content\"> \n    <div class=\"row\"> \n        <div class=\"col-md-12\"> \n            <div class=\"box\"> \n                <div class=\"box-body\"> \n                    <dashboard-content/> \n                </div> \n            </div> \n        </div> \n    </div> \n</section>";
 },"useData":true});
 
-},{"hbsfy/runtime":92}],24:[function(require,module,exports){
+},{"hbsfy/runtime":107}],24:[function(require,module,exports){
 module.exports = {
 	uid: "Account #",
 	alpha: "The %s field may only contain alphabetical characters.",
@@ -1011,7 +1026,7 @@ module.exports = {
 	giftcards_change_all_to_unserialized: "Change All To Unserialized",
 	giftcards_confirm_bulk_edit: "Are you sure you want to edit all the giftcards selected?",
 	giftcards_confirm_delete: "Are you sure you want to delete the selected giftcards?",
-	giftcards_cost_price: "Cost Price",
+	giftcards_buy_price: "Buy Price",
 	giftcards_count: "Update Inventory",
 	giftcards_current_quantity: "Current Quantity",
 	giftcards_description: "Description",
@@ -1057,7 +1072,7 @@ module.exports = {
 	giftcards_tax_2: "Tax 2",
 	giftcards_tax_percent: "Tax Percent",
 	giftcards_tax_percents: "Tax Percent(s)",
-	giftcards_unit_price: "Unit Price",
+	giftcards_sell_price: "Unit Price",
 	giftcards_upc_database: "UPC Database",
 	giftcards_update: "Update Giftcard",
 	giftcards_use_inventory_menu: "Use Inv. Menu",
@@ -1070,102 +1085,103 @@ module.exports = {
 	is_numeric: "The %s field must contain only numeric characters.",
 	is_unique: "The %s field must contain a unique value.",
 	isset: "The %s field must have a value.",
-	item_kits_add_item: "Add Item",
-	item_kits_cannot_be_deleted: "Could not delete item kit(s)",
-	item_kits_confirm_delete: "Are you sure you want to delete the selected item kits?",
-	item_kits_description: "Item Kit Description",
-	item_kits_error_adding_updating: "Error adding/updating Item Kit",
-	item_kits_info: "Item Kit Info",
-	item_kits_item: "Item",
-	item_kits_items: "Items",
-	item_kits_name: "Item Kit Name",
-	item_kits_new: "New Item Kit",
-	item_kits_no_item_kits_to_display: "No item kits to display",
-	item_kits_none_selected: "You have not selected any item kits",
-	item_kits_one_or_multiple: "Item Kit(s)",
-	item_kits_quantity: "Quantity",
-	item_kits_successful_adding: "You have successfully added Item Kit",
-	item_kits_successful_deleted: "You have successfully deleted",
-	item_kits_successful_updating: "You have successfully updated Item Kit",
-	item_kits_update: "Update Item Kit",
-	items_add_minus: "Inventory to add/subtract",
-	items_allow_alt_description: "Allow Alt Description",
-	items_amazon: "Amazon",
-	items_basic_information: "Item Information",
-	items_bulk_edit: "Bulk Edit",
-	items_buy_price_required: "Purchase price is a required field",
-	items_cannot_be_deleted: "Could not deleted selected items, one or more of the selected items has sales.",
-	items_cannot_find_item: "Cannot find any information about item",
-	items_category: "Category",
-	items_category_required: "Category is a required field",
-	items_change_all_to_allow_alt_desc: " Allow Alt Desc For All",
-	items_change_all_to_not_allow_allow_desc: "Not Allow Alt Desc For All",
-	items_change_all_to_serialized: "Change All To Serialized",
-	items_change_all_to_unserialized: "Change All To Unserialized",
-	items_confirm_bulk_edit: "Are you sure you want to edit all the items selected?",
-	items_confirm_delete: "Are you sure you want to delete the selected items?",
-	items_cost_price: "Cost Price",
-	items_cost_price_number: "Cost price must be a number",
-	items_cost_price_required: "Cost Price is a required field",
-	items_count: "Update Inv.",
-	items_current_quantity: "Current Quantity",
-	items_description: "Description",
-	items_details_count: "Inventory Count Details",
-	items_do_nothing: "Do Nothing",
-	items_edit_fields_you_want_to_update: "Edit the fields you want to edit for ALL selected items",
-	items_edit_multiple_items: "Editing Multiple Items",
-	items_error_adding_updating: "Error adding/updating item",
-	items_error_updating_multiple: "Error updating items",
-	items_excel_import_failed: "Excel import failed",
-	items_generate_barcodes: "Generate Barcodes",
-	items_info_provided_by: "Info provided by",
-	items_inventory: "Inv",
-	items_inventory_comments: "Comments",
-	items_is_deleted: "Deleted",
-	items_is_serialized: "Item has Serial Number",
-	items_item: "Item",
-	items_item_number: "Barcode",
-	items_location: "Location",
-	items_manually_editing_of_quantity: "Manual Edit of Quantity",
-	items_must_select_item_for_barcode: "You must select at least 1 item to generate barcodes",
-	items_name: "Name",
-	items_name_required: "Item Name is a required field",
-	items_new: "New Item",
-	items_no_description_items: "No Description Items",
-	items_no_items_to_display: "No Items to display",
-	items_none: "None",
-	items_none_selected: "You have not selected any items to edit",
-	items_number_information: "Number",
-	items_one_or_multiple: "item(s)",
-	items_quantity: "Qty",
-	items_quantity_number: "Quantity must be a number",
-	items_quantity_required: "Quantity is a required field. Please Close ( X ) to cancel",
-	items_receiving_quantity: "Receiving quantity",
-	items_reorder_level: "Reorder Level",
-	items_reorder_level_number: "Reorder level must be a number",
-	items_reorder_level_required: "Reorder level is a required field",
-	items_retrive_item_info: "Retrive Item Info",
-	items_sales_tax_1: "Sales Tax",
-	items_sales_tax_2: "Sales Tax 2",
-	items_search_custom_items: "Search Custom Fields",
-	items_serialized_items: "Serialized Items",
-	items_stock_location: "Stock location",
-	items_successful_adding: "You have successfully added item",
-	items_successful_bulk_edit: "You have successfully updated the selected items",
-	items_successful_deleted: "You have successfully deleted",
-	items_successful_updating: "You have successfully updated item",
-	items_supplier: "Supplier",
-	items_tax_1: "Tax 1",
-	items_tax_2: "Tax 2",
-	items_tax_percent: "Tax",
-	items_tax_percent_required: "Tax Percent is a required field",
-	items_tax_percents: "Tax",
-	items_unit_price: "Retail Price",
-	items_unit_price_number: "Unit price must be a number",
-	items_unit_price_required: "Retail Price is a required field",
-	items_upc_database: "UPC Database",
-	items_update: "Update Item",
-	items_use_inventory_menu: "Use Inv. Menu",
+	product_kits_add_product: "Add Item",
+	product_kits_cannot_be_deleted: "Could not delete product kit(s)",
+	product_kits_confirm_delete: "Are you sure you want to delete the selected product kits?",
+	product_kits_description: "Item Kit Description",
+	product_kits_error_adding_updating: "Error adding/updating Item Kit",
+	product_kits_info: "Item Kit Info",
+	product_kits_product: "Item",
+	product_kits_product: "Items",
+	product_kits_name: "Item Kit Name",
+	product_kits_new: "New Item Kit",
+	product_kits_no_product_kits_to_display: "No product kits to display",
+	product_kits_none_selected: "You have not selected any product kits",
+	product_kits_one_or_multiple: "Item Kit(s)",
+	product_kits_quantity: "Quantity",
+	product_kits_successful_adding: "You have successfully added Item Kit",
+	product_kits_successful_deleted: "You have successfully deleted",
+	product_kits_successful_updating: "You have successfully updated Item Kit",
+	product_kits_update: "Update Item Kit",
+	product_add_minus: "Inventory to add/subtract",
+	product_allow_alt_description: "Allow Alt Description",
+	product_amazon: "Amazon",
+	product_basic_information: "Item Information",
+	product_bulk_edit: "Bulk Edit",
+	product_buy_price_required: "Purchase price is a required field",
+	product_cannot_be_deleted: "Could not deleted selected product, one or more of the selected product has sales.",
+	product_cannot_find_product: "Cannot find any information about product",
+	product_category: "Category",
+	product_category_required: "Category is a required field",
+	product_change_all_to_allow_alt_desc: " Allow Alt Desc For All",
+	product_change_all_to_not_allow_allow_desc: "Not Allow Alt Desc For All",
+	product_change_all_to_serialized: "Change All To Serialized",
+	product_change_all_to_unserialized: "Change All To Unserialized",
+	product_confirm_bulk_edit: "Are you sure you want to edit all the product selected?",
+	product_confirm_delete: "Are you sure you want to delete the selected product?",
+	buyPrice: "Buy Price",
+	product_buy_price_number: "Buy price must be a number",
+	product_buy_price_required: "Buy Price is a required field",
+	product_count: "Update Inv.",
+	product_current_quantity: "Current Quantity",
+	product_description: "Description",
+	product_details_count: "Inventory Count Details",
+	product_do_nothing: "Do Nothing",
+	product_edit_fields_you_want_to_update: "Edit the fields you want to edit for ALL selected product",
+	product_edit_multiple_product: "Editing Multiple Items",
+	product_error_adding_updating: "Error adding/updating product",
+	product_error_updating_multiple: "Error updating product",
+	product_excel_import_failed: "Excel import failed",
+	product_generate_barcodes: "Generate Barcodes",
+	product_info_provided_by: "Info provided by",
+	product_inventory: "Inv",
+	product_inventory_comments: "Comments",
+	product_is_deleted: "Deleted",
+	product_is_serialized: "Item has Serial Number",
+	product: "Product",
+	sku: "SKU",
+	product_location: "Location",
+	product_manually_editing_of_quantity: "Manual Edit of Quantity",
+	product_must_select_product_for_barcode: "You must select at least 1 product to generate barcodes",
+	
+	title: "Title",
+	product_name_required: "Item Name is a required field",
+	product_new: "New Item",
+	product_no_description_product: "No Description Items",
+	product_no_product_to_display: "No Items to display",
+	product_none: "None",
+	product_none_selected: "You have not selected any product to edit",
+	product_number_information: "Number",
+	product_one_or_multiple: "product(s)",
+	stock: "Qty",
+	product_quantity_number: "Quantity must be a number",
+	product_quantity_required: "Quantity is a required field. Please Close ( X ) to cancel",
+	product_receiving_quantity: "Receiving quantity",
+	product_reorder_level: "Reorder Level",
+	product_reorder_level_number: "Reorder level must be a number",
+	product_reorder_level_required: "Reorder level is a required field",
+	product_retrive_product_info: "Retrive Item Info",
+	product_sales_tax_1: "Sales Tax",
+	product_sales_tax_2: "Sales Tax 2",
+	product_search_custom_product: "Search Custom Fields",
+	product_serialized_product: "Serialized Items",
+	product_stock_location: "Stock location",
+	product_successful_adding: "You have successfully added product",
+	product_successful_bulk_edit: "You have successfully updated the selected product",
+	product_successful_deleted: "You have successfully deleted",
+	product_successful_updating: "You have successfully updated product",
+	product_supplier: "Supplier",
+	product_tax_1: "Tax 1",
+	product_tax_2: "Tax 2",
+	product_tax_percent: "Tax",
+	product_tax_percent_required: "Tax Percent is a required field",
+	product_tax_percents: "Tax",
+	sellPrice: "Retail Price",
+	product_sell_price_number: "Unit price must be a number",
+	product_sell_price_required: "Retail Price is a required field",
+	product_upc_database: "UPC Database",
+	product_update: "Update Item",
+	product_use_inventory_menu: "Use Inv. Menu",
 	less_than: "The %s field must contain a number less than %s.",
 	login_go: "Go",
 	login_invalid_username_and_password: "Invalid username/password",
@@ -1187,10 +1203,10 @@ module.exports = {
 	module_giftcards: "Gift Cards",
 	module_giftcards_desc: "Add, Update, Delete and Search gift cards",
 	module_home: "Home",
-	module_item_kits: "Item Kits",
-	module_item_kits_desc: "Add, Update, Delete and Search Item Kits",
-	module_items: "Items",
-	module_items_desc: "Add, Update, Delete, and Search items",
+	module_product_kits: "Item Kits",
+	module_product_kits_desc: "Add, Update, Delete and Search Item Kits",
+	module_product: "Items",
+	module_product_desc: "Add, Update, Delete, and Search product",
 	module_receivings: "Receivings",
 	module_receivings_desc: "Process Purchase orders",
 	module_reports: "Reports",
@@ -1210,9 +1226,9 @@ module.exports = {
 	recvs_cannot_be_deleted: "Receiving(s) could not be deleted",
 	recvs_comments: "Comments",
 	recvs_complete_receiving: "Finish",
-	recvs_confirm_cancel_receiving: "Are you sure you want to clear this receiving? All items will cleared.",
+	recvs_confirm_cancel_receiving: "Are you sure you want to clear this receiving? All product will cleared.",
 	recvs_confirm_finish_receiving: "Are you sure you want to submit this receiving? This cannot be undone.",
-	recvs_cost: "Cost",
+	recvs_cost: "Buy",
 	recvs_date: "Receiving Date",
 	recvs_date_required: "A correct date needs to be filled in",
 	recvs_date_type: "Date field is required",
@@ -1222,15 +1238,15 @@ module.exports = {
 	recvs_edit: "Edit",
 	recvs_edit_sale: "Edit Receiving",
 	recvs_employee: "Employee",
-	recvs_error_editing_item: "Error editing item",
+	recvs_error_editing_product: "Error editing product",
 	recvs_error_requisition: "Unable to move inventory from and to the same stock location",
-	recvs_find_or_scan_item: "Find/Scan Item",
-	recvs_find_or_scan_item_or_receipt: "Find/Scan Item OR Receipt",
+	recvs_find_or_scan_product: "Find/Scan Item",
+	recvs_find_or_scan_product_or_receipt: "Find/Scan Item OR Receipt",
 	recvs_id: "Receiving ID",
 	recvs_invoice_enable: "Create Invoice",
 	recvs_invoice_number: "Invoice #",
 	recvs_invoice_number_duplicate: "Please enter an unique invoice number",
-	recvs_item_name: "Item Name",
+	recvs_product_name: "Item Name",
 	recvs_mode: "Receiving Mode",
 	recvs_new_supplier: "New Supplier",
 	recvs_one_or_multiple: "receiving(s)",
@@ -1250,7 +1266,7 @@ module.exports = {
 	recvs_successfully_updated: "Receiving successfully updated",
 	recvs_supplier: "Supplier",
 	recvs_total: "Total",
-	recvs_unable_to_add_item: "Unable to add item to receiving",
+	recvs_unable_to_add_product: "Unable to add product to receiving",
 	recvs_unsuccessfully_updated: "Receiving unsuccessfully updated",
 	regex_match: "The %s field is not in the correct format.",
 	reports_all: "All",
@@ -1283,13 +1299,13 @@ module.exports = {
 	reports_inventory_reports: "Inventory Reports",
 	reports_inventory_summary: " Inventory Summary",
 	reports_inventory_summary_report: "Inventory Summary Report",
-	reports_item: "Item",
-	reports_item_name: "Item Name",
-	reports_item_number: "Item Number",
-	reports_items: "Items",
-	reports_items_purchased: "Items Purchased",
-	reports_items_received: "Items Received",
-	reports_items_summary_report: "Items Summary Report",
+	reports_product: "Item",
+	reports_product_name: "Item Name",
+	reports_product_number: "Item Number",
+	reports_product: "Items",
+	reports_product_purchased: "Items Purchased",
+	reports_product_received: "Items Received",
+	reports_product_summary_report: "Items Summary Report",
 	reports_last_7: "Last 7 Days",
 	reports_last_month: "Last Month",
 	reports_last_year: "Last Year",
@@ -1338,10 +1354,10 @@ module.exports = {
 	reports_yesterday: "Yesterday",
 	reqs_quantity: "Qty.",
 	reqs_receipt: "Requisition Receipt",
-	reqs_related_item: "Related item",
-	reqs_related_item_quantity: "Related item qty.",
+	reqs_related_product: "Related product",
+	reqs_related_product_quantity: "Related product qty.",
 	reqs_transaction_failed: "Requisition Transactions Failed",
-	reqs_unable_to_add_item: "Unable to add item to requisition",
+	reqs_unable_to_add_product: "Unable to add product to requisition",
 	reqs_unit_quantity: "Unit qty.",
 	reqs_unit_quantity_total: "Total qty.",
 	required: "The %s field is required.",
@@ -1357,7 +1373,7 @@ module.exports = {
 	sales_comment: "Comment",
 	sales_comments: "Comments",
 	sales_complete_sale: "Complete Sale",
-	sales_confirm_cancel_sale: "Are you sure you want to clear this sale? All items will cleared.",
+	sales_confirm_cancel_sale: "Are you sure you want to clear this sale? All product will cleared.",
 	sales_confirm_finish_sale: "Are you sure you want to submit this sale? This cannot be undone.",
 	sales_confirm_suspend_sale: "Are you sure you want to suspend this sale?",
 	sales_credit: "Credit Card",
@@ -1375,29 +1391,29 @@ module.exports = {
 	sales_discount_included: "% Discount",
 	sales_discount_short: "%",
 	sales_edit: "Edit",
-	sales_edit_item: "Edit Item",
+	sales_edit_product: "Edit Item",
 	sales_edit_sale: "Edit Sale",
 	sales_email_receipt: "E-Mail Receipt",
 	sales_employee: "Employee",
-	sales_error_editing_item: "Error editing item",
-	sales_find_or_scan_item: "Find/Scan Item",
-	sales_find_or_scan_item_or_receipt: "Find/Scan Item OR Receipt",
+	sales_error_editing_product: "Error editing product",
+	sales_find_or_scan_product: "Find/Scan Item",
+	sales_find_or_scan_product_or_receipt: "Find/Scan Item OR Receipt",
 	sales_giftcard: "Gift Card",
 	sales_giftcard_number: "Gift Card Number",
 	sales_id: "Sale ID",
 	sales_invoice_enable: "Create Invoice",
 	sales_invoice_number: "Invoice #",
 	sales_invoice_number_duplicate: "Please enter an unique invoice number",
-	sales_item_insufficient_of_stock: "Item is Insufficient of Stock",
-	sales_item_name: "Item Name",
-	sales_item_number: "Item #",
-	sales_item_out_of_stock: "Item is Out of Stock",
+	sales_product_insufficient_of_stock: "Item is Insufficient of Stock",
+	sales_product_name: "Item Name",
+	sales_product_number: "Item #",
+	sales_product_out_of_stock: "Item is Out of Stock",
 	sales_mode: "Register Mode",
 	sales_must_enter_numeric: "Must enter numeric value for amount tendered",
 	sales_must_enter_numeric_giftcard: "Must enter numeric value for giftcard number",
 	sales_new_customer: "New Customer",
-	sales_new_item: "New Item",
-	sales_no_items_in_cart: "There are no items in the cart",
+	sales_new_product: "New Item",
+	sales_no_product_in_cart: "There are no product in the cart",
 	sales_one_or_multiple: "sale(s)",
 	sales_payment: "Payment Type",
 	sales_payment_amount: "Amount",
@@ -1418,7 +1434,7 @@ module.exports = {
 	sales_select_customer: "Select Customer (Optional)",
 	sales_serial: "Serial",
 	sales_start_typing_customer_name: "Start Typing customer's name...",
-	sales_start_typing_item_name: "Start Typing item's name or scan barcode...",
+	sales_start_typing_product_name: "Start Typing product's name or scan barcode...",
 	sales_stock_location: "Stock location",
 	sales_sub_total: "Sub Total",
 	sales_successfully_deleted: "You have successfully deleted",
@@ -1431,7 +1447,7 @@ module.exports = {
 	sales_tax_percent: "Tax %",
 	sales_total: "Total",
 	sales_transaction_failed: "Sales Transaction Failed",
-	sales_unable_to_add_item: "Unable to add item to sale",
+	sales_unable_to_add_product: "Unable to add product to sale",
 	sales_unsuccessfully_updated: "Sale unsuccessfully updated",
 	sales_unsuspend: "Unsuspend",
 	sales_unsuspend_and_delete: "",
@@ -1462,9 +1478,11 @@ module.exports = {
 
 var $app = require('./core/app.js');
 
-// load modules
+// load modules and routes
 $app.$module.register('home', require('./home/home.js')($app));
 $app.$module.register('user', require('./user/user.js')($app));
+$app.$module.register('product', require('./product/product.js')($app));
+$app.$module.register('product-category', require('./productCategory/productCategory.js')($app));
 $app.$module.register('customers', require('./customer/customer.js')($app));
 
 // load config
@@ -1472,7 +1490,605 @@ var config = require('./config.js');
 
 // start the application
 $app.start(config);
-},{"./config.js":1,"./core/app.js":3,"./customer/customer.js":12,"./home/home.js":21,"./user/user.js":30}],26:[function(require,module,exports){
+},{"./config.js":1,"./core/app.js":3,"./customer/customer.js":12,"./home/home.js":21,"./product/product.js":30,"./productCategory/productCategory.js":36,"./user/user.js":42}],26:[function(require,module,exports){
+/*global $app $*/
+
+require('cropit');
+var bootbox = require('bootbox');
+
+
+function productFormController(endpoint, data) {
+    var $modal = $app.$view.$modal;
+    var $form = $app.$view.$form;
+    var $http = $app.$http;
+    var $notify = $app.$notify;
+
+    var self = {
+        load: onLoad,
+        close: onClose,
+        modal: $app.$view.$modal,
+        formId: "#product-form",
+        data: data || {},
+        isPhotoChanged: false,
+        promise: {},
+        defer: $.Deferred(),
+        formConfig: {
+            rules: {
+                product_title: {
+                    minlength: 5,
+                    required: true
+                },
+                product_sell_price: {
+                    required: true
+                },
+                product_category: {
+                    required: true
+                }
+            }
+        }
+    }
+
+    self.load();
+
+    return self;
+
+    function onLoad() {
+        var modalConfig = {
+            size: 'lg',
+            modalId: self.modal.generateId()
+        }
+
+        var input = {
+            uidInput: $form.input("uid").setValue(self.data["uid"] || "AUTO"),
+            skuInput: $form.input("sku").setValue(self.data["sku"]),
+            titleInput: $form.input("title").setValue(self.data["title"]).setClass("required"),
+            buyPriceInput: $form.input("buyPrice").setValue(self.data["buyPrice"], 0),
+            sellPriceInput: $form.input("sellPrice").setValue(self.data["sellPrice"], 0).setClass("required"),
+            stockInput: $form.input("stock").setValue(self.data["stock"], 0).setClass("required"),
+            categoryInput: $form.input("category").setValue(self.data["category"]).setClass("required")
+        };
+
+        self.modal = $modal.show(require('./product.form.template.hbs'), input, modalConfig);
+
+        $form.create(self.formId)
+            .config(self.formConfig)
+            .onSubmit(function() {
+                event.preventDefault();
+                var newData = $(self.formId).serializeObject();
+                newData.buyPrice = parseFloat(newData.buyPrice) || 0;
+                newData.sellPrice = parseFloat(newData.sellPrice) || 0;
+                newData.stock = parseFloat(newData.stock) || 0;
+
+                if (!data) {
+                    $http.post(endpoint, newData).success(function(data) {
+                        onDone(data.data[0])
+                    });
+                }
+                else {
+                    $http.put(endpoint + "/" + self.data["uid"], newData).success(function(data) {
+                        onDone(data.data[0])
+                    });
+                }
+            });
+
+        $('#removeUser').click(function() {
+            var id = $(this).data("id");
+            bootbox.confirm('Are you sure to delete this product?', function(result) {
+                if (result) {
+                    doDelete(id);
+                }
+            });
+        });
+
+        $('#product-photo').cropit({
+            onFileChange: function() {
+                self.isPhotoChanged = true;
+            }
+        });
+
+        if (self.data.image) {
+            $('#product-photo').cropit('imageSrc', './uploads/product_photos/' + self.data.image);
+        };
+
+        $('#select-image-btn').click(function() {
+            $("#product-form.cropit-image-input").prop('disabled', false);
+            $('.cropit-image-input').click();
+        });
+
+        return self;
+    }
+
+    function uploadPhoto(productId) {
+        if (self.isPhotoChanged) {
+            var imageData = $('#product-photo').cropit('export');
+            return $http.put(endpoint + "/" + productId + "/photo", imageData);
+        }
+        else {
+            return null
+        }
+    }
+    
+    function doDelete(id) {
+        $http.delete(endpoint + "/" + id).success(function(model) {
+            self.modal.hide();
+            onClose();
+        });
+    }
+
+    function onDone(data) {
+        $.when(uploadPhoto(data.uid)).then(function() {
+            self.modal.hide();
+            self.defer.resolve();
+        }, function() {
+            // do nothing
+        });
+    }
+
+    function onClose() {
+        return $.when(self.defer.promise());
+    }
+};
+
+module.exports = productFormController;
+},{"./product.form.template.hbs":28,"bootbox":44,"cropit":62}],27:[function(require,module,exports){
+(function (global){
+
+function customerFormModule ($app) {
+	
+	global.$app = $app;
+	
+	return {		
+		'controller': require('./product.form.controller.js'),		
+		'template': require('./product.form.template.hbs'),
+	}
+};
+
+module.exports = customerFormModule; 
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{"./product.form.controller.js":26,"./product.form.template.hbs":28}],28:[function(require,module,exports){
+// hbsfy compiled Handlebars template
+var HandlebarsCompiler = require('hbsfy/runtime');
+module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
+    var stack1, alias1=container.lambda;
+
+  return "<div class=\"modal-header\">\n    <button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-hidden=\"true\">&times;</button>\n    <h4 class=\"modal-title\">Product Form</h4>\n</div>\n\n<div class=\"modal-body\">\n    <fieldset id=\"product_basic_info\">\n        <div class=\"row\">\n            <div class=\"col-md-2 col-xs-12 form-horizontal\">\n                <div class=\"form-group\">\n                    <div class=\"col-md-12\">\n                        <div id=\"product-photo\" class=\"image-editor center-block\">\n                            <div class=\"cropit-preview\"></div>\n                            <input type=\"range\" class=\"cropit-image-zoom-input\" />\n                            <input id=\"product-photo-file\" type=\"file\" class=\"cropit-image-input\" />\n                            <button id=\"select-image-btn\" class=\"btn btn-primary btn-block btn-xs\">Change Product Photo</button>\n                        </div>\n                    </div>\n                </div>\n            </div>\n            <div class=\"col-md-10 col-xs-12\">\n                <form id=\"product-form\" name=\"product-form\" class=\"form-horizontal\">\n                    <div class=\"col-md-12\">\n                        <div class=\"form-group\">\n                            <label class=\"col-md-2 col-xs-4 control-label\">"
+    + ((stack1 = alias1(((stack1 = (depth0 != null ? depth0.uidInput : depth0)) != null ? stack1.label : stack1), depth0)) != null ? stack1 : "")
+    + "</label>\n                            <div class=\"col-md-4 col-xs-8\">\n                                <input type=\"disabled\" class=\"form-control\" disabled value=\""
+    + ((stack1 = alias1(((stack1 = (depth0 != null ? depth0.uidInput : depth0)) != null ? stack1.value : stack1), depth0)) != null ? stack1 : "")
+    + "\" />\n                            </div>\n                        </div>\n                    </div>\n                    <div class=\"col-md-6\">"
+    + ((stack1 = alias1(((stack1 = (depth0 != null ? depth0.skuInput : depth0)) != null ? stack1.formGroup : stack1), depth0)) != null ? stack1 : "")
+    + "</div>\n                    <div class=\"col-md-6\">"
+    + ((stack1 = alias1(((stack1 = (depth0 != null ? depth0.titleInput : depth0)) != null ? stack1.formGroup : stack1), depth0)) != null ? stack1 : "")
+    + "</div>\n                    <div class=\"col-md-6\">"
+    + ((stack1 = alias1(((stack1 = (depth0 != null ? depth0.buyPriceInput : depth0)) != null ? stack1.formGroupNumber : stack1), depth0)) != null ? stack1 : "")
+    + "</div>\n                    <div class=\"col-md-6\">"
+    + ((stack1 = alias1(((stack1 = (depth0 != null ? depth0.sellPriceInput : depth0)) != null ? stack1.formGroupNumber : stack1), depth0)) != null ? stack1 : "")
+    + "</div>\n                    <div class=\"col-md-6\">"
+    + ((stack1 = alias1(((stack1 = (depth0 != null ? depth0.stockInput : depth0)) != null ? stack1.formGroupNumber : stack1), depth0)) != null ? stack1 : "")
+    + "</div>\n                    <div class=\"col-md-6\">"
+    + ((stack1 = alias1(((stack1 = (depth0 != null ? depth0.categoryInput : depth0)) != null ? stack1.formGroupDropDown : stack1), depth0)) != null ? stack1 : "")
+    + "</div>\n                </form>\n            </div>\n        </div>\n    </fieldset>\n</div>\n\n<div class=\"modal-footer\">\n    <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">Close</button>\n    <button type=\"submit\" form=\"product-form\" class=\"btn btn-primary\">Save changes</button>\n</div>\n";
+},"useData":true});
+
+},{"hbsfy/runtime":107}],29:[function(require,module,exports){
+/*global $app $*/
+'use strict'
+
+function productController() {
+    var $ = $app.$;
+    var $notify = $app.$notify;
+    var $tablegrid = $app.$tablegrid;
+    var $modal = $app.$modal;
+    var $http = $app.$http;
+    var $form = $app.$form;
+    var productForm = require('./form/product.form.js')($app);
+
+    var self = {
+        tableGrid: {},
+        table: '#manage-table ',
+        form: productForm,
+        load: onLoad,
+        endpoint: 'api/v1/products'
+    };
+
+    self.load();
+
+    return self;
+
+    function onLoad() {
+        self.tableGrid = $tablegrid.render("#product-table", self.endpoint, 
+        [
+            {data: null, 
+            "render" : function ( data, type, full ) { 
+                if(full['image'] ){
+                    return '<img class="table-image" src="./uploads/product_photos/' + full['image'] + '" width="40" />' 
+                } 
+                return ""
+            }}, 
+            {data: 'sku'}, 
+            {data: 'title'},
+            {data: 'sellPrice'},
+            {data: 'stock'}
+
+        ], 
+        'uid');
+        
+        self.tableGrid.action.delete = doDelete;
+        self.tableGrid.action.deleteBulk = doDeleteBulk;
+        
+        $('body').on('click', '#product-add', function() {
+            showFormCreate();
+        });
+        
+        $('#product-table').on('click', '.edit-data', function() {
+            var productId = $(this).data("id");
+            showFormEdit(productId);
+        });
+    }
+
+    function showFormCreate() {
+        var modalForm = self.form.controller(self.endpoint)
+        modalForm.close().done(function(){
+            self.tableGrid.reload();
+        });
+    }
+
+    function showFormEdit(id) {
+        $http.get(self.endpoint + "/" + id).done(function(model) {
+            var modalForm = self.form.controller(self.endpoint, model.data[0])
+            modalForm.close().done(function(){
+                self.tableGrid.reload();
+            })
+        });
+    }
+    
+    function doDelete(id) {
+        $http.delete(self.endpoint + "/" + id).done(function(model) {
+            self.tableGrid.reload();
+        });
+    }
+    
+    function doDeleteBulk(ids) {
+        $http.post(self.endpoint + "/bulkdelete", { ids:ids}).done(function(ids) {
+            self.tableGrid.reload();
+        });
+    }
+};
+
+module.exports = productController;
+},{"./form/product.form.js":27}],30:[function(require,module,exports){
+(function (global){
+function productModule($app) {
+
+	global.$app = $app;
+
+	return {
+		'controller': require('./product.controller.js'),
+		'template': require('./product.template.hbs'),
+	}
+};
+
+module.exports = productModule;
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{"./product.controller.js":29,"./product.template.hbs":31}],31:[function(require,module,exports){
+// hbsfy compiled Handlebars template
+var HandlebarsCompiler = require('hbsfy/runtime');
+module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
+    var stack1, alias1=container.lambda, alias2=container.escapeExpression;
+
+  return "<section class=\"content-header\">\n    <h1>\n        "
+    + alias2(alias1(((stack1 = (depth0 != null ? depth0.lang : depth0)) != null ? stack1.module_products : stack1), depth0))
+    + "\n        <small>\n            "
+    + alias2(alias1(((stack1 = (depth0 != null ? depth0.lang : depth0)) != null ? stack1.module_products_desc : stack1), depth0))
+    + "\n        </small>\n    </h1>\n    <ol class=\"breadcrumb\">\n        <li><a href=\"#\"><i class=\"fa fa-dashboard\"></i>Home</a></li>\n        <li class=\"active\">"
+    + alias2(alias1(((stack1 = (depth0 != null ? depth0.lang : depth0)) != null ? stack1.module_products : stack1), depth0))
+    + "</li>\n    </ol>\n</section>\n\n<section class=\"content\">\n    <div class=\"row\">\n        <div class=\"col-md-12\">\n            <div class=\"box\">\n                <div class=\"box-header\">\n                    <div class=\"row\">\n                        <div class=\"col-sm-6 \">\n                            <div class=\"btn-group\">\n                                <a href=\"../customers/delete\" id=\"delete-selected\" class=\"btn btn-sm btn-default\">\n                                    <i class=\"fa fa-trash\"></i> "
+    + alias2(alias1(((stack1 = (depth0 != null ? depth0.lang : depth0)) != null ? stack1.common_delete : stack1), depth0))
+    + "\n                                </a>\n                            </div>\n                        </div>\n\n                        <div class=\"col-sm-6 text-right\">\n                            <button id=\"product-add\" class=\"btn btn-primary\">\n                                <i class=\"fa fa-plus\"></i> "
+    + alias2(alias1(((stack1 = (depth0 != null ? depth0.lang : depth0)) != null ? stack1.product_new : stack1), depth0))
+    + "\n                            </button>\n\n                            <a class=\"btn btn-success\" id=\"import-excel\" href=\"../customers/excel_import\" data-target=\"#modal-container\">\n                                <i class=\"fa fa-file-excel-o\"></i> Excel Import\n                            </a>\n                        </div>\n                    </div>\n                </div>\n\n                <div class=\"box-body \">\n                    <table id=\"product-table\" class=\"table table-bordered table-hover\">\n                        <thead>\n                            <tr>\n                                <th width=\"10px\">\n                                    <input type=\"checkbox\" id=\"select-all\" />\n                                </th>\n                                <th>Image</th>\n                                <th>SKU</th>\n                                <th>Title</th>\n                                <th>Sell Price</th>\n                                <th>Stock</th>\n                                <th width=\"50px\">Action</th>\n                            </tr>\n                        </thead>\n                    </table>\n                </div>\n\n                <div id=\"feedback_bar\"></div>\n            </div>\n        </div>\n    </div>\n</section>";
+},"useData":true});
+
+},{"hbsfy/runtime":107}],32:[function(require,module,exports){
+/*global $app $*/
+
+require('cropit');
+var bootbox = require('bootbox');
+
+
+function productCategoryFormController(endpoint, data) {
+    var $modal = $app.$view.$modal;
+    var $form = $app.$view.$form;
+    var $http = $app.$http;
+    var $notify = $app.$notify;
+
+    var self = {
+        load: onLoad,
+        close: onClose,
+        modal: $app.$view.$modal,
+        formId: "#productCategory-form",
+        data: data || {},
+        isPhotoChanged: false,
+        promise: {},
+        defer: $.Deferred(),
+        formConfig: {
+            rules: {
+                productCategory_title: {
+                    minlength: 5,
+                    required: true
+                },
+                productCategory_sell_price: {
+                    required: true
+                },
+                productCategory_category: {
+                    required: true
+                }
+            }
+        }
+    }
+
+    self.load();
+
+    return self;
+
+    function onLoad() {
+        var modalConfig = {
+            size: 'lg',
+            modalId: self.modal.generateId()
+        }
+
+        var input = {
+            uidInput: $form.input("uid").setValue(self.data["uid"] || "AUTO"),
+            skuInput: $form.input("sku").setValue(self.data["sku"]),
+            titleInput: $form.input("title").setValue(self.data["title"]).setClass("required"),
+            buyPriceInput: $form.input("buyPrice").setValue(self.data["buyPrice"], 0),
+            sellPriceInput: $form.input("sellPrice").setValue(self.data["sellPrice"], 0).setClass("required"),
+            stockInput: $form.input("stock").setValue(self.data["stock"], 0).setClass("required"),
+            categoryInput: $form.input("category").setValue(self.data["category"]).setClass("required")
+        };
+
+        self.modal = $modal.show(require('./productCategory.form.template.hbs'), input, modalConfig);
+
+        $form.create(self.formId)
+            .config(self.formConfig)
+            .onSubmit(function() {
+                event.preventDefault();
+                var newData = $(self.formId).serializeObject();
+                newData.buyPrice = parseFloat(newData.buyPrice) || 0;
+                newData.sellPrice = parseFloat(newData.sellPrice) || 0;
+                newData.stock = parseFloat(newData.stock) || 0;
+
+                if (!data) {
+                    $http.post(endpoint, newData).success(function(data) {
+                        onDone(data.data[0])
+                    });
+                }
+                else {
+                    $http.put(endpoint + "/" + self.data["uid"], newData).success(function(data) {
+                        onDone(data.data[0])
+                    });
+                }
+            });
+
+        $('#removeUser').click(function() {
+            var id = $(this).data("id");
+            bootbox.confirm('Are you sure to delete this productCategory?', function(result) {
+                if (result) {
+                    doDelete(id);
+                }
+            });
+        });
+
+        $('#productCategory-photo').cropit({
+            onFileChange: function() {
+                self.isPhotoChanged = true;
+            }
+        });
+
+        if (self.data.image) {
+            $('#productCategory-photo').cropit('imageSrc', './uploads/productCategory_photos/' + self.data.image);
+        };
+
+        $('#select-image-btn').click(function() {
+            $("#productCategory-form.cropit-image-input").prop('disabled', false);
+            $('.cropit-image-input').click();
+        });
+
+        return self;
+    }
+
+    function uploadPhoto(productCategoryId) {
+        if (self.isPhotoChanged) {
+            var imageData = $('#productCategory-photo').cropit('export');
+            return $http.put(endpoint + "/" + productCategoryId + "/photo", imageData);
+        }
+        else {
+            return null
+        }
+    }
+    
+    function doDelete(id) {
+        $http.delete(endpoint + "/" + id).success(function(model) {
+            self.modal.hide();
+            onClose();
+        });
+    }
+
+    function onDone(data) {
+        $.when(uploadPhoto(data.uid)).then(function() {
+            self.modal.hide();
+            self.defer.resolve();
+        }, function() {
+            // do nothing
+        });
+    }
+
+    function onClose() {
+        return $.when(self.defer.promise());
+    }
+};
+
+module.exports = productCategoryFormController;
+},{"./productCategory.form.template.hbs":34,"bootbox":44,"cropit":62}],33:[function(require,module,exports){
+(function (global){
+
+function customerFormModule ($app) {
+	
+	global.$app = $app;
+	
+	return {		
+		'controller': require('./productCategory.form.controller.js'),		
+		'template': require('./productCategory.form.template.hbs'),
+	}
+};
+
+module.exports = customerFormModule; 
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{"./productCategory.form.controller.js":32,"./productCategory.form.template.hbs":34}],34:[function(require,module,exports){
+// hbsfy compiled Handlebars template
+var HandlebarsCompiler = require('hbsfy/runtime');
+module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
+    var stack1, alias1=container.lambda;
+
+  return "<div class=\"modal-header\">\n    <button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-hidden=\"true\">&times;</button>\n    <h4 class=\"modal-title\">Product Form</h4>\n</div>\n\n<div class=\"modal-body\">\n    <fieldset id=\"productCategory_basic_info\">\n        <div class=\"row\">\n            <div class=\"col-md-2 col-xs-12 form-horizontal\">\n                <div class=\"form-group\">\n                    <div class=\"col-md-12\">\n                        <div id=\"productCategory-photo\" class=\"image-editor center-block\">\n                            <div class=\"cropit-preview\"></div>\n                            <input type=\"range\" class=\"cropit-image-zoom-input\" />\n                            <input id=\"productCategory-photo-file\" type=\"file\" class=\"cropit-image-input\" />\n                            <button id=\"select-image-btn\" class=\"btn btn-primary btn-block btn-xs\">Change Product Photo</button>\n                        </div>\n                    </div>\n                </div>\n            </div>\n            <div class=\"col-md-10 col-xs-12\">\n                <form id=\"productCategory-form\" name=\"productCategory-form\" class=\"form-horizontal\">\n                    <div class=\"col-md-12\">\n                        <div class=\"form-group\">\n                            <label class=\"col-md-2 col-xs-4 control-label\">"
+    + ((stack1 = alias1(((stack1 = (depth0 != null ? depth0.uidInput : depth0)) != null ? stack1.label : stack1), depth0)) != null ? stack1 : "")
+    + "</label>\n                            <div class=\"col-md-4 col-xs-8\">\n                                <input type=\"disabled\" class=\"form-control\" disabled value=\""
+    + ((stack1 = alias1(((stack1 = (depth0 != null ? depth0.uidInput : depth0)) != null ? stack1.value : stack1), depth0)) != null ? stack1 : "")
+    + "\" />\n                            </div>\n                        </div>\n                    </div>\n                    <div class=\"col-md-6\">"
+    + ((stack1 = alias1(((stack1 = (depth0 != null ? depth0.skuInput : depth0)) != null ? stack1.formGroup : stack1), depth0)) != null ? stack1 : "")
+    + "</div>\n                    <div class=\"col-md-6\">"
+    + ((stack1 = alias1(((stack1 = (depth0 != null ? depth0.titleInput : depth0)) != null ? stack1.formGroup : stack1), depth0)) != null ? stack1 : "")
+    + "</div>\n                    <div class=\"col-md-6\">"
+    + ((stack1 = alias1(((stack1 = (depth0 != null ? depth0.buyPriceInput : depth0)) != null ? stack1.formGroupNumber : stack1), depth0)) != null ? stack1 : "")
+    + "</div>\n                    <div class=\"col-md-6\">"
+    + ((stack1 = alias1(((stack1 = (depth0 != null ? depth0.sellPriceInput : depth0)) != null ? stack1.formGroupNumber : stack1), depth0)) != null ? stack1 : "")
+    + "</div>\n                    <div class=\"col-md-6\">"
+    + ((stack1 = alias1(((stack1 = (depth0 != null ? depth0.stockInput : depth0)) != null ? stack1.formGroupNumber : stack1), depth0)) != null ? stack1 : "")
+    + "</div>\n                    <div class=\"col-md-6\">"
+    + ((stack1 = alias1(((stack1 = (depth0 != null ? depth0.categoryInput : depth0)) != null ? stack1.formGroupDropDown : stack1), depth0)) != null ? stack1 : "")
+    + "</div>\n                </form>\n            </div>\n        </div>\n    </fieldset>\n</div>\n\n<div class=\"modal-footer\">\n    <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">Close</button>\n    <button type=\"submit\" form=\"productCategory-form\" class=\"btn btn-primary\">Save changes</button>\n</div>\n";
+},"useData":true});
+
+},{"hbsfy/runtime":107}],35:[function(require,module,exports){
+/*global $app $*/
+'use strict'
+
+function productCategoryController() {
+    var $ = $app.$;
+    var $notify = $app.$notify;
+    var $tablegrid = $app.$tablegrid;
+    var $modal = $app.$modal;
+    var $http = $app.$http;
+    var $form = $app.$form;
+    var productCategoryForm = require('./form/productCategory.form.js')($app);
+
+    var self = {
+        tableGrid: {},
+        table: '#manage-table ',
+        form: productCategoryForm,
+        load: onLoad,
+        endpoint: 'api/v1/productcategories'
+    };
+
+    self.load();
+
+    return self;
+
+    function onLoad() {
+        self.tableGrid = $tablegrid.render("#productCategory-table", self.endpoint, 
+        [
+            {data: null, 
+            "render" : function ( data, type, full ) { 
+                if(full['image'] ){
+                    return '<img class="table-image" src="./uploads/productCategory_photos/' + full['image'] + '" width="40" />' 
+                } 
+                return ""
+            }}, 
+            {data: 'sku'}, 
+            {data: 'title'},
+            {data: 'sellPrice'},
+            {data: 'stock'}
+
+        ], 
+        'uid');
+        
+        self.tableGrid.action.delete = doDelete;
+        self.tableGrid.action.deleteBulk = doDeleteBulk;
+        
+        $('body').on('click', '#productCategory-add', function() {
+            showFormCreate();
+        });
+        
+        $('#productCategory-table').on('click', '.edit-data', function() {
+            var productCategoryId = $(this).data("id");
+            showFormEdit(productCategoryId);
+        });
+    }
+
+    function showFormCreate() {
+        var modalForm = self.form.controller(self.endpoint)
+        modalForm.close().done(function(){
+            self.tableGrid.reload();
+        });
+    }
+
+    function showFormEdit(id) {
+        $http.get(self.endpoint + "/" + id).done(function(model) {
+            var modalForm = self.form.controller(self.endpoint, model.data[0])
+            modalForm.close().done(function(){
+                self.tableGrid.reload();
+            })
+        });
+    }
+    
+    function doDelete(id) {
+        $http.delete(self.endpoint + "/" + id).done(function(model) {
+            self.tableGrid.reload();
+        });
+    }
+    
+    function doDeleteBulk(ids) {
+        $http.post(self.endpoint + "/bulkdelete", { ids:ids}).done(function(ids) {
+            self.tableGrid.reload();
+        });
+    }
+};
+
+module.exports = productCategoryController;
+},{"./form/productCategory.form.js":33}],36:[function(require,module,exports){
+(function (global){
+function productCategoryModule($app) {
+
+	global.$app = $app;
+
+	return {
+		'controller': require('./productCategory.controller.js'),
+		'template': require('./productCategory.template.hbs'),
+	}
+};
+
+module.exports = productCategoryModule;
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{"./productCategory.controller.js":35,"./productCategory.template.hbs":37}],37:[function(require,module,exports){
+// hbsfy compiled Handlebars template
+var HandlebarsCompiler = require('hbsfy/runtime');
+module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
+    var stack1, alias1=container.lambda, alias2=container.escapeExpression;
+
+  return "<section class=\"content-header\">\n    <h1>\n        "
+    + alias2(alias1(((stack1 = (depth0 != null ? depth0.lang : depth0)) != null ? stack1.module_productCategories : stack1), depth0))
+    + "\n        <small>\n            "
+    + alias2(alias1(((stack1 = (depth0 != null ? depth0.lang : depth0)) != null ? stack1.module_productCategories_desc : stack1), depth0))
+    + "\n        </small>\n    </h1>\n    <ol class=\"breadcrumb\">\n        <li><a href=\"#\"><i class=\"fa fa-dashboard\"></i>Home</a></li>\n        <li class=\"active\">"
+    + alias2(alias1(((stack1 = (depth0 != null ? depth0.lang : depth0)) != null ? stack1.module_productCategories : stack1), depth0))
+    + "</li>\n    </ol>\n</section>\n\n<section class=\"content\">\n    <div class=\"row\">\n        <div class=\"col-md-12\">\n            <div class=\"box\">\n                <div class=\"box-header\">\n                    <div class=\"row\">\n                        <div class=\"col-sm-6 \">\n                            <div class=\"btn-group\">\n                                <a href=\"../customers/delete\" id=\"delete-selected\" class=\"btn btn-sm btn-default\">\n                                    <i class=\"fa fa-trash\"></i> "
+    + alias2(alias1(((stack1 = (depth0 != null ? depth0.lang : depth0)) != null ? stack1.common_delete : stack1), depth0))
+    + "\n                                </a>\n                            </div>\n                        </div>\n\n                        <div class=\"col-sm-6 text-right\">\n                            <button id=\"productCategory-add\" class=\"btn btn-primary\">\n                                <i class=\"fa fa-plus\"></i> "
+    + alias2(alias1(((stack1 = (depth0 != null ? depth0.lang : depth0)) != null ? stack1.productCategory_new : stack1), depth0))
+    + "\n                            </button>\n\n                            <a class=\"btn btn-success\" id=\"import-excel\" href=\"../customers/excel_import\" data-target=\"#modal-container\">\n                                <i class=\"fa fa-file-excel-o\"></i> Excel Import\n                            </a>\n                        </div>\n                    </div>\n                </div>\n\n                <div class=\"box-body \">\n                    <table id=\"productCategory-table\" class=\"table table-bordered table-hover\">\n                        <thead>\n                            <tr>\n                                <th width=\"10px\">\n                                    <input type=\"checkbox\" id=\"select-all\" />\n                                </th>\n                                <th>Image</th>\n                                <th>SKU</th>\n                                <th>Title</th>\n                                <th>Sell Price</th>\n                                <th>Stock</th>\n                                <th width=\"50px\">Action</th>\n                            </tr>\n                        </thead>\n                    </table>\n                </div>\n\n                <div id=\"feedback_bar\"></div>\n            </div>\n        </div>\n    </div>\n</section>";
+},"useData":true});
+
+},{"hbsfy/runtime":107}],38:[function(require,module,exports){
 /*global $app $*/
 
 require('cropit');
@@ -1584,7 +2200,7 @@ function userFormController(endpoint, data) {
     function uploadUserPhoto(userId) {
         if (self.isPhotoChanged) {
             var imageData = $('#user-photo').cropit('export');
-            return $http.post(endpoint + "/" + userId + "/photo", imageData);
+            return $http.put(endpoint + "/" + userId + "/photo", imageData);
         }
         else {
             return null
@@ -1635,7 +2251,7 @@ function userFormController(endpoint, data) {
 };
 
 module.exports = userFormController;
-},{"./user.form.template.hbs":28,"bootbox":32,"cropit":47}],27:[function(require,module,exports){
+},{"./user.form.template.hbs":40,"bootbox":44,"cropit":62}],39:[function(require,module,exports){
 (function (global){
 
 function customerFormModule ($app) {
@@ -1650,7 +2266,7 @@ function customerFormModule ($app) {
 
 module.exports = customerFormModule; 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./user.form.controller.js":26,"./user.form.template.hbs":28}],28:[function(require,module,exports){
+},{"./user.form.controller.js":38,"./user.form.template.hbs":40}],40:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
@@ -1687,7 +2303,7 @@ module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":f
     + "\">Delete This User</button>\n                        </div>\n                    </div>\n                </div>\n            </div>\n        </div>\n    </div>\n</div>\n\n<div class=\"modal-footer\">\n    <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">Close</button>\n    <button type=\"submit\" form=\"user-form\" class=\"btn btn-primary\">Save changes</button>\n</div>\n";
 },"useData":true});
 
-},{"hbsfy/runtime":92}],29:[function(require,module,exports){
+},{"hbsfy/runtime":107}],41:[function(require,module,exports){
 /*global $app $*/
 'use strict'
 
@@ -1714,11 +2330,13 @@ function userController() {
 
     function onLoad() {
         self.tableGrid = $tablegrid.render("#user-table", self.endpoint, 
-        [{data: 'username'}, {data: 'email'},
-        {data: null, 
-        "render" : function ( data, type, full ) { 
-            return full['firstName']+' '+full['lastName'];}
-        }], 
+        [
+            {data: null,
+            "render" : function ( data, type, full ) { 
+                return '<img class="table-image" src="./uploads/user_avatars/' + full['photo'] + '" />' + full['username']
+            }},
+            {data: 'email'}
+        ], 
         'uid');
         
         self.tableGrid.action.delete = doDelete;
@@ -1764,7 +2382,7 @@ function userController() {
 };
 
 module.exports = userController;
-},{"./form/user.form.js":27}],30:[function(require,module,exports){
+},{"./form/user.form.js":39}],42:[function(require,module,exports){
 (function (global){
 function userModule($app) {
 
@@ -1778,7 +2396,7 @@ function userModule($app) {
 
 module.exports = userModule;
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./user.controller.js":29,"./user.template.hbs":31}],31:[function(require,module,exports){
+},{"./user.controller.js":41,"./user.template.hbs":43}],43:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
@@ -1796,10 +2414,10 @@ module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":f
     + alias2(alias1(((stack1 = (depth0 != null ? depth0.lang : depth0)) != null ? stack1.common_email : stack1), depth0))
     + "\n                                </button>\n                            </div>\n                        </div>\n\n                        <div class=\"col-sm-6 text-right\">\n                            <button id=\"user-add\" class=\"btn btn-primary\">\n                                <i class=\"fa fa-plus\"></i> "
     + alias2(alias1(((stack1 = (depth0 != null ? depth0.lang : depth0)) != null ? stack1.user_new : stack1), depth0))
-    + "\n                            </button>\n\n                            <a class=\"btn btn-success\" id=\"import-excel\" href=\"../customers/excel_import\" data-target=\"#modal-container\">\n                                <i class=\"fa fa-file-excel-o\"></i> Excel Import\n                            </a>\n                        </div>\n                    </div>\n                </div>\n\n                <div class=\"box-body \">\n                    <table id=\"user-table\" class=\"table table-bordered table-hover\">\n                        <thead>\n                            <tr>\n                                <th width=\"10px\">\n                                    <input type=\"checkbox\" id=\"select-all\" />\n                                </th>\n                                <th>Username</th>\n                                <th>Email</th>\n                                <th>Full Name</th>\n                                <th width=\"50px\">Action</th>\n                            </tr>\n                        </thead>\n                    </table>\n                </div>\n\n                <div id=\"feedback_bar\"></div>\n            </div>\n        </div>\n    </div>\n</section>";
+    + "\n                            </button>\n\n                            <a class=\"btn btn-success\" id=\"import-excel\" href=\"../customers/excel_import\" data-target=\"#modal-container\">\n                                <i class=\"fa fa-file-excel-o\"></i> Excel Import\n                            </a>\n                        </div>\n                    </div>\n                </div>\n\n                <div class=\"box-body \">\n                    <table id=\"user-table\" class=\"table table-bordered table-hover\">\n                        <thead>\n                            <tr>\n                                <th width=\"10px\">\n                                    <input type=\"checkbox\" id=\"select-all\" />\n                                </th>\n                                <th>User</th>\n                                <th>Email</th>\n                                <th width=\"50px\">Action</th>\n                            </tr>\n                        </thead>\n                    </table>\n                </div>\n\n                <div id=\"feedback_bar\"></div>\n            </div>\n        </div>\n    </div>\n</section>";
 },"useData":true});
 
-},{"hbsfy/runtime":92}],32:[function(require,module,exports){
+},{"hbsfy/runtime":107}],44:[function(require,module,exports){
 /**
  * bootbox.js [v4.4.0]
  *
@@ -2786,7 +3404,7 @@ module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":f
   return exports;
 }));
 
-},{"jquery":94}],33:[function(require,module,exports){
+},{"jquery":109}],45:[function(require,module,exports){
 /*
 * Project: Bootstrap Notify = v3.1.3
 * Description: Turns standard Bootstrap alerts into "Growl-like" notifications.
@@ -3141,7 +3759,7 @@ module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":f
 
 }));
 
-},{"jquery":94}],34:[function(require,module,exports){
+},{"jquery":109}],46:[function(require,module,exports){
 // This file is autogenerated via the `commonjs` Grunt task. You can require() this file in a CommonJS environment.
 require('../../js/transition.js')
 require('../../js/alert.js')
@@ -3155,7 +3773,7 @@ require('../../js/popover.js')
 require('../../js/scrollspy.js')
 require('../../js/tab.js')
 require('../../js/affix.js')
-},{"../../js/affix.js":35,"../../js/alert.js":36,"../../js/button.js":37,"../../js/carousel.js":38,"../../js/collapse.js":39,"../../js/dropdown.js":40,"../../js/modal.js":41,"../../js/popover.js":42,"../../js/scrollspy.js":43,"../../js/tab.js":44,"../../js/tooltip.js":45,"../../js/transition.js":46}],35:[function(require,module,exports){
+},{"../../js/affix.js":47,"../../js/alert.js":48,"../../js/button.js":49,"../../js/carousel.js":50,"../../js/collapse.js":51,"../../js/dropdown.js":52,"../../js/modal.js":53,"../../js/popover.js":54,"../../js/scrollspy.js":55,"../../js/tab.js":56,"../../js/tooltip.js":57,"../../js/transition.js":58}],47:[function(require,module,exports){
 /* ========================================================================
  * Bootstrap: affix.js v3.3.6
  * http://getbootstrap.com/javascript/#affix
@@ -3319,7 +3937,7 @@ require('../../js/affix.js')
 
 }(jQuery);
 
-},{}],36:[function(require,module,exports){
+},{}],48:[function(require,module,exports){
 /* ========================================================================
  * Bootstrap: alert.js v3.3.6
  * http://getbootstrap.com/javascript/#alerts
@@ -3415,7 +4033,7 @@ require('../../js/affix.js')
 
 }(jQuery);
 
-},{}],37:[function(require,module,exports){
+},{}],49:[function(require,module,exports){
 /* ========================================================================
  * Bootstrap: button.js v3.3.6
  * http://getbootstrap.com/javascript/#buttons
@@ -3537,7 +4155,7 @@ require('../../js/affix.js')
 
 }(jQuery);
 
-},{}],38:[function(require,module,exports){
+},{}],50:[function(require,module,exports){
 /* ========================================================================
  * Bootstrap: carousel.js v3.3.6
  * http://getbootstrap.com/javascript/#carousel
@@ -3776,7 +4394,7 @@ require('../../js/affix.js')
 
 }(jQuery);
 
-},{}],39:[function(require,module,exports){
+},{}],51:[function(require,module,exports){
 /* ========================================================================
  * Bootstrap: collapse.js v3.3.6
  * http://getbootstrap.com/javascript/#collapse
@@ -3989,7 +4607,7 @@ require('../../js/affix.js')
 
 }(jQuery);
 
-},{}],40:[function(require,module,exports){
+},{}],52:[function(require,module,exports){
 /* ========================================================================
  * Bootstrap: dropdown.js v3.3.6
  * http://getbootstrap.com/javascript/#dropdowns
@@ -4156,7 +4774,7 @@ require('../../js/affix.js')
 
 }(jQuery);
 
-},{}],41:[function(require,module,exports){
+},{}],53:[function(require,module,exports){
 /* ========================================================================
  * Bootstrap: modal.js v3.3.6
  * http://getbootstrap.com/javascript/#modals
@@ -4495,7 +5113,7 @@ require('../../js/affix.js')
 
 }(jQuery);
 
-},{}],42:[function(require,module,exports){
+},{}],54:[function(require,module,exports){
 /* ========================================================================
  * Bootstrap: popover.js v3.3.6
  * http://getbootstrap.com/javascript/#popovers
@@ -4605,7 +5223,7 @@ require('../../js/affix.js')
 
 }(jQuery);
 
-},{}],43:[function(require,module,exports){
+},{}],55:[function(require,module,exports){
 /* ========================================================================
  * Bootstrap: scrollspy.js v3.3.6
  * http://getbootstrap.com/javascript/#scrollspy
@@ -4779,7 +5397,7 @@ require('../../js/affix.js')
 
 }(jQuery);
 
-},{}],44:[function(require,module,exports){
+},{}],56:[function(require,module,exports){
 /* ========================================================================
  * Bootstrap: tab.js v3.3.6
  * http://getbootstrap.com/javascript/#tabs
@@ -4936,7 +5554,7 @@ require('../../js/affix.js')
 
 }(jQuery);
 
-},{}],45:[function(require,module,exports){
+},{}],57:[function(require,module,exports){
 /* ========================================================================
  * Bootstrap: tooltip.js v3.3.6
  * http://getbootstrap.com/javascript/#tooltip
@@ -5452,7 +6070,7 @@ require('../../js/affix.js')
 
 }(jQuery);
 
-},{}],46:[function(require,module,exports){
+},{}],58:[function(require,module,exports){
 /* ========================================================================
  * Bootstrap: transition.js v3.3.6
  * http://getbootstrap.com/javascript/#transitions
@@ -5513,7 +6131,333 @@ require('../../js/affix.js')
 
 }(jQuery);
 
-},{}],47:[function(require,module,exports){
+},{}],59:[function(require,module,exports){
+
+},{}],60:[function(require,module,exports){
+(function (process){
+// Copyright Joyent, Inc. and other Node contributors.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to permit
+// persons to whom the Software is furnished to do so, subject to the
+// following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
+// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+// USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+// resolves . and .. elements in a path array with directory names there
+// must be no slashes, empty elements, or device names (c:\) in the array
+// (so also no leading and trailing slashes - it does not distinguish
+// relative and absolute paths)
+function normalizeArray(parts, allowAboveRoot) {
+  // if the path tries to go above the root, `up` ends up > 0
+  var up = 0;
+  for (var i = parts.length - 1; i >= 0; i--) {
+    var last = parts[i];
+    if (last === '.') {
+      parts.splice(i, 1);
+    } else if (last === '..') {
+      parts.splice(i, 1);
+      up++;
+    } else if (up) {
+      parts.splice(i, 1);
+      up--;
+    }
+  }
+
+  // if the path is allowed to go above the root, restore leading ..s
+  if (allowAboveRoot) {
+    for (; up--; up) {
+      parts.unshift('..');
+    }
+  }
+
+  return parts;
+}
+
+// Split a filename into [root, dir, basename, ext], unix version
+// 'root' is just a slash, or nothing.
+var splitPathRe =
+    /^(\/?|)([\s\S]*?)((?:\.{1,2}|[^\/]+?|)(\.[^.\/]*|))(?:[\/]*)$/;
+var splitPath = function(filename) {
+  return splitPathRe.exec(filename).slice(1);
+};
+
+// path.resolve([from ...], to)
+// posix version
+exports.resolve = function() {
+  var resolvedPath = '',
+      resolvedAbsolute = false;
+
+  for (var i = arguments.length - 1; i >= -1 && !resolvedAbsolute; i--) {
+    var path = (i >= 0) ? arguments[i] : process.cwd();
+
+    // Skip empty and invalid entries
+    if (typeof path !== 'string') {
+      throw new TypeError('Arguments to path.resolve must be strings');
+    } else if (!path) {
+      continue;
+    }
+
+    resolvedPath = path + '/' + resolvedPath;
+    resolvedAbsolute = path.charAt(0) === '/';
+  }
+
+  // At this point the path should be resolved to a full absolute path, but
+  // handle relative paths to be safe (might happen when process.cwd() fails)
+
+  // Normalize the path
+  resolvedPath = normalizeArray(filter(resolvedPath.split('/'), function(p) {
+    return !!p;
+  }), !resolvedAbsolute).join('/');
+
+  return ((resolvedAbsolute ? '/' : '') + resolvedPath) || '.';
+};
+
+// path.normalize(path)
+// posix version
+exports.normalize = function(path) {
+  var isAbsolute = exports.isAbsolute(path),
+      trailingSlash = substr(path, -1) === '/';
+
+  // Normalize the path
+  path = normalizeArray(filter(path.split('/'), function(p) {
+    return !!p;
+  }), !isAbsolute).join('/');
+
+  if (!path && !isAbsolute) {
+    path = '.';
+  }
+  if (path && trailingSlash) {
+    path += '/';
+  }
+
+  return (isAbsolute ? '/' : '') + path;
+};
+
+// posix version
+exports.isAbsolute = function(path) {
+  return path.charAt(0) === '/';
+};
+
+// posix version
+exports.join = function() {
+  var paths = Array.prototype.slice.call(arguments, 0);
+  return exports.normalize(filter(paths, function(p, index) {
+    if (typeof p !== 'string') {
+      throw new TypeError('Arguments to path.join must be strings');
+    }
+    return p;
+  }).join('/'));
+};
+
+
+// path.relative(from, to)
+// posix version
+exports.relative = function(from, to) {
+  from = exports.resolve(from).substr(1);
+  to = exports.resolve(to).substr(1);
+
+  function trim(arr) {
+    var start = 0;
+    for (; start < arr.length; start++) {
+      if (arr[start] !== '') break;
+    }
+
+    var end = arr.length - 1;
+    for (; end >= 0; end--) {
+      if (arr[end] !== '') break;
+    }
+
+    if (start > end) return [];
+    return arr.slice(start, end - start + 1);
+  }
+
+  var fromParts = trim(from.split('/'));
+  var toParts = trim(to.split('/'));
+
+  var length = Math.min(fromParts.length, toParts.length);
+  var samePartsLength = length;
+  for (var i = 0; i < length; i++) {
+    if (fromParts[i] !== toParts[i]) {
+      samePartsLength = i;
+      break;
+    }
+  }
+
+  var outputParts = [];
+  for (var i = samePartsLength; i < fromParts.length; i++) {
+    outputParts.push('..');
+  }
+
+  outputParts = outputParts.concat(toParts.slice(samePartsLength));
+
+  return outputParts.join('/');
+};
+
+exports.sep = '/';
+exports.delimiter = ':';
+
+exports.dirname = function(path) {
+  var result = splitPath(path),
+      root = result[0],
+      dir = result[1];
+
+  if (!root && !dir) {
+    // No dirname whatsoever
+    return '.';
+  }
+
+  if (dir) {
+    // It has a dirname, strip trailing slash
+    dir = dir.substr(0, dir.length - 1);
+  }
+
+  return root + dir;
+};
+
+
+exports.basename = function(path, ext) {
+  var f = splitPath(path)[2];
+  // TODO: make this comparison case-insensitive on windows?
+  if (ext && f.substr(-1 * ext.length) === ext) {
+    f = f.substr(0, f.length - ext.length);
+  }
+  return f;
+};
+
+
+exports.extname = function(path) {
+  return splitPath(path)[3];
+};
+
+function filter (xs, f) {
+    if (xs.filter) return xs.filter(f);
+    var res = [];
+    for (var i = 0; i < xs.length; i++) {
+        if (f(xs[i], i, xs)) res.push(xs[i]);
+    }
+    return res;
+}
+
+// String.prototype.substr - negative index don't work in IE8
+var substr = 'ab'.substr(-1) === 'b'
+    ? function (str, start, len) { return str.substr(start, len) }
+    : function (str, start, len) {
+        if (start < 0) start = str.length + start;
+        return str.substr(start, len);
+    }
+;
+
+}).call(this,require('_process'))
+},{"_process":61}],61:[function(require,module,exports){
+// shim for using process in browser
+
+var process = module.exports = {};
+var queue = [];
+var draining = false;
+var currentQueue;
+var queueIndex = -1;
+
+function cleanUpNextTick() {
+    if (!draining || !currentQueue) {
+        return;
+    }
+    draining = false;
+    if (currentQueue.length) {
+        queue = currentQueue.concat(queue);
+    } else {
+        queueIndex = -1;
+    }
+    if (queue.length) {
+        drainQueue();
+    }
+}
+
+function drainQueue() {
+    if (draining) {
+        return;
+    }
+    var timeout = setTimeout(cleanUpNextTick);
+    draining = true;
+
+    var len = queue.length;
+    while(len) {
+        currentQueue = queue;
+        queue = [];
+        while (++queueIndex < len) {
+            if (currentQueue) {
+                currentQueue[queueIndex].run();
+            }
+        }
+        queueIndex = -1;
+        len = queue.length;
+    }
+    currentQueue = null;
+    draining = false;
+    clearTimeout(timeout);
+}
+
+process.nextTick = function (fun) {
+    var args = new Array(arguments.length - 1);
+    if (arguments.length > 1) {
+        for (var i = 1; i < arguments.length; i++) {
+            args[i - 1] = arguments[i];
+        }
+    }
+    queue.push(new Item(fun, args));
+    if (queue.length === 1 && !draining) {
+        setTimeout(drainQueue, 0);
+    }
+};
+
+// v8 likes predictible objects
+function Item(fun, array) {
+    this.fun = fun;
+    this.array = array;
+}
+Item.prototype.run = function () {
+    this.fun.apply(null, this.array);
+};
+process.title = 'browser';
+process.browser = true;
+process.env = {};
+process.argv = [];
+process.version = ''; // empty string to avoid regexp issues
+process.versions = {};
+
+function noop() {}
+
+process.on = noop;
+process.addListener = noop;
+process.once = noop;
+process.off = noop;
+process.removeListener = noop;
+process.removeAllListeners = noop;
+process.emit = noop;
+
+process.binding = function (name) {
+    throw new Error('process.binding is not supported');
+};
+
+process.cwd = function () { return '/' };
+process.chdir = function (dir) {
+    throw new Error('process.chdir is not supported');
+};
+process.umask = function() { return 0; };
+
+},{}],62:[function(require,module,exports){
 /*! cropit - v0.5.0 <https://github.com/scottcheng/cropit> */
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
@@ -6724,7 +7668,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ ])
 });
 ;
-},{"jquery":94}],48:[function(require,module,exports){
+},{"jquery":109}],63:[function(require,module,exports){
 /*! DataTables 1.10.11
  * ©2008-2015 SpryMedia Ltd - datatables.net/license
  */
@@ -21993,7 +22937,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	return $.fn.dataTable;
 }));
 
-},{"jquery":94}],49:[function(require,module,exports){
+},{"jquery":109}],64:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -22060,7 +23004,7 @@ exports['default'] = inst;
 module.exports = exports['default'];
 
 
-},{"./handlebars.runtime":50,"./handlebars/compiler/ast":52,"./handlebars/compiler/base":53,"./handlebars/compiler/compiler":55,"./handlebars/compiler/javascript-compiler":57,"./handlebars/compiler/visitor":60,"./handlebars/no-conflict":74}],50:[function(require,module,exports){
+},{"./handlebars.runtime":65,"./handlebars/compiler/ast":67,"./handlebars/compiler/base":68,"./handlebars/compiler/compiler":70,"./handlebars/compiler/javascript-compiler":72,"./handlebars/compiler/visitor":75,"./handlebars/no-conflict":89}],65:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -22128,7 +23072,7 @@ exports['default'] = inst;
 module.exports = exports['default'];
 
 
-},{"./handlebars/base":51,"./handlebars/exception":64,"./handlebars/no-conflict":74,"./handlebars/runtime":75,"./handlebars/safe-string":76,"./handlebars/utils":77}],51:[function(require,module,exports){
+},{"./handlebars/base":66,"./handlebars/exception":79,"./handlebars/no-conflict":89,"./handlebars/runtime":90,"./handlebars/safe-string":91,"./handlebars/utils":92}],66:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -22234,7 +23178,7 @@ exports.createFrame = _utils.createFrame;
 exports.logger = _logger2['default'];
 
 
-},{"./decorators":62,"./exception":64,"./helpers":65,"./logger":73,"./utils":77}],52:[function(require,module,exports){
+},{"./decorators":77,"./exception":79,"./helpers":80,"./logger":88,"./utils":92}],67:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -22267,7 +23211,7 @@ exports['default'] = AST;
 module.exports = exports['default'];
 
 
-},{}],53:[function(require,module,exports){
+},{}],68:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -22317,7 +23261,7 @@ function parse(input, options) {
 }
 
 
-},{"../utils":77,"./helpers":56,"./parser":58,"./whitespace-control":61}],54:[function(require,module,exports){
+},{"../utils":92,"./helpers":71,"./parser":73,"./whitespace-control":76}],69:[function(require,module,exports){
 /* global define */
 'use strict';
 
@@ -22485,7 +23429,7 @@ exports['default'] = CodeGen;
 module.exports = exports['default'];
 
 
-},{"../utils":77,"source-map":79}],55:[function(require,module,exports){
+},{"../utils":92,"source-map":94}],70:[function(require,module,exports){
 /* eslint-disable new-cap */
 
 'use strict';
@@ -23059,7 +24003,7 @@ function transformLiteralToPath(sexpr) {
 }
 
 
-},{"../exception":64,"../utils":77,"./ast":52}],56:[function(require,module,exports){
+},{"../exception":79,"../utils":92,"./ast":67}],71:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -23291,7 +24235,7 @@ function preparePartialBlock(open, program, close, locInfo) {
 }
 
 
-},{"../exception":64}],57:[function(require,module,exports){
+},{"../exception":79}],72:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -24419,7 +25363,7 @@ exports['default'] = JavaScriptCompiler;
 module.exports = exports['default'];
 
 
-},{"../base":51,"../exception":64,"../utils":77,"./code-gen":54}],58:[function(require,module,exports){
+},{"../base":66,"../exception":79,"../utils":92,"./code-gen":69}],73:[function(require,module,exports){
 /* istanbul ignore next */
 /* Jison generated parser */
 "use strict";
@@ -25159,7 +26103,7 @@ var handlebars = (function () {
 exports['default'] = handlebars;
 
 
-},{}],59:[function(require,module,exports){
+},{}],74:[function(require,module,exports){
 /* eslint-disable new-cap */
 'use strict';
 
@@ -25347,7 +26291,7 @@ PrintVisitor.prototype.HashPair = function (pair) {
 /* eslint-enable new-cap */
 
 
-},{"./visitor":60}],60:[function(require,module,exports){
+},{"./visitor":75}],75:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -25489,7 +26433,7 @@ exports['default'] = Visitor;
 module.exports = exports['default'];
 
 
-},{"../exception":64}],61:[function(require,module,exports){
+},{"../exception":79}],76:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -25712,7 +26656,7 @@ exports['default'] = WhitespaceControl;
 module.exports = exports['default'];
 
 
-},{"./visitor":60}],62:[function(require,module,exports){
+},{"./visitor":75}],77:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -25730,7 +26674,7 @@ function registerDefaultDecorators(instance) {
 }
 
 
-},{"./decorators/inline":63}],63:[function(require,module,exports){
+},{"./decorators/inline":78}],78:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -25761,7 +26705,7 @@ exports['default'] = function (instance) {
 module.exports = exports['default'];
 
 
-},{"../utils":77}],64:[function(require,module,exports){
+},{"../utils":92}],79:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -25803,7 +26747,7 @@ exports['default'] = Exception;
 module.exports = exports['default'];
 
 
-},{}],65:[function(require,module,exports){
+},{}],80:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -25851,7 +26795,7 @@ function registerDefaultHelpers(instance) {
 }
 
 
-},{"./helpers/block-helper-missing":66,"./helpers/each":67,"./helpers/helper-missing":68,"./helpers/if":69,"./helpers/log":70,"./helpers/lookup":71,"./helpers/with":72}],66:[function(require,module,exports){
+},{"./helpers/block-helper-missing":81,"./helpers/each":82,"./helpers/helper-missing":83,"./helpers/if":84,"./helpers/log":85,"./helpers/lookup":86,"./helpers/with":87}],81:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -25892,7 +26836,7 @@ exports['default'] = function (instance) {
 module.exports = exports['default'];
 
 
-},{"../utils":77}],67:[function(require,module,exports){
+},{"../utils":92}],82:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -25988,7 +26932,7 @@ exports['default'] = function (instance) {
 module.exports = exports['default'];
 
 
-},{"../exception":64,"../utils":77}],68:[function(require,module,exports){
+},{"../exception":79,"../utils":92}],83:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -26015,7 +26959,7 @@ exports['default'] = function (instance) {
 module.exports = exports['default'];
 
 
-},{"../exception":64}],69:[function(require,module,exports){
+},{"../exception":79}],84:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -26046,7 +26990,7 @@ exports['default'] = function (instance) {
 module.exports = exports['default'];
 
 
-},{"../utils":77}],70:[function(require,module,exports){
+},{"../utils":92}],85:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -26074,7 +27018,7 @@ exports['default'] = function (instance) {
 module.exports = exports['default'];
 
 
-},{}],71:[function(require,module,exports){
+},{}],86:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -26088,7 +27032,7 @@ exports['default'] = function (instance) {
 module.exports = exports['default'];
 
 
-},{}],72:[function(require,module,exports){
+},{}],87:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -26123,7 +27067,7 @@ exports['default'] = function (instance) {
 module.exports = exports['default'];
 
 
-},{"../utils":77}],73:[function(require,module,exports){
+},{"../utils":92}],88:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -26172,7 +27116,7 @@ exports['default'] = logger;
 module.exports = exports['default'];
 
 
-},{"./utils":77}],74:[function(require,module,exports){
+},{"./utils":92}],89:[function(require,module,exports){
 (function (global){
 /* global window */
 'use strict';
@@ -26196,7 +27140,7 @@ module.exports = exports['default'];
 
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],75:[function(require,module,exports){
+},{}],90:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -26490,7 +27434,7 @@ function executeDecorators(fn, prog, container, depths, data, blockParams) {
 }
 
 
-},{"./base":51,"./exception":64,"./utils":77}],76:[function(require,module,exports){
+},{"./base":66,"./exception":79,"./utils":92}],91:[function(require,module,exports){
 // Build out our basic SafeString type
 'use strict';
 
@@ -26507,7 +27451,7 @@ exports['default'] = SafeString;
 module.exports = exports['default'];
 
 
-},{}],77:[function(require,module,exports){
+},{}],92:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -26633,7 +27577,7 @@ function appendContextPath(contextPath, id) {
 }
 
 
-},{}],78:[function(require,module,exports){
+},{}],93:[function(require,module,exports){
 // USAGE:
 // var handlebars = require('handlebars');
 /* eslint-disable no-var */
@@ -26660,7 +27604,7 @@ if (typeof require !== 'undefined' && require.extensions) {
   require.extensions['.hbs'] = extension;
 }
 
-},{"../dist/cjs/handlebars":49,"../dist/cjs/handlebars/compiler/printer":59,"fs":95}],79:[function(require,module,exports){
+},{"../dist/cjs/handlebars":64,"../dist/cjs/handlebars/compiler/printer":74,"fs":59}],94:[function(require,module,exports){
 /*
  * Copyright 2009-2011 Mozilla Foundation and contributors
  * Licensed under the New BSD license. See LICENSE.txt or:
@@ -26670,7 +27614,7 @@ exports.SourceMapGenerator = require('./source-map/source-map-generator').Source
 exports.SourceMapConsumer = require('./source-map/source-map-consumer').SourceMapConsumer;
 exports.SourceNode = require('./source-map/source-node').SourceNode;
 
-},{"./source-map/source-map-consumer":86,"./source-map/source-map-generator":87,"./source-map/source-node":88}],80:[function(require,module,exports){
+},{"./source-map/source-map-consumer":101,"./source-map/source-map-generator":102,"./source-map/source-node":103}],95:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2011 Mozilla Foundation and contributors
@@ -26779,7 +27723,7 @@ define(function (require, exports, module) {
 
 });
 
-},{"./util":89,"amdefine":90}],81:[function(require,module,exports){
+},{"./util":104,"amdefine":105}],96:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2011 Mozilla Foundation and contributors
@@ -26927,7 +27871,7 @@ define(function (require, exports, module) {
 
 });
 
-},{"./base64":82,"amdefine":90}],82:[function(require,module,exports){
+},{"./base64":97,"amdefine":105}],97:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2011 Mozilla Foundation and contributors
@@ -27002,7 +27946,7 @@ define(function (require, exports, module) {
 
 });
 
-},{"amdefine":90}],83:[function(require,module,exports){
+},{"amdefine":105}],98:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2011 Mozilla Foundation and contributors
@@ -27121,7 +28065,7 @@ define(function (require, exports, module) {
 
 });
 
-},{"amdefine":90}],84:[function(require,module,exports){
+},{"amdefine":105}],99:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2014 Mozilla Foundation and contributors
@@ -27209,7 +28153,7 @@ define(function (require, exports, module) {
 
 });
 
-},{"./util":89,"amdefine":90}],85:[function(require,module,exports){
+},{"./util":104,"amdefine":105}],100:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2011 Mozilla Foundation and contributors
@@ -27331,7 +28275,7 @@ define(function (require, exports, module) {
 
 });
 
-},{"amdefine":90}],86:[function(require,module,exports){
+},{"amdefine":105}],101:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2011 Mozilla Foundation and contributors
@@ -28410,7 +29354,7 @@ define(function (require, exports, module) {
 
 });
 
-},{"./array-set":80,"./base64-vlq":81,"./binary-search":83,"./quick-sort":85,"./util":89,"amdefine":90}],87:[function(require,module,exports){
+},{"./array-set":95,"./base64-vlq":96,"./binary-search":98,"./quick-sort":100,"./util":104,"amdefine":105}],102:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2011 Mozilla Foundation and contributors
@@ -28811,7 +29755,7 @@ define(function (require, exports, module) {
 
 });
 
-},{"./array-set":80,"./base64-vlq":81,"./mapping-list":84,"./util":89,"amdefine":90}],88:[function(require,module,exports){
+},{"./array-set":95,"./base64-vlq":96,"./mapping-list":99,"./util":104,"amdefine":105}],103:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2011 Mozilla Foundation and contributors
@@ -29227,7 +30171,7 @@ define(function (require, exports, module) {
 
 });
 
-},{"./source-map-generator":87,"./util":89,"amdefine":90}],89:[function(require,module,exports){
+},{"./source-map-generator":102,"./util":104,"amdefine":105}],104:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2011 Mozilla Foundation and contributors
@@ -29599,7 +30543,7 @@ define(function (require, exports, module) {
 
 });
 
-},{"amdefine":90}],90:[function(require,module,exports){
+},{"amdefine":105}],105:[function(require,module,exports){
 (function (process,__filename){
 /** vim: et:ts=4:sw=4:sts=4
  * @license amdefine 1.0.0 Copyright (c) 2011-2015, The Dojo Foundation All Rights Reserved.
@@ -29904,15 +30848,15 @@ function amdefine(module, requireFn) {
 module.exports = amdefine;
 
 }).call(this,require('_process'),"/node_modules/handlebars/node_modules/source-map/node_modules/amdefine/amdefine.js")
-},{"_process":97,"path":96}],91:[function(require,module,exports){
+},{"_process":61,"path":60}],106:[function(require,module,exports){
 // Create a simple path alias to allow browserify to resolve
 // the runtime on a supported path.
 module.exports = require('./dist/cjs/handlebars.runtime')['default'];
 
-},{"./dist/cjs/handlebars.runtime":50}],92:[function(require,module,exports){
+},{"./dist/cjs/handlebars.runtime":65}],107:[function(require,module,exports){
 module.exports = require("handlebars/runtime")["default"];
 
-},{"handlebars/runtime":91}],93:[function(require,module,exports){
+},{"handlebars/runtime":106}],108:[function(require,module,exports){
 /*!
  * jQuery Validation Plugin v1.15.0
  *
@@ -31445,9 +32389,9 @@ if ( $.ajaxPrefilter ) {
 }
 
 }));
-},{"jquery":94}],94:[function(require,module,exports){
+},{"jquery":109}],109:[function(require,module,exports){
 /*!
- * jQuery JavaScript Library v2.2.2
+ * jQuery JavaScript Library v2.2.3
  * http://jquery.com/
  *
  * Includes Sizzle.js
@@ -31457,7 +32401,7 @@ if ( $.ajaxPrefilter ) {
  * Released under the MIT license
  * http://jquery.org/license
  *
- * Date: 2016-03-17T17:51Z
+ * Date: 2016-04-05T19:26Z
  */
 
 (function( global, factory ) {
@@ -31513,7 +32457,7 @@ var support = {};
 
 
 var
-	version = "2.2.2",
+	version = "2.2.3",
 
 	// Define a local copy of jQuery
 	jQuery = function( selector, context ) {
@@ -40923,7 +41867,7 @@ jQuery.fn.load = function( url, params, callback ) {
 		// If it fails, this function gets "jqXHR", "status", "error"
 		} ).always( callback && function( jqXHR, status ) {
 			self.each( function() {
-				callback.apply( self, response || [ jqXHR.responseText, status, jqXHR ] );
+				callback.apply( this, response || [ jqXHR.responseText, status, jqXHR ] );
 			} );
 		} );
 	}
@@ -41289,330 +42233,7 @@ if ( !noGlobal ) {
 return jQuery;
 }));
 
-},{}],95:[function(require,module,exports){
-
-},{}],96:[function(require,module,exports){
-(function (process){
-// Copyright Joyent, Inc. and other Node contributors.
-//
-// Permission is hereby granted, free of charge, to any person obtaining a
-// copy of this software and associated documentation files (the
-// "Software"), to deal in the Software without restriction, including
-// without limitation the rights to use, copy, modify, merge, publish,
-// distribute, sublicense, and/or sell copies of the Software, and to permit
-// persons to whom the Software is furnished to do so, subject to the
-// following conditions:
-//
-// The above copyright notice and this permission notice shall be included
-// in all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
-// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
-// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
-// USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-// resolves . and .. elements in a path array with directory names there
-// must be no slashes, empty elements, or device names (c:\) in the array
-// (so also no leading and trailing slashes - it does not distinguish
-// relative and absolute paths)
-function normalizeArray(parts, allowAboveRoot) {
-  // if the path tries to go above the root, `up` ends up > 0
-  var up = 0;
-  for (var i = parts.length - 1; i >= 0; i--) {
-    var last = parts[i];
-    if (last === '.') {
-      parts.splice(i, 1);
-    } else if (last === '..') {
-      parts.splice(i, 1);
-      up++;
-    } else if (up) {
-      parts.splice(i, 1);
-      up--;
-    }
-  }
-
-  // if the path is allowed to go above the root, restore leading ..s
-  if (allowAboveRoot) {
-    for (; up--; up) {
-      parts.unshift('..');
-    }
-  }
-
-  return parts;
-}
-
-// Split a filename into [root, dir, basename, ext], unix version
-// 'root' is just a slash, or nothing.
-var splitPathRe =
-    /^(\/?|)([\s\S]*?)((?:\.{1,2}|[^\/]+?|)(\.[^.\/]*|))(?:[\/]*)$/;
-var splitPath = function(filename) {
-  return splitPathRe.exec(filename).slice(1);
-};
-
-// path.resolve([from ...], to)
-// posix version
-exports.resolve = function() {
-  var resolvedPath = '',
-      resolvedAbsolute = false;
-
-  for (var i = arguments.length - 1; i >= -1 && !resolvedAbsolute; i--) {
-    var path = (i >= 0) ? arguments[i] : process.cwd();
-
-    // Skip empty and invalid entries
-    if (typeof path !== 'string') {
-      throw new TypeError('Arguments to path.resolve must be strings');
-    } else if (!path) {
-      continue;
-    }
-
-    resolvedPath = path + '/' + resolvedPath;
-    resolvedAbsolute = path.charAt(0) === '/';
-  }
-
-  // At this point the path should be resolved to a full absolute path, but
-  // handle relative paths to be safe (might happen when process.cwd() fails)
-
-  // Normalize the path
-  resolvedPath = normalizeArray(filter(resolvedPath.split('/'), function(p) {
-    return !!p;
-  }), !resolvedAbsolute).join('/');
-
-  return ((resolvedAbsolute ? '/' : '') + resolvedPath) || '.';
-};
-
-// path.normalize(path)
-// posix version
-exports.normalize = function(path) {
-  var isAbsolute = exports.isAbsolute(path),
-      trailingSlash = substr(path, -1) === '/';
-
-  // Normalize the path
-  path = normalizeArray(filter(path.split('/'), function(p) {
-    return !!p;
-  }), !isAbsolute).join('/');
-
-  if (!path && !isAbsolute) {
-    path = '.';
-  }
-  if (path && trailingSlash) {
-    path += '/';
-  }
-
-  return (isAbsolute ? '/' : '') + path;
-};
-
-// posix version
-exports.isAbsolute = function(path) {
-  return path.charAt(0) === '/';
-};
-
-// posix version
-exports.join = function() {
-  var paths = Array.prototype.slice.call(arguments, 0);
-  return exports.normalize(filter(paths, function(p, index) {
-    if (typeof p !== 'string') {
-      throw new TypeError('Arguments to path.join must be strings');
-    }
-    return p;
-  }).join('/'));
-};
-
-
-// path.relative(from, to)
-// posix version
-exports.relative = function(from, to) {
-  from = exports.resolve(from).substr(1);
-  to = exports.resolve(to).substr(1);
-
-  function trim(arr) {
-    var start = 0;
-    for (; start < arr.length; start++) {
-      if (arr[start] !== '') break;
-    }
-
-    var end = arr.length - 1;
-    for (; end >= 0; end--) {
-      if (arr[end] !== '') break;
-    }
-
-    if (start > end) return [];
-    return arr.slice(start, end - start + 1);
-  }
-
-  var fromParts = trim(from.split('/'));
-  var toParts = trim(to.split('/'));
-
-  var length = Math.min(fromParts.length, toParts.length);
-  var samePartsLength = length;
-  for (var i = 0; i < length; i++) {
-    if (fromParts[i] !== toParts[i]) {
-      samePartsLength = i;
-      break;
-    }
-  }
-
-  var outputParts = [];
-  for (var i = samePartsLength; i < fromParts.length; i++) {
-    outputParts.push('..');
-  }
-
-  outputParts = outputParts.concat(toParts.slice(samePartsLength));
-
-  return outputParts.join('/');
-};
-
-exports.sep = '/';
-exports.delimiter = ':';
-
-exports.dirname = function(path) {
-  var result = splitPath(path),
-      root = result[0],
-      dir = result[1];
-
-  if (!root && !dir) {
-    // No dirname whatsoever
-    return '.';
-  }
-
-  if (dir) {
-    // It has a dirname, strip trailing slash
-    dir = dir.substr(0, dir.length - 1);
-  }
-
-  return root + dir;
-};
-
-
-exports.basename = function(path, ext) {
-  var f = splitPath(path)[2];
-  // TODO: make this comparison case-insensitive on windows?
-  if (ext && f.substr(-1 * ext.length) === ext) {
-    f = f.substr(0, f.length - ext.length);
-  }
-  return f;
-};
-
-
-exports.extname = function(path) {
-  return splitPath(path)[3];
-};
-
-function filter (xs, f) {
-    if (xs.filter) return xs.filter(f);
-    var res = [];
-    for (var i = 0; i < xs.length; i++) {
-        if (f(xs[i], i, xs)) res.push(xs[i]);
-    }
-    return res;
-}
-
-// String.prototype.substr - negative index don't work in IE8
-var substr = 'ab'.substr(-1) === 'b'
-    ? function (str, start, len) { return str.substr(start, len) }
-    : function (str, start, len) {
-        if (start < 0) start = str.length + start;
-        return str.substr(start, len);
-    }
-;
-
-}).call(this,require('_process'))
-},{"_process":97}],97:[function(require,module,exports){
-// shim for using process in browser
-
-var process = module.exports = {};
-var queue = [];
-var draining = false;
-var currentQueue;
-var queueIndex = -1;
-
-function cleanUpNextTick() {
-    draining = false;
-    if (currentQueue.length) {
-        queue = currentQueue.concat(queue);
-    } else {
-        queueIndex = -1;
-    }
-    if (queue.length) {
-        drainQueue();
-    }
-}
-
-function drainQueue() {
-    if (draining) {
-        return;
-    }
-    var timeout = setTimeout(cleanUpNextTick);
-    draining = true;
-
-    var len = queue.length;
-    while(len) {
-        currentQueue = queue;
-        queue = [];
-        while (++queueIndex < len) {
-            if (currentQueue) {
-                currentQueue[queueIndex].run();
-            }
-        }
-        queueIndex = -1;
-        len = queue.length;
-    }
-    currentQueue = null;
-    draining = false;
-    clearTimeout(timeout);
-}
-
-process.nextTick = function (fun) {
-    var args = new Array(arguments.length - 1);
-    if (arguments.length > 1) {
-        for (var i = 1; i < arguments.length; i++) {
-            args[i - 1] = arguments[i];
-        }
-    }
-    queue.push(new Item(fun, args));
-    if (queue.length === 1 && !draining) {
-        setTimeout(drainQueue, 0);
-    }
-};
-
-// v8 likes predictible objects
-function Item(fun, array) {
-    this.fun = fun;
-    this.array = array;
-}
-Item.prototype.run = function () {
-    this.fun.apply(null, this.array);
-};
-process.title = 'browser';
-process.browser = true;
-process.env = {};
-process.argv = [];
-process.version = ''; // empty string to avoid regexp issues
-process.versions = {};
-
-function noop() {}
-
-process.on = noop;
-process.addListener = noop;
-process.once = noop;
-process.off = noop;
-process.removeListener = noop;
-process.removeAllListeners = noop;
-process.emit = noop;
-
-process.binding = function (name) {
-    throw new Error('process.binding is not supported');
-};
-
-process.cwd = function () { return '/' };
-process.chdir = function (dir) {
-    throw new Error('process.chdir is not supported');
-};
-process.umask = function() { return 0; };
-
-},{}],98:[function(require,module,exports){
+},{}],110:[function(require,module,exports){
 /*! DataTables Bootstrap 3 integration
  * ©2011-2015 SpryMedia Ltd - datatables.net/license
  */
@@ -41795,7 +42416,7 @@ DataTable.ext.renderer.pageButton.bootstrap = function ( settings, host, idx, bu
 
 return DataTable;
 }));
-},{"datatables.net":48}],99:[function(require,module,exports){
+},{"datatables.net":63}],111:[function(require,module,exports){
 /*! DataTables 1.10.11
  * ©2008-2015 SpryMedia Ltd - datatables.net/license
  */
@@ -57065,4 +57686,4 @@ return DataTable;
 	return $.fn.dataTable;
 }));
 
-},{"jquery":94}]},{},[25]);
+},{"jquery":109}]},{},[25]);

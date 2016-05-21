@@ -9,12 +9,11 @@ import (
 	"strconv"
 	"strings"
 
-	"bitbucket.org/sofyan_a/linq.im/core/api"
-	"bitbucket.org/sofyan_a/linq.im/core/services"
-	"bitbucket.org/sofyan_a/linq.im/core/utils"
-	"bitbucket.org/sofyan_a/linq.im/domains/users"
-
-	. "bitbucket.org/sofyan_a/linq.im/apps/viewmodel"
+	. "github.com/SofyanHadiA/linq/apps/viewmodels"
+	"github.com/SofyanHadiA/linq/core/api"
+	"github.com/SofyanHadiA/linq/core/services"
+	"github.com/SofyanHadiA/linq/core/utils"
+	"github.com/SofyanHadiA/linq/domains/users"
 
 	"github.com/satori/go.uuid"
 )
@@ -155,8 +154,8 @@ func (ctrl userController) SetUserPhoto(w http.ResponseWriter, r *http.Request) 
 					user.Avatar.String = fileName
 					user.Avatar.Valid = true
 
-					userService := ctrl.service.(users.UserService)
-					err = userService.UpdateUserPhoto(user)
+					UserService := ctrl.service.(users.UserService)
+					err = UserService.UpdateUserPhoto(user)
 					respWriter.HandleApiError(err, http.StatusInternalServerError)
 
 					if err == nil {
@@ -182,9 +181,9 @@ func (ctrl userController) ChangePassword(w http.ResponseWriter, r *http.Request
 	if err == nil {
 		requestData.Data.Uid = userId
 
-		userService := ctrl.service.(users.UserService)
+		UserService := ctrl.service.(users.UserService)
 
-		err := userService.ChangePassword(&requestData.Data)
+		err := UserService.ChangePassword(&requestData.Data)
 		respWriter.HandleApiError(err, http.StatusBadRequest)
 
 		if err == nil {

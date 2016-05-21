@@ -109,7 +109,7 @@ function userFormController(endpoint, data) {
     function uploadUserPhoto(userId) {
         if (self.isPhotoChanged) {
             var imageData = $('#user-photo').cropit('export');
-            return $http.post(endpoint + "/" + userId + "/photo", imageData);
+            return $http.put(endpoint + "/" + userId + "/photo", imageData);
         }
         else {
             return null

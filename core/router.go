@@ -3,7 +3,7 @@ package core
 import (
 	"net/http"
 
-	"bitbucket.org/sofyan_a/linq.im/core/utils"
+	"github.com/SofyanHadiA/linq/core/utils"
 
 	"github.com/gorilla/mux"
 )

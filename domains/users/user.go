@@ -1,7 +1,9 @@
 package users
 
 import (
-	"bitbucket.org/sofyan_a/linq.im/core/datatype"
+	"time"
+
+	"github.com/SofyanHadiA/linq/core/datatype"
 
 	"github.com/satori/go.uuid"
 )
@@ -23,6 +25,8 @@ type User struct {
 	LastLogin   datatype.JsonNullInt64  `json:"-" db:"last_login"`
 	ForgotCode  datatype.JsonNullString `json:"-" db:"forgot_code"`
 	Deleted     bool                    `json:"-" db:"deleted"`
+	Created     time.Time               `json:"created" db:"created"`
+	Updated     time.Time               `json:"updated" db:"updated"`
 }
 
 type Users []User
