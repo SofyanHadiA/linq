@@ -1,21 +1,21 @@
 /*global $app $*/
 'use strict'
 
-function userController() {
+function productCategoryController() {
     var $ = $app.$;
     var $notify = $app.$notify;
     var $tablegrid = $app.$tablegrid;
     var $modal = $app.$modal;
     var $http = $app.$http;
     var $form = $app.$form;
-    var userForm = require('./form/user.form.js')($app);
+    var productCategoryForm = require('./form/productCategory.form.js')($app);
 
     var self = {
         tableGrid: {},
         table: '#manage-table ',
-        form: userForm,
+        form: productCategoryForm,
         load: onLoad,
-        endpoint: 'api/v1/users'
+        endpoint: 'api/v1/productcategories'
     };
 
     self.load();
@@ -23,26 +23,33 @@ function userController() {
     return self;
 
     function onLoad() {
-        self.tableGrid = $tablegrid.render("#user-table", self.endpoint, 
+        self.tableGrid = $tablegrid.render("#productCategory-table", self.endpoint, 
         [
-            {data: null,
+            {data: null, 
             "render" : function ( data, type, full ) { 
-                return '<img class="table-image" src="./uploads/user_avatars/' + full['photo'] + '" />' + full['username']
-            }},
-            {data: 'email'}
+                if(full['image'] ){
+                    return '<img class="table-image" src="./uploads/productCategory_photos/' + full['image'] + '" width="40" />' 
+                } 
+                return ""
+            }}, 
+            {data: 'sku'}, 
+            {data: 'title'},
+            {data: 'sellPrice'},
+            {data: 'stock'}
+
         ], 
         'uid');
         
         self.tableGrid.action.delete = doDelete;
         self.tableGrid.action.deleteBulk = doDeleteBulk;
         
-        $('body').on('click', '#user-add', function() {
+        $('body').on('click', '#productCategory-add', function() {
             showFormCreate();
         });
         
-        $('#user-table').on('click', '.edit-data', function() {
-            var userId = $(this).data("id");
-            showFormEdit(userId);
+        $('#productCategory-table').on('click', '.edit-data', function() {
+            var productCategoryId = $(this).data("id");
+            showFormEdit(productCategoryId);
         });
     }
 
@@ -75,4 +82,4 @@ function userController() {
     }
 };
 
-module.exports = userController;
+module.exports = productCategoryController;

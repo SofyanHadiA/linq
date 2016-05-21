@@ -81,6 +81,7 @@ func (ctrl productController) Create(w http.ResponseWriter, r *http.Request) {
 
 	var requestData RequestProductDataModel
 	err := respWriter.DecodeBody(&requestData)
+	respWriter.HandleApiError(err, http.StatusBadRequest)
 
 	if err == nil {
 		err = ctrl.service.Create(&requestData.Data)

@@ -283,7 +283,7 @@ module.exports = {
 	product_is_deleted: "Deleted",
 	product_is_serialized: "Item has Serial Number",
 	product: "Product",
-	product_code: "Barcode",
+	sku: "SKU",
 	product_location: "Location",
 	product_manually_editing_of_quantity: "Manual Edit of Quantity",
 	product_must_select_product_for_barcode: "You must select at least 1 product to generate barcodes",

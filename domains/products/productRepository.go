@@ -108,9 +108,10 @@ func (repo productRepository) Insert(model IModel) error {
 		(uid, title, buy_price, sell_price, stock, code, created ) 
 		VALUES(:uid, :title, :buy_price, :sell_price, :stock, :code, now())`
 
-	product := *model.(*Product)
+	product := model.(*Product)
 	product.Uid = uuid.NewV4()
-	_, err := repo.db.Execute(insertQuery, &product)
+	
+	_, err := repo.db.Execute(insertQuery, product)
 
 	return err
 }
@@ -120,8 +121,7 @@ func (repo productRepository) Update(model IModel) error {
 		title=:title, buy_price=:buy_price, sell_price=:sell_price, 
 		stock=:stock, code=:code, updated=now() WHERE uid=:uid`
 
-	product, _ := model.(*Product)
-	_, err := repo.db.Execute(updateQuery, product)
+	_, err := repo.db.Execute(updateQuery, model)
 
 	return err
 }
@@ -129,8 +129,7 @@ func (repo productRepository) Update(model IModel) error {
 func (repo productRepository) UpdateProductPhoto(model IModel) error {
 	updateQuery := "UPDATE products SET image=:image WHERE uid=:uid"
 
-	product, _ := model.(*Product)
-	_, err := repo.db.Execute(updateQuery, product)
+	_, err := repo.db.Execute(updateQuery, model)
 
 	return err
 }
@@ -138,14 +137,14 @@ func (repo productRepository) UpdateProductPhoto(model IModel) error {
 func (repo productRepository) Delete(model IModel) error {
 	deleteQuery := "UPDATE products SET deleted=1 WHERE uid=:uid"
 
-	product, _ := model.(*Product)
-	_, err := repo.db.Execute(deleteQuery, product)
+	_, err := repo.db.Execute(deleteQuery, model)
 
 	return err
 }
 
 func (repo productRepository) DeleteBulk(products []uuid.UUID) error {
 	deleteQuery := "UPDATE products SET deleted=1 WHERE uid IN(?)"
+	
 	_, err := repo.db.ExecuteBulk(deleteQuery, products)
 
 	return err

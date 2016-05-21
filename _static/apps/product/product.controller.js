@@ -25,12 +25,16 @@ function productController() {
     function onLoad() {
         self.tableGrid = $tablegrid.render("#product-table", self.endpoint, 
         [
-            {data: 'sku'}, 
             {data: null, 
             "render" : function ( data, type, full ) { 
-                return '<img src="./uploads/product_photos/' + full['image'] + '" width="40" />' 
+                if(full['image'] ){
+                    return '<img class="table-image" src="./uploads/product_photos/' + full['image'] + '" width="40" />' 
+                } 
+                return ""
             }}, 
+            {data: 'sku'}, 
             {data: 'title'},
+            {data: 'sellPrice'},
             {data: 'stock'}
 
         ], 

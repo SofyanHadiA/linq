@@ -4,7 +4,7 @@ require('cropit');
 var bootbox = require('bootbox');
 
 
-function productFormController(endpoint, data) {
+function productCategoryFormController(endpoint, data) {
     var $modal = $app.$view.$modal;
     var $form = $app.$view.$form;
     var $http = $app.$http;
@@ -14,21 +14,21 @@ function productFormController(endpoint, data) {
         load: onLoad,
         close: onClose,
         modal: $app.$view.$modal,
-        formId: "#product-form",
+        formId: "#productCategory-form",
         data: data || {},
         isPhotoChanged: false,
         promise: {},
         defer: $.Deferred(),
         formConfig: {
             rules: {
-                product_title: {
+                productCategory_title: {
                     minlength: 5,
                     required: true
                 },
-                product_sell_price: {
+                productCategory_sell_price: {
                     required: true
                 },
-                product_category: {
+                productCategory_category: {
                     required: true
                 }
             }
@@ -55,7 +55,7 @@ function productFormController(endpoint, data) {
             categoryInput: $form.input("category").setValue(self.data["category"]).setClass("required")
         };
 
-        self.modal = $modal.show(require('./product.form.template.hbs'), input, modalConfig);
+        self.modal = $modal.show(require('./productCategory.form.template.hbs'), input, modalConfig);
 
         $form.create(self.formId)
             .config(self.formConfig)
@@ -80,35 +80,35 @@ function productFormController(endpoint, data) {
 
         $('#removeUser').click(function() {
             var id = $(this).data("id");
-            bootbox.confirm('Are you sure to delete this product?', function(result) {
+            bootbox.confirm('Are you sure to delete this productCategory?', function(result) {
                 if (result) {
                     doDelete(id);
                 }
             });
         });
 
-        $('#product-photo').cropit({
+        $('#productCategory-photo').cropit({
             onFileChange: function() {
                 self.isPhotoChanged = true;
             }
         });
 
         if (self.data.image) {
-            $('#product-photo').cropit('imageSrc', './uploads/product_photos/' + self.data.image);
+            $('#productCategory-photo').cropit('imageSrc', './uploads/productCategory_photos/' + self.data.image);
         };
 
         $('#select-image-btn').click(function() {
-            $("#product-form.cropit-image-input").prop('disabled', false);
+            $("#productCategory-form.cropit-image-input").prop('disabled', false);
             $('.cropit-image-input').click();
         });
 
         return self;
     }
 
-    function uploadPhoto(productId) {
+    function uploadPhoto(productCategoryId) {
         if (self.isPhotoChanged) {
-            var imageData = $('#product-photo').cropit('export');
-            return $http.put(endpoint + "/" + productId + "/photo", imageData);
+            var imageData = $('#productCategory-photo').cropit('export');
+            return $http.put(endpoint + "/" + productCategoryId + "/photo", imageData);
         }
         else {
             return null
@@ -136,4 +136,4 @@ function productFormController(endpoint, data) {
     }
 };
 
-module.exports = productFormController;
+module.exports = productCategoryFormController;
