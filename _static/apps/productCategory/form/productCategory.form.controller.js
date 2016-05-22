@@ -21,14 +21,11 @@ function productCategoryFormController(endpoint, data) {
         defer: $.Deferred(),
         formConfig: {
             rules: {
-                productCategory_title: {
-                    minlength: 5,
+                title: {
+                    minlength: 4,
                     required: true
                 },
-                productCategory_sell_price: {
-                    required: true
-                },
-                productCategory_category: {
+                slug: {
                     required: true
                 }
             }
@@ -46,13 +43,10 @@ function productCategoryFormController(endpoint, data) {
         }
 
         var input = {
-            uidInput: $form.input("uid").setValue(self.data["uid"] || "AUTO"),
-            skuInput: $form.input("sku").setValue(self.data["sku"]),
+            uidInput: $form.input("uid").setValue(self.data["uid"], "AUTO"),
             titleInput: $form.input("title").setValue(self.data["title"]).setClass("required"),
-            buyPriceInput: $form.input("buyPrice").setValue(self.data["buyPrice"], 0),
-            sellPriceInput: $form.input("sellPrice").setValue(self.data["sellPrice"], 0).setClass("required"),
-            stockInput: $form.input("stock").setValue(self.data["stock"], 0).setClass("required"),
-            categoryInput: $form.input("category").setValue(self.data["category"]).setClass("required")
+            slugInput: $form.input("slug").setValue(self.data["slug"]).setClass("required"),
+            descriptionInput: $form.input("description").setValue(self.data["description"], 0)
         };
 
         self.modal = $modal.show(require('./productCategory.form.template.hbs'), input, modalConfig);
@@ -62,9 +56,6 @@ function productCategoryFormController(endpoint, data) {
             .onSubmit(function() {
                 event.preventDefault();
                 var newData = $(self.formId).serializeObject();
-                newData.buyPrice = parseFloat(newData.buyPrice) || 0;
-                newData.sellPrice = parseFloat(newData.sellPrice) || 0;
-                newData.stock = parseFloat(newData.stock) || 0;
 
                 if (!data) {
                     $http.post(endpoint, newData).success(function(data) {
@@ -78,43 +69,9 @@ function productCategoryFormController(endpoint, data) {
                 }
             });
 
-        $('#removeUser').click(function() {
-            var id = $(this).data("id");
-            bootbox.confirm('Are you sure to delete this productCategory?', function(result) {
-                if (result) {
-                    doDelete(id);
-                }
-            });
-        });
-
-        $('#productCategory-photo').cropit({
-            onFileChange: function() {
-                self.isPhotoChanged = true;
-            }
-        });
-
-        if (self.data.image) {
-            $('#productCategory-photo').cropit('imageSrc', './uploads/productCategory_photos/' + self.data.image);
-        };
-
-        $('#select-image-btn').click(function() {
-            $("#productCategory-form.cropit-image-input").prop('disabled', false);
-            $('.cropit-image-input').click();
-        });
-
         return self;
     }
 
-    function uploadPhoto(productCategoryId) {
-        if (self.isPhotoChanged) {
-            var imageData = $('#productCategory-photo').cropit('export');
-            return $http.put(endpoint + "/" + productCategoryId + "/photo", imageData);
-        }
-        else {
-            return null
-        }
-    }
-    
     function doDelete(id) {
         $http.delete(endpoint + "/" + id).success(function(model) {
             self.modal.hide();
@@ -123,12 +80,8 @@ function productCategoryFormController(endpoint, data) {
     }
 
     function onDone(data) {
-        $.when(uploadPhoto(data.uid)).then(function() {
-            self.modal.hide();
-            self.defer.resolve();
-        }, function() {
-            // do nothing
-        });
+        self.modal.hide();
+        self.defer.resolve();
     }
 
     function onClose() {

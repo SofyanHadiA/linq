@@ -4,8 +4,8 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/SofyanHadiA/linq/apps"
 	. "github.com/SofyanHadiA/linq/apps/viewmodels"
-	"github.com/SofyanHadiA/linq/core/api"
 	"github.com/SofyanHadiA/linq/core/services"
 	"github.com/SofyanHadiA/linq/core/utils"
 	"github.com/SofyanHadiA/linq/domains/products"
@@ -24,7 +24,7 @@ func ProductController(service services.IService) productController {
 }
 
 func (ctrl productController) GetAll(w http.ResponseWriter, r *http.Request) {
-	respWriter := api.ApiService(w, r)
+	respWriter := apps.ApiService(w, r)
 
 	length, err := strconv.Atoi(respWriter.FormValue("length"))
 	if err != nil {
@@ -65,7 +65,7 @@ func (ctrl productController) GetAll(w http.ResponseWriter, r *http.Request) {
 }
 
 func (ctrl productController) Get(w http.ResponseWriter, r *http.Request) {
-	respWriter := api.ApiService(w, r)
+	respWriter := apps.ApiService(w, r)
 
 	productId, err := uuid.FromString(respWriter.MuxVars("id"))
 	respWriter.HandleApiError(err, http.StatusBadRequest)
@@ -77,7 +77,7 @@ func (ctrl productController) Get(w http.ResponseWriter, r *http.Request) {
 }
 
 func (ctrl productController) Create(w http.ResponseWriter, r *http.Request) {
-	respWriter := api.ApiService(w, r)
+	respWriter := apps.ApiService(w, r)
 
 	var requestData RequestProductDataModel
 	err := respWriter.DecodeBody(&requestData)
@@ -94,7 +94,7 @@ func (ctrl productController) Create(w http.ResponseWriter, r *http.Request) {
 }
 
 func (ctrl productController) Modify(w http.ResponseWriter, r *http.Request) {
-	respWriter := api.ApiService(w, r)
+	respWriter := apps.ApiService(w, r)
 
 	productId, err := uuid.FromString(respWriter.MuxVars("id"))
 	respWriter.HandleApiError(err, http.StatusBadRequest)
@@ -117,13 +117,13 @@ func (ctrl productController) Modify(w http.ResponseWriter, r *http.Request) {
 }
 
 func (ctrl productController) SetProductPhoto(w http.ResponseWriter, r *http.Request) {
-	respWriter := api.ApiService(w, r)
+	respWriter := apps.ApiService(w, r)
 
 	productId, err := uuid.FromString(respWriter.MuxVars("id"))
 	respWriter.HandleApiError(err, http.StatusBadRequest)
 
 	if err == nil {
-		var requestData api.RequestDataImage
+		var requestData RequestDataImage
 
 		respWriter.DecodeBody(&requestData)
 
@@ -147,7 +147,7 @@ func (ctrl productController) SetProductPhoto(w http.ResponseWriter, r *http.Req
 }
 
 func (ctrl productController) Remove(w http.ResponseWriter, r *http.Request) {
-	respWriter := api.ApiService(w, r)
+	respWriter := apps.ApiService(w, r)
 
 	productId, err := uuid.FromString(respWriter.MuxVars("id"))
 	respWriter.HandleApiError(err, http.StatusBadRequest)
@@ -167,9 +167,9 @@ func (ctrl productController) Remove(w http.ResponseWriter, r *http.Request) {
 }
 
 func (ctrl productController) RemoveBulk(w http.ResponseWriter, r *http.Request) {
-	respWriter := api.ApiService(w, r)
+	respWriter := apps.ApiService(w, r)
 
-	var requestData api.RequestDataIds
+	var requestData RequestDataIds
 
 	respWriter.DecodeBody(&requestData)
 

@@ -2,24 +2,20 @@ package products
 
 import (
 	"errors"
-	"fmt"
 
 	"github.com/SofyanHadiA/linq/core/repository"
-	"github.com/SofyanHadiA/linq/core/services"
 	"github.com/SofyanHadiA/linq/core/utils"
 
 	"github.com/satori/go.uuid"
 )
 
 type ProductCategoryService struct {
-	repo          repository.IRepository
-	uploadService services.IUploadService
+	repo repository.IRepository
 }
 
-func NewProductCategoryService(repo repository.IRepository, uploadService services.IUploadService) ProductCategoryService {
+func NewProductCategoryService(repo repository.IRepository) ProductCategoryService {
 	return ProductCategoryService{
-		repo:          repo,
-		uploadService: uploadService,
+		repo: repo,
 	}
 }
 
@@ -51,27 +47,6 @@ func (service ProductCategoryService) Modify(model repository.IModel) error {
 	}
 }
 
-func (service ProductCategoryService) UpdateProductCategoryPhoto(model repository.IModel, imageString string) error {
-	if exist, _ := service.repo.IsExist(model.GetId()); exist {
-		fileName := model.GetId().String() + ".png"
-		err := service.uploadService.UploadImage(imageString, fileName)
-
-		if err == nil {
-			productCategory, _ := model.(*ProductCategory)
-
-			productCategory.Image.String = fileName
-			productCategory.Image.Valid = true
-
-			productCategoryRepo := service.repo.(productCategoryRepository)
-			err = productCategoryRepo.UpdateProductCategoryPhoto(productCategory)
-		}
-
-		return err
-	} else {
-		return productCategoryNotFoundError()
-	}
-}
-
 func (service ProductCategoryService) Remove(model repository.IModel) error {
 	if exist, _ := service.repo.IsExist(model.GetId()); exist {
 		err := service.repo.Delete(model)
@@ -95,8 +70,4 @@ func (service ProductCategoryService) RemoveBulk(productCategoryIds []uuid.UUID)
 
 func productCategoryNotFoundError() error {
 	return errors.New("ProductCategoryNotFound")
-}
-
-func sha1ToString(c [20]byte) string {
-	return string(fmt.Sprintf("%x", c))
 }

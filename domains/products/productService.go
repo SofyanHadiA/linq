@@ -2,7 +2,6 @@ package products
 
 import (
 	"errors"
-	"fmt"
 
 	"github.com/SofyanHadiA/linq/core/repository"
 	"github.com/SofyanHadiA/linq/core/services"
@@ -95,8 +94,4 @@ func (service ProductService) RemoveBulk(productIds []uuid.UUID) error {
 
 func productNotFoundError() error {
 	return errors.New("ProductNotFound")
-}
-
-func sha1ToString(c [20]byte) string {
-	return string(fmt.Sprintf("%x", c))
 }

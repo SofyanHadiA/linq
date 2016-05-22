@@ -9,8 +9,8 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/SofyanHadiA/linq/apps"
 	. "github.com/SofyanHadiA/linq/apps/viewmodels"
-	"github.com/SofyanHadiA/linq/core/api"
 	"github.com/SofyanHadiA/linq/core/services"
 	"github.com/SofyanHadiA/linq/core/utils"
 	"github.com/SofyanHadiA/linq/domains/users"
@@ -29,7 +29,7 @@ func UserController(service services.IService) userController {
 }
 
 func (ctrl userController) GetAll(w http.ResponseWriter, r *http.Request) {
-	respWriter := api.ApiService(w, r)
+	respWriter := apps.ApiService(w, r)
 
 	length, err := strconv.Atoi(respWriter.FormValue("length"))
 	if err != nil {
@@ -70,7 +70,7 @@ func (ctrl userController) GetAll(w http.ResponseWriter, r *http.Request) {
 }
 
 func (ctrl userController) Get(w http.ResponseWriter, r *http.Request) {
-	respWriter := api.ApiService(w, r)
+	respWriter := apps.ApiService(w, r)
 
 	userId, err := uuid.FromString(respWriter.MuxVars("id"))
 	respWriter.HandleApiError(err, http.StatusBadRequest)
@@ -82,7 +82,7 @@ func (ctrl userController) Get(w http.ResponseWriter, r *http.Request) {
 }
 
 func (ctrl userController) Create(w http.ResponseWriter, r *http.Request) {
-	respWriter := api.ApiService(w, r)
+	respWriter := apps.ApiService(w, r)
 
 	var requestData RequestUserDataModel
 	err := respWriter.DecodeBody(&requestData)
@@ -98,7 +98,7 @@ func (ctrl userController) Create(w http.ResponseWriter, r *http.Request) {
 }
 
 func (ctrl userController) Modify(w http.ResponseWriter, r *http.Request) {
-	respWriter := api.ApiService(w, r)
+	respWriter := apps.ApiService(w, r)
 
 	userId, err := uuid.FromString(respWriter.MuxVars("id"))
 	respWriter.HandleApiError(err, http.StatusBadRequest)
@@ -121,13 +121,13 @@ func (ctrl userController) Modify(w http.ResponseWriter, r *http.Request) {
 }
 
 func (ctrl userController) SetUserPhoto(w http.ResponseWriter, r *http.Request) {
-	respWriter := api.ApiService(w, r)
+	respWriter := apps.ApiService(w, r)
 
 	userId, err := uuid.FromString(respWriter.MuxVars("id"))
 	respWriter.HandleApiError(err, http.StatusBadRequest)
 
 	if err == nil {
-		var requestData api.RequestDataImage
+		var requestData RequestDataImage
 
 		respWriter.DecodeBody(&requestData)
 
@@ -168,7 +168,7 @@ func (ctrl userController) SetUserPhoto(w http.ResponseWriter, r *http.Request) 
 }
 
 func (ctrl userController) ChangePassword(w http.ResponseWriter, r *http.Request) {
-	respWriter := api.ApiService(w, r)
+	respWriter := apps.ApiService(w, r)
 
 	userId, err := uuid.FromString(respWriter.MuxVars("id"))
 	respWriter.HandleApiError(err, http.StatusBadRequest)
@@ -193,7 +193,7 @@ func (ctrl userController) ChangePassword(w http.ResponseWriter, r *http.Request
 }
 
 func (ctrl userController) Remove(w http.ResponseWriter, r *http.Request) {
-	respWriter := api.ApiService(w, r)
+	respWriter := apps.ApiService(w, r)
 
 	userId, err := uuid.FromString(respWriter.MuxVars("id"))
 	respWriter.HandleApiError(err, http.StatusBadRequest)
@@ -213,9 +213,9 @@ func (ctrl userController) Remove(w http.ResponseWriter, r *http.Request) {
 }
 
 func (ctrl userController) RemoveBulk(w http.ResponseWriter, r *http.Request) {
-	respWriter := api.ApiService(w, r)
+	respWriter := apps.ApiService(w, r)
 
-	var requestData api.RequestDataIds
+	var requestData RequestDataIds
 
 	respWriter.DecodeBody(&requestData)
 

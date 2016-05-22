@@ -1,8 +1,8 @@
 var $ = jQuery;
+var $selectize = require('../../../node_modules/selectize/dist/js/selectize.js');
 require('../../../node_modules/jquery-validation/dist/jquery.validate.js');
 
 var formModule = function() {
-
     var self = {
         create: create,
         config: config,
@@ -55,6 +55,7 @@ var formModule = function() {
             formGroupPassword: formGroupPassword,
             formGroupNumber: formGroupNumber,
             formGroupTextArea: formGroupTextArea,
+            formGroupDropDown: formGroupDropDown,
         }
 
         return self;
@@ -95,9 +96,9 @@ var formModule = function() {
                 '</div>'
         }
         
-        function inputDropDown(type="text", inputWidth = '8') {
+        function inputDropDown(inputWidth = '8') {
             return '<div class="col-xs-'+inputWidth+'">' +
-                '<input type="'+type+'" name="' + self.name + '" id="' + self.name + '" class="form-control" value="' + self.value + '" />' +
+                '<select name="' + self.name + '" id="' + self.name + '" class="form-control" value="' + self.value + '" />' +
                 '</div>'
         }
         

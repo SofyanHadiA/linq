@@ -7,7 +7,7 @@
     </h1>
     <ol class="breadcrumb">
         <li><a href="#"><i class="fa fa-dashboard"></i>Home</a></li>
-        <li class="active">{{lang.module_productCategories}}</li>
+        <li class="active">{{lang.productCategories}}</li>
     </ol>
 </section>
 
@@ -27,7 +27,7 @@
 
                         <div class="col-sm-6 text-right">
                             <button id="productCategory-add" class="btn btn-primary">
-                                <i class="fa fa-plus"></i> {{lang.productCategory_new}}
+                                <i class="fa fa-plus"></i> {{lang.categoryNew}}
                             </button>
 
                             <a class="btn btn-success" id="import-excel" href="../customers/excel_import" data-target="#modal-container">
@@ -44,11 +44,9 @@
                                 <th width="10px">
                                     <input type="checkbox" id="select-all" />
                                 </th>
-                                <th>Image</th>
-                                <th>SKU</th>
                                 <th>Title</th>
-                                <th>Sell Price</th>
-                                <th>Stock</th>
+                                <th>Slug</th>
+                                <th>Description</th>
                                 <th width="50px">Action</th>
                             </tr>
                         </thead>

@@ -27,7 +27,9 @@ func (repo productCategoryRepository) CountAll() (int, error) {
 	var result int
 	row, err := repo.db.ResolveSingle(countQuery)
 	row.Scan(&result)
-	utils.HandleWarn(err)
+	if err != nil {
+		return -1, err
+	}
 	return result, err
 }
 
@@ -44,7 +46,7 @@ func (repo productCategoryRepository) GetAll(paging utils.Paging) (IModels, erro
 	query := "SELECT * FROM product_categories WHERE deleted=0 "
 
 	if paging.Keyword != "" {
-		query += ` AND (title LIKE '%?%' OR code LIKE '%?%' OR buy_price LIKE '%?%' OR sell_price LIKE '%?%') `
+		query += ` AND (title LIKE '%?%') `
 	}
 
 	if paging.Order > 0 {
@@ -52,12 +54,6 @@ func (repo productCategoryRepository) GetAll(paging utils.Paging) (IModels, erro
 		switch paging.Order {
 		case 1:
 			columnMap = "title"
-		case 2:
-			columnMap = "code"
-		case 3:
-			columnMap = "sell_price"
-		default:
-			columnMap = "stock"
 		}
 
 		query += fmt.Sprintf(" ORDER BY %s %s ", columnMap, paging.OrderDir)
@@ -77,14 +73,20 @@ func (repo productCategoryRepository) GetAll(paging utils.Paging) (IModels, erro
 	} else {
 		rows, err = repo.db.Resolve(query)
 	}
-	utils.HandleWarn(err)
+	if err != nil {
+		return nil, err
+	}
 
 	result := ProductCategories{}
 
 	for rows.Next() {
 		var productCategory = &ProductCategory{}
 		err := rows.StructScan(&productCategory)
-		utils.HandleWarn(err)
+
+		if err != nil {
+			return nil, err
+		}
+
 		result = append(result, (*productCategory))
 	}
 
@@ -96,7 +98,9 @@ func (repo productCategoryRepository) Get(id uuid.UUID) (IModel, error) {
 
 	productCategory := &ProductCategory{}
 	rows, err := repo.db.ResolveSingle(selectQuery, id)
-	utils.HandleWarn(err)
+	if err != nil {
+		return nil, err
+	}
 	rows.StructScan(productCategory)
 
 	return productCategory, err
@@ -104,13 +108,12 @@ func (repo productCategoryRepository) Get(id uuid.UUID) (IModel, error) {
 
 func (repo productCategoryRepository) Insert(model IModel) error {
 
-	insertQuery := `INSERT INTO product_categories 
-		(uid, title, buy_price, sell_price, stock, code, created ) 
-		VALUES(:uid, :title, :buy_price, :sell_price, :stock, :code, now())`
+	insertQuery := `INSERT INTO product_categories(uid, title, description, slug, created) VALUES 
+		(:uid, :title, :description, :slug, now())`
 
 	productCategory := model.(*ProductCategory)
 	productCategory.Uid = uuid.NewV4()
-	
+
 	_, err := repo.db.Execute(insertQuery, productCategory)
 
 	return err
@@ -118,16 +121,7 @@ func (repo productCategoryRepository) Insert(model IModel) error {
 
 func (repo productCategoryRepository) Update(model IModel) error {
 	updateQuery := `UPDATE product_categories SET 
-		title=:title, buy_price=:buy_price, sell_price=:sell_price, 
-		stock=:stock, code=:code, updated=now() WHERE uid=:uid`
-
-	_, err := repo.db.Execute(updateQuery, model)
-
-	return err
-}
-
-func (repo productCategoryRepository) UpdateProductCategoryPhoto(model IModel) error {
-	updateQuery := "UPDATE product_categories SET image=:image WHERE uid=:uid"
+		title=:title, description=:description, slug=:slug, updated=now() WHERE uid=:uid`
 
 	_, err := repo.db.Execute(updateQuery, model)
 
@@ -144,7 +138,7 @@ func (repo productCategoryRepository) Delete(model IModel) error {
 
 func (repo productCategoryRepository) DeleteBulk(productCategories []uuid.UUID) error {
 	deleteQuery := "UPDATE product_categories SET deleted=1 WHERE uid IN(?)"
-	
+
 	_, err := repo.db.ExecuteBulk(deleteQuery, productCategories)
 
 	return err

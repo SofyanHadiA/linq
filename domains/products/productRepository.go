@@ -27,7 +27,9 @@ func (repo productRepository) CountAll() (int, error) {
 	var result int
 	row, err := repo.db.ResolveSingle(countQuery)
 	row.Scan(&result)
-	utils.HandleWarn(err)
+	if err != nil {
+		return -1, err
+	}
 	return result, err
 }
 
@@ -77,14 +79,24 @@ func (repo productRepository) GetAll(paging utils.Paging) (IModels, error) {
 	} else {
 		rows, err = repo.db.Resolve(query)
 	}
-	utils.HandleWarn(err)
+	if err != nil {
+		return nil, err
+	}
 
 	result := Products{}
 
 	for rows.Next() {
 		var product = &Product{}
 		err := rows.StructScan(&product)
-		utils.HandleWarn(err)
+		if err != nil {
+			return nil, err
+		}
+
+		product.Category, err = repo.getCategory(product.CategoryId)
+		if err != nil {
+			return nil, err
+		}
+
 		result = append(result, (*product))
 	}
 
@@ -96,10 +108,30 @@ func (repo productRepository) Get(id uuid.UUID) (IModel, error) {
 
 	product := &Product{}
 	rows, err := repo.db.ResolveSingle(selectQuery, id)
-	utils.HandleWarn(err)
+	if err != nil {
+		return nil, err
+	}
 	rows.StructScan(product)
 
+	product.Category, err = repo.getCategory(product.CategoryId)
+	if err != nil {
+		return nil, err
+	}
+
 	return product, err
+}
+
+func (repo productRepository) getCategory(categoryid uuid.UUID) (ProductCategory, error) {
+	selectQuery := "SELECT * FROM product_categories WHERE uid = ? AND deleted= 0 "
+
+	productCategory := ProductCategory{}
+	rows, err := repo.db.ResolveSingle(selectQuery, categoryid)
+	if err != nil {
+		return productCategory, err
+	}
+	rows.StructScan(&productCategory)
+
+	return productCategory, err
 }
 
 func (repo productRepository) Insert(model IModel) error {
@@ -110,7 +142,7 @@ func (repo productRepository) Insert(model IModel) error {
 
 	product := model.(*Product)
 	product.Uid = uuid.NewV4()
-	
+
 	_, err := repo.db.Execute(insertQuery, product)
 
 	return err
@@ -144,7 +176,7 @@ func (repo productRepository) Delete(model IModel) error {
 
 func (repo productRepository) DeleteBulk(products []uuid.UUID) error {
 	deleteQuery := "UPDATE products SET deleted=1 WHERE uid IN(?)"
-	
+
 	_, err := repo.db.ExecuteBulk(deleteQuery, products)
 
 	return err

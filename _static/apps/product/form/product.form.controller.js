@@ -21,14 +21,14 @@ function productFormController(endpoint, data) {
         defer: $.Deferred(),
         formConfig: {
             rules: {
-                product_title: {
+                title: {
                     minlength: 5,
                     required: true
                 },
-                product_sell_price: {
+                sellPrice: {
                     required: true
                 },
-                product_category: {
+                categoryId: {
                     required: true
                 }
             }
@@ -52,7 +52,7 @@ function productFormController(endpoint, data) {
             buyPriceInput: $form.input("buyPrice").setValue(self.data["buyPrice"], 0),
             sellPriceInput: $form.input("sellPrice").setValue(self.data["sellPrice"], 0).setClass("required"),
             stockInput: $form.input("stock").setValue(self.data["stock"], 0).setClass("required"),
-            categoryInput: $form.input("category").setValue(self.data["category"]).setClass("required")
+            categoryInput: $form.input("categoryId").setValue(self.data["categoryId"]).setClass("required")
         };
 
         self.modal = $modal.show(require('./product.form.template.hbs'), input, modalConfig);
@@ -78,19 +78,11 @@ function productFormController(endpoint, data) {
                 }
             });
 
-        $('#removeUser').click(function() {
-            var id = $(this).data("id");
-            bootbox.confirm('Are you sure to delete this product?', function(result) {
-                if (result) {
-                    doDelete(id);
-                }
-            });
-        });
-
         $('#product-photo').cropit({
             onFileChange: function() {
                 self.isPhotoChanged = true;
-            }
+            },
+            exportZoom: 3
         });
 
         if (self.data.image) {
@@ -101,6 +93,8 @@ function productFormController(endpoint, data) {
             $("#product-form.cropit-image-input").prop('disabled', false);
             $('.cropit-image-input').click();
         });
+
+        renderCategoryDropDown();
 
         return self;
     }
@@ -114,7 +108,7 @@ function productFormController(endpoint, data) {
             return null
         }
     }
-    
+
     function doDelete(id) {
         $http.delete(endpoint + "/" + id).success(function(model) {
             self.modal.hide();
@@ -133,6 +127,28 @@ function productFormController(endpoint, data) {
 
     function onClose() {
         return $.when(self.defer.promise());
+    }
+
+    function renderCategoryDropDown() {
+        $('body #categoryId').selectize({
+            valueField: 'uid',
+            labelField: 'title',
+            searchField: 'title',
+            create: false,
+            load: function(query, callback) {
+                if (!query.length) return callback();
+                $.ajax({
+                    url: 'https://linq-sofyan-a-1.c9users.io/api/v1/productcategories',
+                    type: 'GET',
+                    error: function() {
+                        callback();
+                    },
+                    success: function(res) {
+                        callback(res.data.slice(0, 10));
+                    }
+                });
+            }
+        });
     }
 };
 
