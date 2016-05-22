@@ -25,18 +25,9 @@ function productCategoryController() {
     function onLoad() {
         self.tableGrid = $tablegrid.render("#productCategory-table", self.endpoint, 
         [
-            {data: null, 
-            "render" : function ( data, type, full ) { 
-                if(full['image'] ){
-                    return '<img class="table-image" src="./uploads/productCategory_photos/' + full['image'] + '" width="40" />' 
-                } 
-                return ""
-            }}, 
-            {data: 'sku'}, 
             {data: 'title'},
-            {data: 'sellPrice'},
-            {data: 'stock'}
-
+            {data: 'slug'},
+            {data: 'description'}
         ], 
         'uid');
         

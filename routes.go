@@ -12,10 +12,11 @@ import (
 )
 
 func GetRoutes(db database.IDB) Routes {
-	var userController = controllers.UserController(users.NewUserService(users.NewUserRepository(db)))
-	var productController = controllers.ProductController(products.NewProductService(products.NewProductRepository(db), services.UploadService("./uploads/product_photos/")))
+	userController := controllers.UserController(users.NewUserService(users.NewUserRepository(db)))
+	productController := controllers.ProductController(products.NewProductService(products.NewProductRepository(db), services.UploadService("./uploads/product_photos/")))
+	productCategoryController := controllers.ProductCategoryController(products.NewProductCategoryService(products.NewProductCategoryRepository(db)))
 
-	var routes = Routes{
+	return Routes{
 		Route{"DashboardIndex", "GET", "/", Dashboard.Index},
 		Route{"DashboardIndex", "GET", "/index.html", Dashboard.Index},
 
@@ -36,9 +37,14 @@ func GetRoutes(db database.IDB) Routes {
 		Route{"ProductRemove", "DELETE", "/api/v1/products/{id}", productController.Remove},
 		Route{"ProductBulkRemove", "POST", "/api/v1/products/bulkdelete", productController.RemoveBulk},
 
+		Route{"ProductCategoryList", "GET", "/api/v1/productcategories", productCategoryController.GetAll},
+		Route{"ProductCategorySingle", "GET", "/api/v1/productcategories/{id}", productCategoryController.Get},
+		Route{"ProductCategoryCreate", "POST", "/api/v1/productcategories", productCategoryController.Create},
+		Route{"ProductCategoryModify", "PUT", "/api/v1/productcategories/{id}", productCategoryController.Modify},
+		Route{"ProductCategoryRemove", "DELETE", "/api/v1/productcategories/{id}", productCategoryController.Remove},
+		Route{"ProductCategoryBulkRemove", "POST", "/api/v1/productcategories/bulkdelete", productCategoryController.RemoveBulk},
+
 		// Route{"ChatIndex", "GET", "/chat", Chat.ServeHome},
 		// Route{"ChatWs", "GET", "/ws", Chat.ServeWs},
 	}
-
-	return routes
 }

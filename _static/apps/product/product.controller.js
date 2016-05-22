@@ -34,6 +34,7 @@ function productController() {
             }}, 
             {data: 'sku'}, 
             {data: 'title'},
+            {data: 'category.title'},
             {data: 'sellPrice'},
             {data: 'stock'}
 

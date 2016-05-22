@@ -23,6 +23,8 @@
     "theme": "./local_package/theme-2.3.0",
     "css-spinners": "~2.2.0",
     "requirejs": "~2.1.20",
-    "dropzone": "^4.3.0"
+    "dropzone": "^4.3.0",
+    "selectize": "^0.12.1",
+    "select2": "^4.0.2"
   }
 }

@@ -27,7 +27,9 @@ func (repo userRepository) CountAll() (int, error) {
 	var result int
 	row, err := repo.db.ResolveSingle(countQuery)
 	row.Scan(&result)
-	utils.HandleWarn(err)
+	if err != nil {
+		return -1, err
+	}
 	return result, err
 }
 
@@ -80,14 +82,18 @@ func (repo userRepository) GetAll(paging utils.Paging) (IModels, error) {
 	} else {
 		rows, err = repo.db.Resolve(query)
 	}
-	utils.HandleWarn(err)
+	if err != nil {
+		return nil, err
+	}
 
 	result := Users{}
 
 	for rows.Next() {
 		var user = &User{}
 		err := rows.StructScan(&user)
-		utils.HandleWarn(err)
+		if err != nil {
+			return nil, err
+		}
 		result = append(result, (*user))
 	}
 
@@ -99,7 +105,9 @@ func (repo userRepository) Get(id uuid.UUID) (IModel, error) {
 
 	user := &User{}
 	rows, err := repo.db.ResolveSingle(selectQuery, id)
-	utils.HandleWarn(err)
+	if err != nil {
+		return nil, err
+	}
 	rows.StructScan(user)
 
 	return user, err

@@ -18,7 +18,8 @@
     "handlebars": "^4.0.3",
     "hbsfy": "^2.3.1",
     "jquery": "^2.1.4",
-    "jquery-validation": "^1.14.0"
+    "jquery-validation": "^1.14.0",
+    "selectize": "^0.12.1"
   },
   "devDependencies": {
     "browserify-shim": "^3.8.10",

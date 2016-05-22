@@ -10,6 +10,7 @@ type ProductCategory struct {
 	Uid         uuid.UUID `json:"uid" db:"uid"`
 	Title       string    `json:"title" db:"title"`
 	Description string    `json:"description" db:"description"`
+	Slug        string    `json:"slug" db:"slug"`
 	Deleted     bool      `json:"-" db:"deleted"`
 	Created     time.Time `json:"created" db:"created"`
 	Updated     time.Time `json:"updated" db:"updated"`
