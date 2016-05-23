@@ -3,7 +3,6 @@
 require('cropit');
 var bootbox = require('bootbox');
 
-
 function productFormController(endpoint, data) {
     var $modal = $app.$view.$modal;
     var $form = $app.$view.$form;
@@ -12,12 +11,10 @@ function productFormController(endpoint, data) {
 
     var self = {
         load: onLoad,
-        close: onClose,
         modal: $app.$view.$modal,
         formId: "#product-form",
         data: data || {},
         isPhotoChanged: false,
-        promise: {},
         defer: $.Deferred(),
         formConfig: {
             rules: {
@@ -40,9 +37,9 @@ function productFormController(endpoint, data) {
     return self;
 
     function onLoad() {
-        var modalConfig = {
+        self.modalConfig = self.modalConfig || {
             size: 'lg',
-            modalId: self.modal.generateId()
+            modalId: "product-modal"
         }
 
         var input = {
@@ -55,7 +52,7 @@ function productFormController(endpoint, data) {
             categoryInput: $form.input("categoryId").setValue(self.data["categoryId"]).setClass("required")
         };
 
-        self.modal = $modal.show(require('./product.form.template.hbs'), input, modalConfig);
+        self.modal = $modal.show(require('./product.form.template.hbs'), input, self.modalConfig);
 
         $form.create(self.formId)
             .config(self.formConfig)
@@ -109,24 +106,13 @@ function productFormController(endpoint, data) {
         }
     }
 
-    function doDelete(id) {
-        $http.delete(endpoint + "/" + id).success(function(model) {
-            self.modal.hide();
-            onClose();
-        });
-    }
-
     function onDone(data) {
         $.when(uploadPhoto(data.uid)).then(function() {
             self.modal.hide();
-            self.defer.resolve();
+            $.when(self.defer.promise());
         }, function() {
             // do nothing
         });
-    }
-
-    function onClose() {
-        return $.when(self.defer.promise());
     }
 
     function renderCategoryDropDown() {

@@ -179,7 +179,8 @@ var $handlebars = require('handlebars');
 function loaderModule() {
 
     var self = {
-        load: load
+        load: load,
+        module: []
     }
 
     return self;
@@ -189,19 +190,29 @@ function loaderModule() {
         var hash = location.hash.replace(/^#/, '') || config.route.default;
         var appView = config.view.appView || 'app-view';
         $(appView).html('<div class="spinner text-center"><div class="dots-loader">Loading…</div></div>');
-        var module = $app.$module.resolve(hash);
+        
+        if(self.module[hash] ){
+            $app.$view.render(self.module[hash].template, self.module[hash].model, appView);
+            self.module[hash].controller.renderTable();
+            
+        }else{
+            self.module[hash] = $app.$module.resolve(hash);
+            
+            if (self.module[hash].templateUrl) {
+                $app.$http.get(self.module[hash].templateUrl).then(function(response) {
+                    self.module[hash].template = response;
+                    $app.$view.render(self.module[hash].template, self.module[hash].model, appView);
+                });
+            }
+            else {
+                $app.$view.render(self.module[hash].template, self.module[hash].model, appView);
+    
+            }
+            
+            self.module[hash].controller = self.module[hash].controller();
+        }
 
-        if (module.templateUrl) {
-            $app.$http.get(module.templateUrl).then(function(response) {
-                module.template = response;
-                $view.render(module.template, module.model, appView);
-                module.controller();
-            });
-        }
-        else {
-            $app.$view.render(module.template, module.model, appView);
-            module.controller();
-        }
+        $('body').find(".modal").remove();
     };
 };
 
@@ -539,7 +550,7 @@ function modalModule() {
         $('#' + self.modalId).modal("show");
 
         $(document).on('hidden.bs.modal', '#' + self.modalId, function() {
-            $('body').find('#' + self.modalId).remove();
+            $('body #' + self.modalId).remove();
             defer.done();
         });
 
@@ -856,6 +867,8 @@ module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":f
 
 },{"hbsfy/runtime":107}],24:[function(require,module,exports){
 module.exports = {
+	slug: "Slug",
+	description: "Description",
 	uid: "ID #",
 	alpha: "The %s field may only contain alphabetical characters.",
 	alpha_dash: "The %s field may only contain alpha-numeric characters, underscores, and dashes.",
@@ -1146,7 +1159,7 @@ module.exports = {
 	product_location: "Location",
 	product_manually_editing_of_quantity: "Manual Edit of Quantity",
 	product_must_select_product_for_barcode: "You must select at least 1 product to generate barcodes",
-	
+
 	title: "Title",
 	product_name_required: "Product Name is a required field",
 	product_new: "New Product",
@@ -1499,7 +1512,6 @@ $app.start(config);
 require('cropit');
 var bootbox = require('bootbox');
 
-
 function productFormController(endpoint, data) {
     var $modal = $app.$view.$modal;
     var $form = $app.$view.$form;
@@ -1508,12 +1520,10 @@ function productFormController(endpoint, data) {
 
     var self = {
         load: onLoad,
-        close: onClose,
         modal: $app.$view.$modal,
         formId: "#product-form",
         data: data || {},
         isPhotoChanged: false,
-        promise: {},
         defer: $.Deferred(),
         formConfig: {
             rules: {
@@ -1536,9 +1546,9 @@ function productFormController(endpoint, data) {
     return self;
 
     function onLoad() {
-        var modalConfig = {
+        self.modalConfig = self.modalConfig || {
             size: 'lg',
-            modalId: self.modal.generateId()
+            modalId: "product-modal"
         }
 
         var input = {
@@ -1551,7 +1561,7 @@ function productFormController(endpoint, data) {
             categoryInput: $form.input("categoryId").setValue(self.data["categoryId"]).setClass("required")
         };
 
-        self.modal = $modal.show(require('./product.form.template.hbs'), input, modalConfig);
+        self.modal = $modal.show(require('./product.form.template.hbs'), input, self.modalConfig);
 
         $form.create(self.formId)
             .config(self.formConfig)
@@ -1605,24 +1615,13 @@ function productFormController(endpoint, data) {
         }
     }
 
-    function doDelete(id) {
-        $http.delete(endpoint + "/" + id).success(function(model) {
-            self.modal.hide();
-            onClose();
-        });
-    }
-
     function onDone(data) {
         $.when(uploadPhoto(data.uid)).then(function() {
             self.modal.hide();
-            self.defer.resolve();
+            $.when(self.defer.promise());
         }, function() {
             // do nothing
         });
-    }
-
-    function onClose() {
-        return $.when(self.defer.promise());
     }
 
     function renderCategoryDropDown() {
@@ -1707,14 +1706,15 @@ function productController() {
         table: '#manage-table ',
         form: productForm,
         load: onLoad,
+        renderTable: renderTable,
         endpoint: 'api/v1/products'
     };
 
     self.load();
 
     return self;
-
-    function onLoad() {
+    
+    function renderTable(){
         self.tableGrid = $tablegrid.render("#product-table", self.endpoint, 
         [
             {data: null, 
@@ -1736,27 +1736,34 @@ function productController() {
         self.tableGrid.action.delete = doDelete;
         self.tableGrid.action.deleteBulk = doDeleteBulk;
         
-        $('body').on('click', '#product-add', function() {
-            showFormCreate();
-        });
-        
+                
         $('#product-table').on('click', '.edit-data', function() {
             var productId = $(this).data("id");
             showFormEdit(productId);
         });
     }
 
+    function onLoad() {
+        self.renderTable();
+        
+        $('body').on('click', '#product-add', function() {
+            showFormCreate();
+        });
+    }
+
     function showFormCreate() {
-        var modalForm = self.form.controller(self.endpoint)
-        modalForm.close().done(function(){
+        var form = self.form.controller(self.endpoint, null) 
+        
+        $.when(form.defer.promise()).done(function(){
             self.tableGrid.reload();
         });
     }
 
     function showFormEdit(id) {
         $http.get(self.endpoint + "/" + id).done(function(model) {
-            var modalForm = self.form.controller(self.endpoint, model.data[0])
-            modalForm.close().done(function(){
+            var form = self.form.controller(self.endpoint, model.data[0])
+
+            $.when(form.defer.promise()).done(function(){
                 self.tableGrid.reload();
             })
         });
@@ -1849,9 +1856,9 @@ function productCategoryFormController(endpoint, data) {
     return self;
 
     function onLoad() {
-        var modalConfig = {
+        self.modalConfig = self.modalConfig || {
             size: 'lg',
-            modalId: self.modal.generateId()
+            modalId: "product-category-modal"
         }
 
         var input = {
@@ -1861,7 +1868,7 @@ function productCategoryFormController(endpoint, data) {
             descriptionInput: $form.input("description").setValue(self.data["description"], 0)
         };
 
-        self.modal = $modal.show(require('./productCategory.form.template.hbs'), input, modalConfig);
+        self.modal = $modal.show(require('./productCategory.form.template.hbs'), input, self.modalConfig);
 
         $form.create(self.formId)
             .config(self.formConfig)
@@ -1883,14 +1890,7 @@ function productCategoryFormController(endpoint, data) {
 
         return self;
     }
-
-    function doDelete(id) {
-        $http.delete(endpoint + "/" + id).success(function(model) {
-            self.modal.hide();
-            onClose();
-        });
-    }
-
+    
     function onDone(data) {
         self.modal.hide();
         self.defer.resolve();
@@ -1953,6 +1953,7 @@ function productCategoryController() {
         tableGrid: {},
         table: '#manage-table ',
         form: productCategoryForm,
+        renderTable: renderTable,
         load: onLoad,
         endpoint: 'api/v1/productcategories'
     };
@@ -1960,8 +1961,8 @@ function productCategoryController() {
     self.load();
 
     return self;
-
-    function onLoad() {
+    
+    function renderTable(){
         self.tableGrid = $tablegrid.render("#productCategory-table", self.endpoint, 
         [
             {data: 'title'},
@@ -1973,27 +1974,34 @@ function productCategoryController() {
         self.tableGrid.action.delete = doDelete;
         self.tableGrid.action.deleteBulk = doDeleteBulk;
         
-        $('body').on('click', '#productCategory-add', function() {
-            showFormCreate();
-        });
-        
         $('#productCategory-table').on('click', '.edit-data', function() {
             var productCategoryId = $(this).data("id");
             showFormEdit(productCategoryId);
         });
+        
+    }
+
+    function onLoad() {
+        self.renderTable();
+        
+        $('body').on('click', '#productCategory-add', function() {
+            showFormCreate();
+        });
     }
 
     function showFormCreate() {
-        var modalForm = self.form.controller(self.endpoint)
-        modalForm.close().done(function(){
+        var form = self.form.controller(self.endpoint, null)
+
+        $.when(form.defer.promise()).done(function(){
             self.tableGrid.reload();
         });
     }
 
     function showFormEdit(id) {
         $http.get(self.endpoint + "/" + id).done(function(model) {
-            var modalForm = self.form.controller(self.endpoint, model.data[0])
-            modalForm.close().done(function(){
+            var form = self.form.controller(self.endpoint, model.data[0])
+            
+            $.when(form.defer.promise()).done(function(){
                 self.tableGrid.reload();
             })
         });
@@ -2061,7 +2069,7 @@ function userFormController(endpoint, data) {
 
     var self = {
         load: onLoad,
-        close: onClose,
+        onClose: onClose,
         modal: $app.$view.$modal,
         formId: "#user-form",
         data: data || {},
@@ -2278,6 +2286,7 @@ function userController() {
         tableGrid: {},
         table: '#manage-table ',
         form: userForm,
+        renderTable: renderTable,
         load: onLoad,
         endpoint: 'api/v1/users'
     };
@@ -2285,8 +2294,8 @@ function userController() {
     self.load();
 
     return self;
-
-    function onLoad() {
+    
+    function renderTable(){
         self.tableGrid = $tablegrid.render("#user-table", self.endpoint, 
         [
             {data: null,
@@ -2300,19 +2309,24 @@ function userController() {
         self.tableGrid.action.delete = doDelete;
         self.tableGrid.action.deleteBulk = doDeleteBulk;
         
-        $('body').on('click', '#user-add', function() {
-            showFormCreate();
-        });
-        
-        $('#user-table').on('click', '.edit-data', function() {
+         $('#user-table').on('click', '.edit-data', function() {
             var userId = $(this).data("id");
             showFormEdit(userId);
+        });
+        
+    }
+
+    function onLoad() {
+        self.renderTable();
+      
+        $('body').on('click', '#user-add', function() {
+            showFormCreate();
         });
     }
 
     function showFormCreate() {
         var modalForm = self.form.controller(self.endpoint)
-        modalForm.close().done(function(){
+        modalForm.done(function(){
             self.tableGrid.reload();
         });
     }
@@ -2320,7 +2334,7 @@ function userController() {
     function showFormEdit(id) {
         $http.get(self.endpoint + "/" + id).done(function(model) {
             var modalForm = self.form.controller(self.endpoint, model.data[0])
-            modalForm.close().done(function(){
+            modalForm.done(function(){
                 self.tableGrid.reload();
             })
         });

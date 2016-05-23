@@ -37,9 +37,9 @@ function productCategoryFormController(endpoint, data) {
     return self;
 
     function onLoad() {
-        var modalConfig = {
+        self.modalConfig = self.modalConfig || {
             size: 'lg',
-            modalId: self.modal.generateId()
+            modalId: "product-category-modal"
         }
 
         var input = {
@@ -49,7 +49,7 @@ function productCategoryFormController(endpoint, data) {
             descriptionInput: $form.input("description").setValue(self.data["description"], 0)
         };
 
-        self.modal = $modal.show(require('./productCategory.form.template.hbs'), input, modalConfig);
+        self.modal = $modal.show(require('./productCategory.form.template.hbs'), input, self.modalConfig);
 
         $form.create(self.formId)
             .config(self.formConfig)
@@ -71,14 +71,7 @@ function productCategoryFormController(endpoint, data) {
 
         return self;
     }
-
-    function doDelete(id) {
-        $http.delete(endpoint + "/" + id).success(function(model) {
-            self.modal.hide();
-            onClose();
-        });
-    }
-
+    
     function onDone(data) {
         self.modal.hide();
         self.defer.resolve();

@@ -25,7 +25,7 @@ function modalModule() {
         $('#' + self.modalId).modal("show");
 
         $(document).on('hidden.bs.modal', '#' + self.modalId, function() {
-            $('body').find('#' + self.modalId).remove();
+            $('body #' + self.modalId).remove();
             defer.done();
         });
 

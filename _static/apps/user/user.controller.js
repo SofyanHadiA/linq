@@ -14,6 +14,7 @@ function userController() {
         tableGrid: {},
         table: '#manage-table ',
         form: userForm,
+        renderTable: renderTable,
         load: onLoad,
         endpoint: 'api/v1/users'
     };
@@ -21,8 +22,8 @@ function userController() {
     self.load();
 
     return self;
-
-    function onLoad() {
+    
+    function renderTable(){
         self.tableGrid = $tablegrid.render("#user-table", self.endpoint, 
         [
             {data: null,
@@ -36,19 +37,24 @@ function userController() {
         self.tableGrid.action.delete = doDelete;
         self.tableGrid.action.deleteBulk = doDeleteBulk;
         
-        $('body').on('click', '#user-add', function() {
-            showFormCreate();
-        });
-        
-        $('#user-table').on('click', '.edit-data', function() {
+         $('#user-table').on('click', '.edit-data', function() {
             var userId = $(this).data("id");
             showFormEdit(userId);
+        });
+        
+    }
+
+    function onLoad() {
+        self.renderTable();
+      
+        $('body').on('click', '#user-add', function() {
+            showFormCreate();
         });
     }
 
     function showFormCreate() {
         var modalForm = self.form.controller(self.endpoint)
-        modalForm.close().done(function(){
+        modalForm.done(function(){
             self.tableGrid.reload();
         });
     }
@@ -56,7 +62,7 @@ function userController() {
     function showFormEdit(id) {
         $http.get(self.endpoint + "/" + id).done(function(model) {
             var modalForm = self.form.controller(self.endpoint, model.data[0])
-            modalForm.close().done(function(){
+            modalForm.done(function(){
                 self.tableGrid.reload();
             })
         });

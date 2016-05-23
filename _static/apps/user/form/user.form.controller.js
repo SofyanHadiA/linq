@@ -12,7 +12,7 @@ function userFormController(endpoint, data) {
 
     var self = {
         load: onLoad,
-        close: onClose,
+        onClose: onClose,
         modal: $app.$view.$modal,
         formId: "#user-form",
         data: data || {},

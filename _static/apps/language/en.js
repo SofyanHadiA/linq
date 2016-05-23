@@ -1,4 +1,6 @@
 module.exports = {
+	slug: "Slug",
+	description: "Description",
 	uid: "ID #",
 	alpha: "The %s field may only contain alphabetical characters.",
 	alpha_dash: "The %s field may only contain alpha-numeric characters, underscores, and dashes.",
@@ -289,7 +291,7 @@ module.exports = {
 	product_location: "Location",
 	product_manually_editing_of_quantity: "Manual Edit of Quantity",
 	product_must_select_product_for_barcode: "You must select at least 1 product to generate barcodes",
-	
+
 	title: "Title",
 	product_name_required: "Product Name is a required field",
 	product_new: "New Product",
