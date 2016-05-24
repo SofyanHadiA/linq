@@ -43,23 +43,29 @@ func (repo productRepository) IsExist(id uuid.UUID) (bool, error) {
 }
 
 func (repo productRepository) GetAll(paging utils.Paging) (IModels, error) {
-	query := "SELECT * FROM products WHERE deleted=0 "
+	query := `SELECT products.*, product_categories.title FROM products JOIN product_categories ON products.category = product_categories.uid WHERE products.deleted=0 `
 
 	if paging.Keyword != "" {
-		query += ` AND (title LIKE '%?%' OR code LIKE '%?%' OR buy_price LIKE '%?%' OR sell_price LIKE '%?%') `
+		query += ` AND (products.title LIKE '%?%' OR product_categories.title like '%?%' OR code LIKE '%?%' OR buy_price LIKE '%?%' OR sell_price LIKE '%?%') `
 	}
 
 	if paging.Order > 0 {
 		var columnMap string
 		switch paging.Order {
 		case 1:
-			columnMap = "title"
+			columnMap = "code"
 		case 2:
 			columnMap = "code"
 		case 3:
+			columnMap = "products.title"
+		case 4:
+			columnMap = "product_categories.title"
+		case 5:
 			columnMap = "sell_price"
-		default:
+		case 6:
 			columnMap = "stock"
+		default:
+			columnMap = "created"
 		}
 
 		query += fmt.Sprintf(" ORDER BY %s %s ", columnMap, paging.OrderDir)
@@ -104,7 +110,7 @@ func (repo productRepository) GetAll(paging utils.Paging) (IModels, error) {
 }
 
 func (repo productRepository) Get(id uuid.UUID) (IModel, error) {
-	selectQuery := "SELECT * FROM products WHERE uid = ? AND deleted= 0 "
+	selectQuery := "SELECT * FROM products WHERE uid = ? AND deleted = 0 "
 
 	product := &Product{}
 	rows, err := repo.db.ResolveSingle(selectQuery, id)
@@ -137,8 +143,8 @@ func (repo productRepository) getCategory(categoryid uuid.UUID) (ProductCategory
 func (repo productRepository) Insert(model IModel) error {
 
 	insertQuery := `INSERT INTO products 
-		(uid, title, buy_price, sell_price, stock, code, created ) 
-		VALUES(:uid, :title, :buy_price, :sell_price, :stock, :code, now())`
+		(uid, title, buy_price, sell_price, stock, code, category, created ) 
+		VALUES(:uid, :title, :buy_price, :sell_price, :stock, :code, :category, now())`
 
 	product := model.(*Product)
 	product.Uid = uuid.NewV4()
@@ -151,7 +157,7 @@ func (repo productRepository) Insert(model IModel) error {
 func (repo productRepository) Update(model IModel) error {
 	updateQuery := `UPDATE products SET 
 		title=:title, buy_price=:buy_price, sell_price=:sell_price, 
-		stock=:stock, code=:code, updated=now() WHERE uid=:uid`
+		stock=:stock, code=:code, category=:category, updated=now() WHERE uid=:uid`
 
 	_, err := repo.db.Execute(updateQuery, model)
 

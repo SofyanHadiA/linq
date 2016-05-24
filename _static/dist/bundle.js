@@ -168,7 +168,7 @@ var $app = {
 
 module.exports = $app;
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./../language/en.js":24,"./app.http.js":2,"./app.loader.js":4,"./app.module.js":5,"./app.notify.js":6,"./app.tablegrid.js":7,"./views/app.view.js":10,"bootstrap":46,"handlebars":93,"jquery":109}],4:[function(require,module,exports){
+},{"./../language/en.js":24,"./app.http.js":2,"./app.loader.js":4,"./app.module.js":5,"./app.notify.js":6,"./app.tablegrid.js":7,"./views/app.view.js":10,"bootstrap":52,"handlebars":99,"jquery":115}],4:[function(require,module,exports){
 /*
  * Page loader core module 
  */
@@ -217,7 +217,7 @@ function loaderModule() {
 };
 
 module.exports = loaderModule;
-},{"handlebars":93}],5:[function(require,module,exports){
+},{"handlebars":99}],5:[function(require,module,exports){
 function moduleModule() {
     var self = {
         modules: {},
@@ -272,7 +272,7 @@ function notifyModule() {
 }
 
 module.exports = notifyModule; 
-},{"bootstrap-notify":45}],7:[function(require,module,exports){
+},{"bootstrap-notify":51}],7:[function(require,module,exports){
 var bootbox = require('bootbox');
 require('./../../vendors/datatables/media/js/jquery.dataTables.js');
 require('./../../vendors/datatables/media/js/dataTables.bootstrap.js');
@@ -402,7 +402,7 @@ function tableGridModule() {
 };
 
 module.exports = tableGridModule;
-},{"./../../vendors/datatables/media/js/dataTables.bootstrap.js":113,"./../../vendors/datatables/media/js/jquery.dataTables.js":114,"bootbox":44}],8:[function(require,module,exports){
+},{"./../../vendors/datatables/media/js/dataTables.bootstrap.js":119,"./../../vendors/datatables/media/js/jquery.dataTables.js":120,"bootbox":50}],8:[function(require,module,exports){
 var $ = jQuery;
 var $selectize = require('../../../node_modules/selectize/dist/js/selectize.js');
 require('../../../node_modules/jquery-validation/dist/jquery.validate.js');
@@ -447,7 +447,7 @@ var formModule = function() {
     };
 
     function input(name, inputType = "text", className = "", value = "") {
-        
+
         var self = {
             name: name,
             inputType: inputType,
@@ -456,6 +456,7 @@ var formModule = function() {
             className: className,
             setValue: setValue,
             setClass: setClass,
+            setSelected: setSelected,
             formGroup: formGroup,
             formGroupPassword: formGroupPassword,
             formGroupNumber: formGroupNumber,
@@ -470,51 +471,66 @@ var formModule = function() {
             return self;
         }
 
+        function setSelected(value, title) {
+            if (value) {
+                self.selectedItem = {
+                    value: value,
+                    title: title || value
+                };
+            }
+            return self;
+        }
+
         function setClass(className) {
             self.className = className;
             return self;
         }
-        
-        function formGroup(inputWidth = 8, labelWidth = 4){
+
+        function formGroup(inputWidth = 8, labelWidth = 4) {
             return '<div class="form-group">' + formLabel(labelWidth) + inputText("text", inputWidth) + '</div>'
         }
-        
-         function formGroupNumber(inputWidth = 8, labelWidth = 4){
+
+        function formGroupNumber(inputWidth = 8, labelWidth = 4) {
             return '<div class="form-group">' + formLabel(labelWidth) + inputText("number", inputWidth) + '</div>'
         }
-        
-        function formGroupPassword(inputWidth = 8, labelWidth = 4){
+
+        function formGroupPassword(inputWidth = 8, labelWidth = 4) {
             return '<div class="form-group">' + formLabel(labelWidth) + inputText("password", inputWidth) + '</div>'
         }
-        
-        function formGroupTextArea(inputWidth = 8, labelWidth = 4){
+
+        function formGroupTextArea(inputWidth = 8, labelWidth = 4) {
             return '<div class="form-group">' + formLabel(labelWidth) + inputTextArea() + '</div>'
         }
-        
-        function formGroupDropDown(inputWidth = 8, labelWidth = 4){
+
+        function formGroupDropDown(inputWidth = 8, labelWidth = 4) {
             return '<div class="form-group">' + formLabel(labelWidth) + inputDropDown() + '</div>'
         }
 
-        function inputText(type="text", inputWidth = '8') {
-            return '<div class="col-xs-'+inputWidth+'">' +
-                '<input type="'+type+'" name="' + self.name + '" id="' + self.name + '" class="form-control" value="' + self.value + '" />' +
+        function inputText(type = "text", inputWidth = '8') {
+            return '<div class="col-xs-' + inputWidth + '">' +
+                '<input type="' + type + '" name="' + self.name + '" id="' + self.name + '" class="form-control" value="' + self.value + '" />' +
                 '</div>'
         }
-        
+
         function inputDropDown(inputWidth = '8') {
-            return '<div class="col-xs-'+inputWidth+'">' +
-                '<select name="' + self.name + '" id="' + self.name + '" class="form-control" value="' + self.value + '" />' +
-                '</div>'
+            var select = '<div class="col-xs-' + inputWidth + '">' +
+                '<select name="' + self.name + '" id="' + self.name + '" class="form-control" value="' + self.value + '" >';
+            if (self.selectedItem) {
+                select += '<option value="' + self.selectedItem.value + '">' + self.selectedItem.title + '</option>'
+            }
+            select += '</select></div>'
+
+            return select;
         }
-        
+
         function inputTextArea(inputWidth = '8') {
-            return '<div class="col-xs-'+inputWidth+'">' +
-                '<textarea name="' + self.name + '" id="' + self.name + '" class="form-control">' + self.value + '</textarea>'+
+            return '<div class="col-xs-' + inputWidth + '">' +
+                '<textarea name="' + self.name + '" id="' + self.name + '" class="form-control">' + self.value + '</textarea>' +
                 '</div>'
         }
-        
-        function formLabel(labelWidth = '4'){
-            return '<label for="' + self.name + '" class="col-xs-'+labelWidth+' control-label ' + self.className + '">' + self.label + '</label>' 
+
+        function formLabel(labelWidth = '4') {
+            return '<label for="' + self.name + '" class="col-xs-' + labelWidth + ' control-label ' + self.className + '">' + self.label + '</label>'
         }
     }
 };
@@ -522,7 +538,7 @@ var formModule = function() {
 
 module.exports = formModule();
 
-},{"../../../node_modules/jquery-validation/dist/jquery.validate.js":108,"../../../node_modules/selectize/dist/js/selectize.js":110}],9:[function(require,module,exports){
+},{"../../../node_modules/jquery-validation/dist/jquery.validate.js":114,"../../../node_modules/selectize/dist/js/selectize.js":116}],9:[function(require,module,exports){
 var $ = jQuery;
 
 function modalModule() {
@@ -531,7 +547,7 @@ function modalModule() {
         modalId: "",
         show: show,
         hide: doHide,
-        promise : {},
+        promise: {},
         generateId: generateId
     };
 
@@ -542,10 +558,7 @@ function modalModule() {
         self.modalId = config.modalId || self.generateId();
         var renderedTemplate = $app.$view.render(template, model);
 
-        $('body').append('<div class="modal" id="' + self.modalId + '" tabindex="-1" role="dialog">' 
-            + '<div class="modal-dialog modal-' + config.size + '">' + '<div class="modal-content">'
-            + renderedTemplate 
-            + '</div></div></div>');
+        $('body').append('<div class="modal" id="' + self.modalId + '" tabindex="-1" role="dialog">' + '<div class="modal-dialog modal-' + config.size + '">' + '<div class="modal-content">' + renderedTemplate + '</div></div></div>');
 
         $('#' + self.modalId).modal("show");
 
@@ -555,16 +568,16 @@ function modalModule() {
         });
 
         self.promise = defer.promise();
-        
+
         return self;
     };
-    
-    function doHide(){
+
+    function doHide() {
         $('#' + self.modalId).modal("hide");
         return self;
     }
-    
-    function generateId(){
+
+    function generateId() {
         return "modal-container-" + (Math.random() + 1).toString(36).substring(7)
     }
 };
@@ -598,7 +611,7 @@ function viewModule() {
 }
 
 module.exports = viewModule();
-},{"./../../language/en.js":24,"./app.form.js":8,"./app.modal.js":9,"handlebars":93}],11:[function(require,module,exports){
+},{"./../../language/en.js":24,"./app.form.js":8,"./app.modal.js":9,"handlebars":99}],11:[function(require,module,exports){
 function customerController() {
 
     var $ = $app.$;
@@ -685,7 +698,7 @@ module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":f
     + "\n                            </button>\n\n                            <a class=\"btn btn-success\" id=\"import-excel\" href=\"../customers/excel_import\" data-target=\"#modal-container\">\n                                <i class=\"fa fa-file-excel-o\"></i> Excel Import\n                            </a>\n                        </div>\n                    </div>\n                </div>\n\n                <div class=\"box-body \">\n                    <table id=\"customer-table\" class=\"table table-bordered table-hover\">\n                        <thead>\n                            <tr>\n                                <th width=\"10px\">\n                                    <input type=\"checkbox\" id=\"select-all\" />\n                                </th>\n                                <th>Last Name</th>\n                                <th>First Name</th>\n                                <th>Email</th>\n                                <th>Phone</th>\n                                <th width=\"50px\">Action</th>\n                            </tr>\n                        </thead>\n                    </table>\n                </div>\n\n                <div id=\"feedback_bar\"></div>\n            </div>\n        </div>\n    </div>\n</section>";
 },"useData":true});
 
-},{"hbsfy/runtime":107}],15:[function(require,module,exports){
+},{"hbsfy/runtime":113}],15:[function(require,module,exports){
 function customerFormController() {
 
     var $modal = $app.$modal;
@@ -771,7 +784,7 @@ module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":f
     + "\" />                        \n                    </div>\n                </div>\n            </div>\n\n            <?php $this->load->view(\"people/form_basic_info\"); ?>\n\n            <div class=\"col-sm-6\">\n                <div class=\"form-group\">\n                    <?php echo form_label($this->lang->line('customers_taxable'), 'taxable', array('class' => 'col-sm-4 control-label')); ?>\n                    <div class='col-sm-8'>\n                        <div class=\"checkbox\">\n                            <label>\n                                <?php echo form_checkbox('taxable', '1', $person_info->taxable == '' ? TRUE : (boolean)$person_info->taxable); ?>\n                            </label>\n                        </div>\n                    </div>\n                </div>\n            </div>\n        </div>\n\n    </fieldset>    \n    </form>    \n</div>\n\n<div class=\"modal-footer\">\n    <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">Close</button>\n    <button type=\"submit\" form=\"customer_form\" class=\"btn btn-primary\">Save changes</button>\n</div>\n\n";
 },"useData":true});
 
-},{"hbsfy/runtime":107}],18:[function(require,module,exports){
+},{"hbsfy/runtime":113}],18:[function(require,module,exports){
 module.exports = {
 	controller: {},
 	model:{},
@@ -865,7 +878,7 @@ module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":f
     return "<section class=\"content-header\"></section> \n<section class=\"content\"> \n    <div class=\"row\"> \n        <div class=\"col-md-12\"> \n            <div class=\"box\"> \n                <div class=\"box-body\"> \n                    <dashboard-content/> \n                </div> \n            </div> \n        </div> \n    </div> \n</section>";
 },"useData":true});
 
-},{"hbsfy/runtime":107}],24:[function(require,module,exports){
+},{"hbsfy/runtime":113}],24:[function(require,module,exports){
 module.exports = {
 	slug: "Slug",
 	description: "Description",
@@ -1497,6 +1510,7 @@ var $app = require('./core/app.js');
 // load modules and routes
 $app.$module.register('home', require('./home/home.js')($app));
 $app.$module.register('user', require('./user/user.js')($app));
+$app.$module.register('sale', require('./sale/sale.js')($app));
 $app.$module.register('product', require('./product/product.js')($app));
 $app.$module.register('product-category', require('./productCategory/productCategory.js')($app));
 $app.$module.register('customers', require('./customer/customer.js')($app));
@@ -1506,17 +1520,15 @@ var config = require('./config.js');
 
 // start the application
 $app.start(config);
-},{"./config.js":1,"./core/app.js":3,"./customer/customer.js":12,"./home/home.js":21,"./product/product.js":30,"./productCategory/productCategory.js":36,"./user/user.js":42}],26:[function(require,module,exports){
+},{"./config.js":1,"./core/app.js":3,"./customer/customer.js":12,"./home/home.js":21,"./product/product.js":30,"./productCategory/productCategory.js":36,"./sale/sale.js":42,"./user/user.js":48}],26:[function(require,module,exports){
 /*global $app $*/
 
 require('cropit');
-var bootbox = require('bootbox');
 
 function productFormController(endpoint, data) {
     var $modal = $app.$view.$modal;
     var $form = $app.$view.$form;
     var $http = $app.$http;
-    var $notify = $app.$notify;
 
     var self = {
         load: onLoad,
@@ -1532,6 +1544,9 @@ function productFormController(endpoint, data) {
                     required: true
                 },
                 sellPrice: {
+                    required: true
+                },
+                stock: {
                     required: true
                 },
                 categoryId: {
@@ -1558,8 +1573,12 @@ function productFormController(endpoint, data) {
             buyPriceInput: $form.input("buyPrice").setValue(self.data["buyPrice"], 0),
             sellPriceInput: $form.input("sellPrice").setValue(self.data["sellPrice"], 0).setClass("required"),
             stockInput: $form.input("stock").setValue(self.data["stock"], 0).setClass("required"),
-            categoryInput: $form.input("categoryId").setValue(self.data["categoryId"]).setClass("required")
+            categoryInput: $form.input("categoryId").setClass("required")
         };
+        
+        if(self.data.category){
+            input.categoryInput.setSelected(self.data["categoryId"], self.data["category"]["title"]);
+        }
 
         self.modal = $modal.show(require('./product.form.template.hbs'), input, self.modalConfig);
 
@@ -1618,7 +1637,7 @@ function productFormController(endpoint, data) {
     function onDone(data) {
         $.when(uploadPhoto(data.uid)).then(function() {
             self.modal.hide();
-            $.when(self.defer.promise());
+            self.defer.resolve();
         }, function() {
             // do nothing
         });
@@ -1626,6 +1645,7 @@ function productFormController(endpoint, data) {
 
     function renderCategoryDropDown() {
         $('body #categoryId').selectize({
+            persist: true,
             valueField: 'uid',
             labelField: 'title',
             searchField: 'title',
@@ -1633,7 +1653,7 @@ function productFormController(endpoint, data) {
             load: function(query, callback) {
                 if (!query.length) return callback();
                 $.ajax({
-                    url: 'https://linq-sofyan-a-1.c9users.io/api/v1/productcategories',
+                    url: './api/v1/productcategories',
                     type: 'GET',
                     error: function() {
                         callback();
@@ -1648,7 +1668,7 @@ function productFormController(endpoint, data) {
 };
 
 module.exports = productFormController;
-},{"./product.form.template.hbs":28,"bootbox":44,"cropit":62}],27:[function(require,module,exports){
+},{"./product.form.template.hbs":28,"cropit":68}],27:[function(require,module,exports){
 (function (global){
 
 function customerFormModule ($app) {
@@ -1688,7 +1708,7 @@ module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":f
     + "</div>\n                </form>\n            </div>\n        </div>\n    </fieldset>\n</div>\n\n<div class=\"modal-footer\">\n    <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">Close</button>\n    <button type=\"submit\" form=\"product-form\" class=\"btn btn-primary\">Save changes</button>\n</div>\n";
 },"useData":true});
 
-},{"hbsfy/runtime":107}],29:[function(require,module,exports){
+},{"hbsfy/runtime":113}],29:[function(require,module,exports){
 /*global $app $*/
 'use strict'
 
@@ -1713,30 +1733,35 @@ function productController() {
     self.load();
 
     return self;
-    
-    function renderTable(){
-        self.tableGrid = $tablegrid.render("#product-table", self.endpoint, 
-        [
-            {data: null, 
-            "render" : function ( data, type, full ) { 
-                if(full['image'] ){
-                    return '<img class="table-image" src="./uploads/product_photos/' + full['image'] + '" width="40" />' 
-                } 
-                return ""
-            }}, 
-            {data: 'sku'}, 
-            {data: 'title'},
-            {data: 'category.title'},
-            {data: 'sellPrice'},
-            {data: 'stock'}
 
-        ], 
-        'uid');
-        
+    function renderTable() {
+        self.tableGrid = $tablegrid.render("#product-table", self.endpoint, [{
+                    sortable: false,
+                    data: null,
+                    "render": function(data, type, full) {
+                        if (full['image']) {
+                            return '<img class="table-image" src="./uploads/product_photos/' + full['image'] + '" />'
+                        }
+                        return ""
+                    }
+                }, {
+                    data: 'sku'
+                }, {
+                    data: 'title'
+                }, {
+                    data: 'category.title'
+                }, {
+                    data: 'sellPrice'
+                }, {
+                    data: 'stock'
+                }
+
+            ],
+            'uid');
+
         self.tableGrid.action.delete = doDelete;
         self.tableGrid.action.deleteBulk = doDeleteBulk;
-        
-                
+
         $('#product-table').on('click', '.edit-data', function() {
             var productId = $(this).data("id");
             showFormEdit(productId);
@@ -1745,16 +1770,16 @@ function productController() {
 
     function onLoad() {
         self.renderTable();
-        
+
         $('body').on('click', '#product-add', function() {
             showFormCreate();
         });
     }
 
     function showFormCreate() {
-        var form = self.form.controller(self.endpoint, null) 
-        
-        $.when(form.defer.promise()).done(function(){
+        var form = self.form.controller(self.endpoint, null)
+
+        $.when(form.defer.promise()).done(function() {
             self.tableGrid.reload();
         });
     }
@@ -1763,20 +1788,22 @@ function productController() {
         $http.get(self.endpoint + "/" + id).done(function(model) {
             var form = self.form.controller(self.endpoint, model.data[0])
 
-            $.when(form.defer.promise()).done(function(){
+            $.when(form.defer.promise()).done(function() {
                 self.tableGrid.reload();
             })
         });
     }
-    
+
     function doDelete(id) {
         $http.delete(self.endpoint + "/" + id).done(function(model) {
             self.tableGrid.reload();
         });
     }
-    
+
     function doDeleteBulk(ids) {
-        $http.post(self.endpoint + "/bulkdelete", { ids:ids}).done(function(ids) {
+        $http.post(self.endpoint + "/bulkdelete", {
+            ids: ids
+        }).done(function(ids) {
             self.tableGrid.reload();
         });
     }
@@ -1816,7 +1843,7 @@ module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":f
     + "\n                            </button>\n\n                            <a class=\"btn btn-success\" id=\"import-excel\" href=\"../customers/excel_import\" data-target=\"#modal-container\">\n                                <i class=\"fa fa-file-excel-o\"></i> Excel Import\n                            </a>\n                        </div>\n                    </div>\n                </div>\n\n                <div class=\"box-body \">\n                    <table id=\"product-table\" class=\"table table-bordered table-hover\">\n                        <thead>\n                            <tr>\n                                <th width=\"10px\">\n                                    <input type=\"checkbox\" id=\"select-all\" />\n                                </th>\n                                <th>Image</th>\n                                <th>SKU</th>\n                                <th>Title</th>\n                                <th>Category</th>\n                                <th>Sell Price</th>\n                                <th>Stock</th>\n                                <th width=\"50px\">Action</th>\n                            </tr>\n                        </thead>\n                    </table>\n                </div>\n\n                <div id=\"feedback_bar\"></div>\n            </div>\n        </div>\n    </div>\n</section>";
 },"useData":true});
 
-},{"hbsfy/runtime":107}],32:[function(require,module,exports){
+},{"hbsfy/runtime":113}],32:[function(require,module,exports){
 /*global $app $*/
 
 require('cropit');
@@ -1902,7 +1929,7 @@ function productCategoryFormController(endpoint, data) {
 };
 
 module.exports = productCategoryFormController;
-},{"./productCategory.form.template.hbs":34,"bootbox":44,"cropit":62}],33:[function(require,module,exports){
+},{"./productCategory.form.template.hbs":34,"bootbox":50,"cropit":68}],33:[function(require,module,exports){
 (function (global){
 
 function customerFormModule ($app) {
@@ -1936,7 +1963,7 @@ module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":f
     + "</div>\n                </form>\n            </div>\n        </div>\n    </fieldset>\n</div>\n\n<div class=\"modal-footer\">\n    <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">Close</button>\n    <button type=\"submit\" form=\"productCategory-form\" class=\"btn btn-primary\">Save changes</button>\n</div>\n";
 },"useData":true});
 
-},{"hbsfy/runtime":107}],35:[function(require,module,exports){
+},{"hbsfy/runtime":113}],35:[function(require,module,exports){
 /*global $app $*/
 'use strict'
 
@@ -1961,29 +1988,30 @@ function productCategoryController() {
     self.load();
 
     return self;
-    
-    function renderTable(){
-        self.tableGrid = $tablegrid.render("#productCategory-table", self.endpoint, 
-        [
-            {data: 'title'},
-            {data: 'slug'},
-            {data: 'description'}
-        ], 
-        'uid');
-        
+
+    function renderTable() {
+        self.tableGrid = $tablegrid.render("#productCategory-table", self.endpoint, [{
+                data: 'title'
+            }, {
+                data: 'slug'
+            }, {
+                data: 'description'
+            }],
+            'uid');
+
         self.tableGrid.action.delete = doDelete;
         self.tableGrid.action.deleteBulk = doDeleteBulk;
-        
+
         $('#productCategory-table').on('click', '.edit-data', function() {
             var productCategoryId = $(this).data("id");
             showFormEdit(productCategoryId);
         });
-        
+
     }
 
     function onLoad() {
         self.renderTable();
-        
+
         $('body').on('click', '#productCategory-add', function() {
             showFormCreate();
         });
@@ -1992,7 +2020,7 @@ function productCategoryController() {
     function showFormCreate() {
         var form = self.form.controller(self.endpoint, null)
 
-        $.when(form.defer.promise()).done(function(){
+        $.when(form.defer.promise()).done(function() {
             self.tableGrid.reload();
         });
     }
@@ -2000,21 +2028,23 @@ function productCategoryController() {
     function showFormEdit(id) {
         $http.get(self.endpoint + "/" + id).done(function(model) {
             var form = self.form.controller(self.endpoint, model.data[0])
-            
-            $.when(form.defer.promise()).done(function(){
+
+            $.when(form.defer.promise()).done(function() {
                 self.tableGrid.reload();
             })
         });
     }
-    
+
     function doDelete(id) {
         $http.delete(self.endpoint + "/" + id).done(function(model) {
             self.tableGrid.reload();
         });
     }
-    
+
     function doDeleteBulk(ids) {
-        $http.post(self.endpoint + "/bulkdelete", { ids:ids}).done(function(ids) {
+        $http.post(self.endpoint + "/bulkdelete", {
+            ids: ids
+        }).done(function(ids) {
             self.tableGrid.reload();
         });
     }
@@ -2054,7 +2084,330 @@ module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":f
     + "\n                            </button>\n\n                            <a class=\"btn btn-success\" id=\"import-excel\" href=\"../customers/excel_import\" data-target=\"#modal-container\">\n                                <i class=\"fa fa-file-excel-o\"></i> Excel Import\n                            </a>\n                        </div>\n                    </div>\n                </div>\n\n                <div class=\"box-body \">\n                    <table id=\"productCategory-table\" class=\"table table-bordered table-hover\">\n                        <thead>\n                            <tr>\n                                <th width=\"10px\">\n                                    <input type=\"checkbox\" id=\"select-all\" />\n                                </th>\n                                <th>Title</th>\n                                <th>Slug</th>\n                                <th>Description</th>\n                                <th width=\"50px\">Action</th>\n                            </tr>\n                        </thead>\n                    </table>\n                </div>\n\n                <div id=\"feedback_bar\"></div>\n            </div>\n        </div>\n    </div>\n</section>";
 },"useData":true});
 
-},{"hbsfy/runtime":107}],38:[function(require,module,exports){
+},{"hbsfy/runtime":113}],38:[function(require,module,exports){
+/*global $app $*/
+
+require('cropit');
+
+function saleFormController(endpoint, data) {
+    var $modal = $app.$view.$modal;
+    var $form = $app.$view.$form;
+    var $http = $app.$http;
+
+    var self = {
+        load: onLoad,
+        modal: $app.$view.$modal,
+        formId: "#sale-form",
+        data: data || {},
+        isPhotoChanged: false,
+        defer: $.Deferred(),
+        formConfig: {
+            rules: {
+                title: {
+                    minlength: 5,
+                    required: true
+                },
+                sellPrice: {
+                    required: true
+                },
+                stock: {
+                    required: true
+                },
+                categoryId: {
+                    required: true
+                }
+            }
+        }
+    }
+
+    self.load();
+
+    return self;
+
+    function onLoad() {
+        self.modalConfig = self.modalConfig || {
+            size: 'lg',
+            modalId: "sale-modal"
+        }
+
+        var input = {
+            uidInput: $form.input("uid").setValue(self.data["uid"] || "AUTO"),
+            skuInput: $form.input("sku").setValue(self.data["sku"]),
+            titleInput: $form.input("title").setValue(self.data["title"]).setClass("required"),
+            buyPriceInput: $form.input("buyPrice").setValue(self.data["buyPrice"], 0),
+            sellPriceInput: $form.input("sellPrice").setValue(self.data["sellPrice"], 0).setClass("required"),
+            stockInput: $form.input("stock").setValue(self.data["stock"], 0).setClass("required"),
+            categoryInput: $form.input("categoryId").setClass("required")
+        };
+        
+        if(self.data.category){
+            input.categoryInput.setSelected(self.data["categoryId"], self.data["category"]["title"]);
+        }
+
+        self.modal = $modal.show(require('./sale.form.template.hbs'), input, self.modalConfig);
+
+        $form.create(self.formId)
+            .config(self.formConfig)
+            .onSubmit(function() {
+                event.preventDefault();
+                var newData = $(self.formId).serializeObject();
+                newData.buyPrice = parseFloat(newData.buyPrice) || 0;
+                newData.sellPrice = parseFloat(newData.sellPrice) || 0;
+                newData.stock = parseFloat(newData.stock) || 0;
+
+                if (!data) {
+                    $http.post(endpoint, newData).success(function(data) {
+                        onDone(data.data[0])
+                    });
+                }
+                else {
+                    $http.put(endpoint + "/" + self.data["uid"], newData).success(function(data) {
+                        onDone(data.data[0])
+                    });
+                }
+            });
+
+        $('#sale-photo').cropit({
+            onFileChange: function() {
+                self.isPhotoChanged = true;
+            },
+            exportZoom: 3
+        });
+
+        if (self.data.image) {
+            $('#sale-photo').cropit('imageSrc', './uploads/sale_photos/' + self.data.image);
+        };
+
+        $('#select-image-btn').click(function() {
+            $("#sale-form.cropit-image-input").prop('disabled', false);
+            $('.cropit-image-input').click();
+        });
+
+        renderCategoryDropDown();
+
+        return self;
+    }
+
+    function uploadPhoto(saleId) {
+        if (self.isPhotoChanged) {
+            var imageData = $('#sale-photo').cropit('export');
+            return $http.put(endpoint + "/" + saleId + "/photo", imageData);
+        }
+        else {
+            return null
+        }
+    }
+
+    function onDone(data) {
+        $.when(uploadPhoto(data.uid)).then(function() {
+            self.modal.hide();
+            self.defer.resolve();
+        }, function() {
+            // do nothing
+        });
+    }
+
+    function renderCategoryDropDown() {
+        $('body #categoryId').selectize({
+            persist: true,
+            valueField: 'uid',
+            labelField: 'title',
+            searchField: 'title',
+            create: false,
+            load: function(query, callback) {
+                if (!query.length) return callback();
+                $.ajax({
+                    url: './api/v1/salecategories',
+                    type: 'GET',
+                    error: function() {
+                        callback();
+                    },
+                    success: function(res) {
+                        callback(res.data.slice(0, 10));
+                    }
+                });
+            }
+        });
+    }
+};
+
+module.exports = saleFormController;
+},{"./sale.form.template.hbs":40,"cropit":68}],39:[function(require,module,exports){
+(function (global){
+
+function customerFormModule ($app) {
+	
+	global.$app = $app;
+	
+	return {		
+		'controller': require('./sale.form.controller.js'),		
+		'template': require('./sale.form.template.hbs'),
+	}
+};
+
+module.exports = customerFormModule; 
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{"./sale.form.controller.js":38,"./sale.form.template.hbs":40}],40:[function(require,module,exports){
+// hbsfy compiled Handlebars template
+var HandlebarsCompiler = require('hbsfy/runtime');
+module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
+    var stack1, alias1=container.lambda;
+
+  return "<div class=\"modal-header\">\n    <button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-hidden=\"true\">&times;</button>\n    <h4 class=\"modal-title\">Product Form</h4>\n</div>\n\n<div class=\"modal-body\">\n    <fieldset id=\"sale_basic_info\">\n        <div class=\"row\">\n            <div class=\"col-md-2 col-xs-12 form-horizontal\">\n                <div class=\"form-group\">\n                    <div class=\"col-md-12\">\n                        <div id=\"sale-photo\" class=\"image-editor center-block\">\n                            <div class=\"cropit-preview\"></div>\n                            <input type=\"range\" class=\"cropit-image-zoom-input\" />\n                            <input id=\"sale-photo-file\" type=\"file\" class=\"cropit-image-input\" />\n                            <button id=\"select-image-btn\" class=\"btn btn-primary btn-block btn-xs\">Change Product Photo</button>\n                        </div>\n                    </div>\n                </div>\n            </div>\n            <div class=\"col-md-10 col-xs-12\">\n                <form id=\"sale-form\" name=\"sale-form\" class=\"form-horizontal\">\n                    <div class=\"col-md-12\">\n                        <div class=\"form-group\">\n                            <label class=\"col-md-2 col-xs-4 control-label\">"
+    + ((stack1 = alias1(((stack1 = (depth0 != null ? depth0.uidInput : depth0)) != null ? stack1.label : stack1), depth0)) != null ? stack1 : "")
+    + "</label>\n                            <div class=\"col-md-4 col-xs-8\">\n                                <input type=\"disabled\" class=\"form-control\" disabled value=\""
+    + ((stack1 = alias1(((stack1 = (depth0 != null ? depth0.uidInput : depth0)) != null ? stack1.value : stack1), depth0)) != null ? stack1 : "")
+    + "\" />\n                            </div>\n                        </div>\n                    </div>\n                    <div class=\"col-md-6\">"
+    + ((stack1 = alias1(((stack1 = (depth0 != null ? depth0.skuInput : depth0)) != null ? stack1.formGroup : stack1), depth0)) != null ? stack1 : "")
+    + "</div>\n                    <div class=\"col-md-6\">"
+    + ((stack1 = alias1(((stack1 = (depth0 != null ? depth0.titleInput : depth0)) != null ? stack1.formGroup : stack1), depth0)) != null ? stack1 : "")
+    + "</div>\n                    <div class=\"col-md-6\">"
+    + ((stack1 = alias1(((stack1 = (depth0 != null ? depth0.buyPriceInput : depth0)) != null ? stack1.formGroupNumber : stack1), depth0)) != null ? stack1 : "")
+    + "</div>\n                    <div class=\"col-md-6\">"
+    + ((stack1 = alias1(((stack1 = (depth0 != null ? depth0.sellPriceInput : depth0)) != null ? stack1.formGroupNumber : stack1), depth0)) != null ? stack1 : "")
+    + "</div>\n                    <div class=\"col-md-6\">"
+    + ((stack1 = alias1(((stack1 = (depth0 != null ? depth0.stockInput : depth0)) != null ? stack1.formGroupNumber : stack1), depth0)) != null ? stack1 : "")
+    + "</div>\n                    <div class=\"col-md-6\">"
+    + ((stack1 = alias1(((stack1 = (depth0 != null ? depth0.categoryInput : depth0)) != null ? stack1.formGroupDropDown : stack1), depth0)) != null ? stack1 : "")
+    + "</div>\n                </form>\n            </div>\n        </div>\n    </fieldset>\n</div>\n\n<div class=\"modal-footer\">\n    <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">Close</button>\n    <button type=\"submit\" form=\"sale-form\" class=\"btn btn-primary\">Save changes</button>\n</div>\n";
+},"useData":true});
+
+},{"hbsfy/runtime":113}],41:[function(require,module,exports){
+/*global $app $*/
+'use strict'
+
+function saleController() {
+    var $ = $app.$;
+    var $notify = $app.$notify;
+    var $tablegrid = $app.$tablegrid;
+    var $modal = $app.$modal;
+    var $http = $app.$http;
+    var $form = $app.$form;
+    var saleForm = require('./form/sale.form.js')($app);
+
+    var self = {
+        tableGrid: {},
+        table: '#manage-table ',
+        form: saleForm,
+        load: onLoad,
+        renderTable: renderTable,
+        endpoint: 'api/v1/sales'
+    };
+
+    self.load();
+
+    return self;
+
+    function renderTable() {
+        self.tableGrid = $tablegrid.render("#sale-table", self.endpoint, [{
+                    sortable: false,
+                    data: null,
+                    "render": function(data, type, full) {
+                        if (full['image']) {
+                            return '<img class="table-image" src="./uploads/sale_photos/' + full['image'] + '" />'
+                        }
+                        return ""
+                    }
+                }, {
+                    data: 'sku'
+                }, {
+                    data: 'title'
+                }, {
+                    data: 'category.title'
+                }, {
+                    data: 'sellPrice'
+                }, {
+                    data: 'stock'
+                }
+
+            ],
+            'uid');
+
+        self.tableGrid.action.delete = doDelete;
+        self.tableGrid.action.deleteBulk = doDeleteBulk;
+
+        $('#sale-table').on('click', '.edit-data', function() {
+            var saleId = $(this).data("id");
+            showFormEdit(saleId);
+        });
+    }
+
+    function onLoad() {
+        self.renderTable();
+
+        $('body').on('click', '#sale-add', function() {
+            showFormCreate();
+        });
+    }
+
+    function showFormCreate() {
+        var form = self.form.controller(self.endpoint, null)
+
+        $.when(form.defer.promise()).done(function() {
+            self.tableGrid.reload();
+        });
+    }
+
+    function showFormEdit(id) {
+        $http.get(self.endpoint + "/" + id).done(function(model) {
+            var form = self.form.controller(self.endpoint, model.data[0])
+
+            $.when(form.defer.promise()).done(function() {
+                self.tableGrid.reload();
+            })
+        });
+    }
+
+    function doDelete(id) {
+        $http.delete(self.endpoint + "/" + id).done(function(model) {
+            self.tableGrid.reload();
+        });
+    }
+
+    function doDeleteBulk(ids) {
+        $http.post(self.endpoint + "/bulkdelete", {
+            ids: ids
+        }).done(function(ids) {
+            self.tableGrid.reload();
+        });
+    }
+};
+
+module.exports = saleController;
+},{"./form/sale.form.js":39}],42:[function(require,module,exports){
+(function (global){
+function saleModule($app) {
+
+	global.$app = $app;
+
+	return {
+		'controller': require('./sale.controller.js'),
+		'template': require('./sale.template.hbs'),
+	}
+};
+
+module.exports = saleModule;
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{"./sale.controller.js":41,"./sale.template.hbs":43}],43:[function(require,module,exports){
+// hbsfy compiled Handlebars template
+var HandlebarsCompiler = require('hbsfy/runtime');
+module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
+    var stack1, alias1=container.lambda, alias2=container.escapeExpression;
+
+  return "<section class=\"content-header\">\n    <h1>\n        "
+    + alias2(alias1(((stack1 = (depth0 != null ? depth0.lang : depth0)) != null ? stack1.module_sales : stack1), depth0))
+    + "\n        <small>\n            "
+    + alias2(alias1(((stack1 = (depth0 != null ? depth0.lang : depth0)) != null ? stack1.module_sales_desc : stack1), depth0))
+    + "\n        </small>\n    </h1>\n    <ol class=\"breadcrumb\">\n        <li><a href=\"#\"><i class=\"fa fa-dashboard\"></i>Home</a></li>\n        <li class=\"active\">"
+    + alias2(alias1(((stack1 = (depth0 != null ? depth0.lang : depth0)) != null ? stack1.module_sales : stack1), depth0))
+    + "</li>\n    </ol>\n</section>\n\n<section class=\"content\">\n    <div class=\"row\">\n        <div class=\"col-md-12\">\n            <div class=\"box\">\n                <div class=\"box-header\">\n                    <div class=\"row\">\n                        <div class=\"col-sm-6 \">\n                            <div class=\"btn-group\">\n                                <a href=\"../customers/delete\" id=\"delete-selected\" class=\"btn btn-sm btn-default\">\n                                    <i class=\"fa fa-trash\"></i> "
+    + alias2(alias1(((stack1 = (depth0 != null ? depth0.lang : depth0)) != null ? stack1.common_delete : stack1), depth0))
+    + "\n                                </a>\n                            </div>\n                        </div>\n\n                        <div class=\"col-sm-6 text-right\">\n                            <button id=\"sale-add\" class=\"btn btn-primary\">\n                                <i class=\"fa fa-plus\"></i> "
+    + alias2(alias1(((stack1 = (depth0 != null ? depth0.lang : depth0)) != null ? stack1.sale_new : stack1), depth0))
+    + "\n                            </button>\n\n                            <a class=\"btn btn-success\" id=\"import-excel\" href=\"../customers/excel_import\" data-target=\"#modal-container\">\n                                <i class=\"fa fa-file-excel-o\"></i> Excel Import\n                            </a>\n                        </div>\n                    </div>\n                </div>\n\n                <div class=\"box-body \">\n                    <table id=\"sale-table\" class=\"table table-bordered table-hover\">\n                        <thead>\n                            <tr>\n                                <th width=\"10px\">\n                                    <input type=\"checkbox\" id=\"select-all\" />\n                                </th>\n                                <th>Image</th>\n                                <th>SKU</th>\n                                <th>Title</th>\n                                <th>Category</th>\n                                <th>Sell Price</th>\n                                <th>Stock</th>\n                                <th width=\"50px\">Action</th>\n                            </tr>\n                        </thead>\n                    </table>\n                </div>\n\n                <div id=\"feedback_bar\"></div>\n            </div>\n        </div>\n    </div>\n</section>";
+},"useData":true});
+
+},{"hbsfy/runtime":113}],44:[function(require,module,exports){
 /*global $app $*/
 
 require('cropit');
@@ -2069,7 +2422,6 @@ function userFormController(endpoint, data) {
 
     var self = {
         load: onLoad,
-        onClose: onClose,
         modal: $app.$view.$modal,
         formId: "#user-form",
         data: data || {},
@@ -2210,14 +2562,10 @@ function userFormController(endpoint, data) {
             // do nothing
         });
     }
-
-    function onClose() {
-        return $.when(self.defer.promise());
-    }
 };
 
 module.exports = userFormController;
-},{"./user.form.template.hbs":40,"bootbox":44,"cropit":62}],39:[function(require,module,exports){
+},{"./user.form.template.hbs":46,"bootbox":50,"cropit":68}],45:[function(require,module,exports){
 (function (global){
 
 function customerFormModule ($app) {
@@ -2232,7 +2580,7 @@ function customerFormModule ($app) {
 
 module.exports = customerFormModule; 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./user.form.controller.js":38,"./user.form.template.hbs":40}],40:[function(require,module,exports){
+},{"./user.form.controller.js":44,"./user.form.template.hbs":46}],46:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
@@ -2269,7 +2617,7 @@ module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":f
     + "\">Delete This User</button>\n                        </div>\n                    </div>\n                </div>\n            </div>\n        </div>\n    </div>\n</div>\n\n<div class=\"modal-footer\">\n    <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">Close</button>\n    <button type=\"submit\" form=\"user-form\" class=\"btn btn-primary\">Save changes</button>\n</div>\n";
 },"useData":true});
 
-},{"hbsfy/runtime":107}],41:[function(require,module,exports){
+},{"hbsfy/runtime":113}],47:[function(require,module,exports){
 /*global $app $*/
 'use strict'
 
@@ -2313,7 +2661,6 @@ function userController() {
             var userId = $(this).data("id");
             showFormEdit(userId);
         });
-        
     }
 
     function onLoad() {
@@ -2325,16 +2672,18 @@ function userController() {
     }
 
     function showFormCreate() {
-        var modalForm = self.form.controller(self.endpoint)
-        modalForm.done(function(){
+        var form = self.form.controller(self.endpoint, null)
+
+        $.when(form.defer.promise()).done(function() {
             self.tableGrid.reload();
         });
     }
 
     function showFormEdit(id) {
         $http.get(self.endpoint + "/" + id).done(function(model) {
-            var modalForm = self.form.controller(self.endpoint, model.data[0])
-            modalForm.done(function(){
+            var form = self.form.controller(self.endpoint, model.data[0])
+
+            $.when(form.defer.promise()).done(function() {
                 self.tableGrid.reload();
             })
         });
@@ -2354,7 +2703,7 @@ function userController() {
 };
 
 module.exports = userController;
-},{"./form/user.form.js":39}],42:[function(require,module,exports){
+},{"./form/user.form.js":45}],48:[function(require,module,exports){
 (function (global){
 function userModule($app) {
 
@@ -2368,7 +2717,7 @@ function userModule($app) {
 
 module.exports = userModule;
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./user.controller.js":41,"./user.template.hbs":43}],43:[function(require,module,exports){
+},{"./user.controller.js":47,"./user.template.hbs":49}],49:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
@@ -2389,7 +2738,7 @@ module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":f
     + "\n                            </button>\n\n                            <a class=\"btn btn-success\" id=\"import-excel\" href=\"../customers/excel_import\" data-target=\"#modal-container\">\n                                <i class=\"fa fa-file-excel-o\"></i> Excel Import\n                            </a>\n                        </div>\n                    </div>\n                </div>\n\n                <div class=\"box-body \">\n                    <table id=\"user-table\" class=\"table table-bordered table-hover\">\n                        <thead>\n                            <tr>\n                                <th width=\"10px\">\n                                    <input type=\"checkbox\" id=\"select-all\" />\n                                </th>\n                                <th>User</th>\n                                <th>Email</th>\n                                <th width=\"50px\">Action</th>\n                            </tr>\n                        </thead>\n                    </table>\n                </div>\n\n                <div id=\"feedback_bar\"></div>\n            </div>\n        </div>\n    </div>\n</section>";
 },"useData":true});
 
-},{"hbsfy/runtime":107}],44:[function(require,module,exports){
+},{"hbsfy/runtime":113}],50:[function(require,module,exports){
 /**
  * bootbox.js [v4.4.0]
  *
@@ -3376,7 +3725,7 @@ module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":f
   return exports;
 }));
 
-},{"jquery":109}],45:[function(require,module,exports){
+},{"jquery":115}],51:[function(require,module,exports){
 /*
 * Project: Bootstrap Notify = v3.1.3
 * Description: Turns standard Bootstrap alerts into "Growl-like" notifications.
@@ -3731,7 +4080,7 @@ module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":f
 
 }));
 
-},{"jquery":109}],46:[function(require,module,exports){
+},{"jquery":115}],52:[function(require,module,exports){
 // This file is autogenerated via the `commonjs` Grunt task. You can require() this file in a CommonJS environment.
 require('../../js/transition.js')
 require('../../js/alert.js')
@@ -3745,7 +4094,7 @@ require('../../js/popover.js')
 require('../../js/scrollspy.js')
 require('../../js/tab.js')
 require('../../js/affix.js')
-},{"../../js/affix.js":47,"../../js/alert.js":48,"../../js/button.js":49,"../../js/carousel.js":50,"../../js/collapse.js":51,"../../js/dropdown.js":52,"../../js/modal.js":53,"../../js/popover.js":54,"../../js/scrollspy.js":55,"../../js/tab.js":56,"../../js/tooltip.js":57,"../../js/transition.js":58}],47:[function(require,module,exports){
+},{"../../js/affix.js":53,"../../js/alert.js":54,"../../js/button.js":55,"../../js/carousel.js":56,"../../js/collapse.js":57,"../../js/dropdown.js":58,"../../js/modal.js":59,"../../js/popover.js":60,"../../js/scrollspy.js":61,"../../js/tab.js":62,"../../js/tooltip.js":63,"../../js/transition.js":64}],53:[function(require,module,exports){
 /* ========================================================================
  * Bootstrap: affix.js v3.3.6
  * http://getbootstrap.com/javascript/#affix
@@ -3909,7 +4258,7 @@ require('../../js/affix.js')
 
 }(jQuery);
 
-},{}],48:[function(require,module,exports){
+},{}],54:[function(require,module,exports){
 /* ========================================================================
  * Bootstrap: alert.js v3.3.6
  * http://getbootstrap.com/javascript/#alerts
@@ -4005,7 +4354,7 @@ require('../../js/affix.js')
 
 }(jQuery);
 
-},{}],49:[function(require,module,exports){
+},{}],55:[function(require,module,exports){
 /* ========================================================================
  * Bootstrap: button.js v3.3.6
  * http://getbootstrap.com/javascript/#buttons
@@ -4127,7 +4476,7 @@ require('../../js/affix.js')
 
 }(jQuery);
 
-},{}],50:[function(require,module,exports){
+},{}],56:[function(require,module,exports){
 /* ========================================================================
  * Bootstrap: carousel.js v3.3.6
  * http://getbootstrap.com/javascript/#carousel
@@ -4366,7 +4715,7 @@ require('../../js/affix.js')
 
 }(jQuery);
 
-},{}],51:[function(require,module,exports){
+},{}],57:[function(require,module,exports){
 /* ========================================================================
  * Bootstrap: collapse.js v3.3.6
  * http://getbootstrap.com/javascript/#collapse
@@ -4579,7 +4928,7 @@ require('../../js/affix.js')
 
 }(jQuery);
 
-},{}],52:[function(require,module,exports){
+},{}],58:[function(require,module,exports){
 /* ========================================================================
  * Bootstrap: dropdown.js v3.3.6
  * http://getbootstrap.com/javascript/#dropdowns
@@ -4746,7 +5095,7 @@ require('../../js/affix.js')
 
 }(jQuery);
 
-},{}],53:[function(require,module,exports){
+},{}],59:[function(require,module,exports){
 /* ========================================================================
  * Bootstrap: modal.js v3.3.6
  * http://getbootstrap.com/javascript/#modals
@@ -5085,7 +5434,7 @@ require('../../js/affix.js')
 
 }(jQuery);
 
-},{}],54:[function(require,module,exports){
+},{}],60:[function(require,module,exports){
 /* ========================================================================
  * Bootstrap: popover.js v3.3.6
  * http://getbootstrap.com/javascript/#popovers
@@ -5195,7 +5544,7 @@ require('../../js/affix.js')
 
 }(jQuery);
 
-},{}],55:[function(require,module,exports){
+},{}],61:[function(require,module,exports){
 /* ========================================================================
  * Bootstrap: scrollspy.js v3.3.6
  * http://getbootstrap.com/javascript/#scrollspy
@@ -5369,7 +5718,7 @@ require('../../js/affix.js')
 
 }(jQuery);
 
-},{}],56:[function(require,module,exports){
+},{}],62:[function(require,module,exports){
 /* ========================================================================
  * Bootstrap: tab.js v3.3.6
  * http://getbootstrap.com/javascript/#tabs
@@ -5526,7 +5875,7 @@ require('../../js/affix.js')
 
 }(jQuery);
 
-},{}],57:[function(require,module,exports){
+},{}],63:[function(require,module,exports){
 /* ========================================================================
  * Bootstrap: tooltip.js v3.3.6
  * http://getbootstrap.com/javascript/#tooltip
@@ -6042,7 +6391,7 @@ require('../../js/affix.js')
 
 }(jQuery);
 
-},{}],58:[function(require,module,exports){
+},{}],64:[function(require,module,exports){
 /* ========================================================================
  * Bootstrap: transition.js v3.3.6
  * http://getbootstrap.com/javascript/#transitions
@@ -6103,9 +6452,9 @@ require('../../js/affix.js')
 
 }(jQuery);
 
-},{}],59:[function(require,module,exports){
+},{}],65:[function(require,module,exports){
 
-},{}],60:[function(require,module,exports){
+},{}],66:[function(require,module,exports){
 (function (process){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -6333,7 +6682,7 @@ var substr = 'ab'.substr(-1) === 'b'
 ;
 
 }).call(this,require('_process'))
-},{"_process":61}],61:[function(require,module,exports){
+},{"_process":67}],67:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -6429,7 +6778,7 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],62:[function(require,module,exports){
+},{}],68:[function(require,module,exports){
 /*! cropit - v0.5.0 <https://github.com/scottcheng/cropit> */
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
@@ -7640,7 +7989,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ ])
 });
 ;
-},{"jquery":109}],63:[function(require,module,exports){
+},{"jquery":115}],69:[function(require,module,exports){
 /*! DataTables 1.10.11
  * ©2008-2015 SpryMedia Ltd - datatables.net/license
  */
@@ -22909,7 +23258,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	return $.fn.dataTable;
 }));
 
-},{"jquery":109}],64:[function(require,module,exports){
+},{"jquery":115}],70:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -22976,7 +23325,7 @@ exports['default'] = inst;
 module.exports = exports['default'];
 
 
-},{"./handlebars.runtime":65,"./handlebars/compiler/ast":67,"./handlebars/compiler/base":68,"./handlebars/compiler/compiler":70,"./handlebars/compiler/javascript-compiler":72,"./handlebars/compiler/visitor":75,"./handlebars/no-conflict":89}],65:[function(require,module,exports){
+},{"./handlebars.runtime":71,"./handlebars/compiler/ast":73,"./handlebars/compiler/base":74,"./handlebars/compiler/compiler":76,"./handlebars/compiler/javascript-compiler":78,"./handlebars/compiler/visitor":81,"./handlebars/no-conflict":95}],71:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -23044,7 +23393,7 @@ exports['default'] = inst;
 module.exports = exports['default'];
 
 
-},{"./handlebars/base":66,"./handlebars/exception":79,"./handlebars/no-conflict":89,"./handlebars/runtime":90,"./handlebars/safe-string":91,"./handlebars/utils":92}],66:[function(require,module,exports){
+},{"./handlebars/base":72,"./handlebars/exception":85,"./handlebars/no-conflict":95,"./handlebars/runtime":96,"./handlebars/safe-string":97,"./handlebars/utils":98}],72:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -23150,7 +23499,7 @@ exports.createFrame = _utils.createFrame;
 exports.logger = _logger2['default'];
 
 
-},{"./decorators":77,"./exception":79,"./helpers":80,"./logger":88,"./utils":92}],67:[function(require,module,exports){
+},{"./decorators":83,"./exception":85,"./helpers":86,"./logger":94,"./utils":98}],73:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -23183,7 +23532,7 @@ exports['default'] = AST;
 module.exports = exports['default'];
 
 
-},{}],68:[function(require,module,exports){
+},{}],74:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -23233,7 +23582,7 @@ function parse(input, options) {
 }
 
 
-},{"../utils":92,"./helpers":71,"./parser":73,"./whitespace-control":76}],69:[function(require,module,exports){
+},{"../utils":98,"./helpers":77,"./parser":79,"./whitespace-control":82}],75:[function(require,module,exports){
 /* global define */
 'use strict';
 
@@ -23401,7 +23750,7 @@ exports['default'] = CodeGen;
 module.exports = exports['default'];
 
 
-},{"../utils":92,"source-map":94}],70:[function(require,module,exports){
+},{"../utils":98,"source-map":100}],76:[function(require,module,exports){
 /* eslint-disable new-cap */
 
 'use strict';
@@ -23975,7 +24324,7 @@ function transformLiteralToPath(sexpr) {
 }
 
 
-},{"../exception":79,"../utils":92,"./ast":67}],71:[function(require,module,exports){
+},{"../exception":85,"../utils":98,"./ast":73}],77:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -24207,7 +24556,7 @@ function preparePartialBlock(open, program, close, locInfo) {
 }
 
 
-},{"../exception":79}],72:[function(require,module,exports){
+},{"../exception":85}],78:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -25335,7 +25684,7 @@ exports['default'] = JavaScriptCompiler;
 module.exports = exports['default'];
 
 
-},{"../base":66,"../exception":79,"../utils":92,"./code-gen":69}],73:[function(require,module,exports){
+},{"../base":72,"../exception":85,"../utils":98,"./code-gen":75}],79:[function(require,module,exports){
 /* istanbul ignore next */
 /* Jison generated parser */
 "use strict";
@@ -26075,7 +26424,7 @@ var handlebars = (function () {
 exports['default'] = handlebars;
 
 
-},{}],74:[function(require,module,exports){
+},{}],80:[function(require,module,exports){
 /* eslint-disable new-cap */
 'use strict';
 
@@ -26263,7 +26612,7 @@ PrintVisitor.prototype.HashPair = function (pair) {
 /* eslint-enable new-cap */
 
 
-},{"./visitor":75}],75:[function(require,module,exports){
+},{"./visitor":81}],81:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -26405,7 +26754,7 @@ exports['default'] = Visitor;
 module.exports = exports['default'];
 
 
-},{"../exception":79}],76:[function(require,module,exports){
+},{"../exception":85}],82:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -26628,7 +26977,7 @@ exports['default'] = WhitespaceControl;
 module.exports = exports['default'];
 
 
-},{"./visitor":75}],77:[function(require,module,exports){
+},{"./visitor":81}],83:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -26646,7 +26995,7 @@ function registerDefaultDecorators(instance) {
 }
 
 
-},{"./decorators/inline":78}],78:[function(require,module,exports){
+},{"./decorators/inline":84}],84:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -26677,7 +27026,7 @@ exports['default'] = function (instance) {
 module.exports = exports['default'];
 
 
-},{"../utils":92}],79:[function(require,module,exports){
+},{"../utils":98}],85:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -26719,7 +27068,7 @@ exports['default'] = Exception;
 module.exports = exports['default'];
 
 
-},{}],80:[function(require,module,exports){
+},{}],86:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -26767,7 +27116,7 @@ function registerDefaultHelpers(instance) {
 }
 
 
-},{"./helpers/block-helper-missing":81,"./helpers/each":82,"./helpers/helper-missing":83,"./helpers/if":84,"./helpers/log":85,"./helpers/lookup":86,"./helpers/with":87}],81:[function(require,module,exports){
+},{"./helpers/block-helper-missing":87,"./helpers/each":88,"./helpers/helper-missing":89,"./helpers/if":90,"./helpers/log":91,"./helpers/lookup":92,"./helpers/with":93}],87:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -26808,7 +27157,7 @@ exports['default'] = function (instance) {
 module.exports = exports['default'];
 
 
-},{"../utils":92}],82:[function(require,module,exports){
+},{"../utils":98}],88:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -26904,7 +27253,7 @@ exports['default'] = function (instance) {
 module.exports = exports['default'];
 
 
-},{"../exception":79,"../utils":92}],83:[function(require,module,exports){
+},{"../exception":85,"../utils":98}],89:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -26931,7 +27280,7 @@ exports['default'] = function (instance) {
 module.exports = exports['default'];
 
 
-},{"../exception":79}],84:[function(require,module,exports){
+},{"../exception":85}],90:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -26962,7 +27311,7 @@ exports['default'] = function (instance) {
 module.exports = exports['default'];
 
 
-},{"../utils":92}],85:[function(require,module,exports){
+},{"../utils":98}],91:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -26990,7 +27339,7 @@ exports['default'] = function (instance) {
 module.exports = exports['default'];
 
 
-},{}],86:[function(require,module,exports){
+},{}],92:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -27004,7 +27353,7 @@ exports['default'] = function (instance) {
 module.exports = exports['default'];
 
 
-},{}],87:[function(require,module,exports){
+},{}],93:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -27039,7 +27388,7 @@ exports['default'] = function (instance) {
 module.exports = exports['default'];
 
 
-},{"../utils":92}],88:[function(require,module,exports){
+},{"../utils":98}],94:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -27088,7 +27437,7 @@ exports['default'] = logger;
 module.exports = exports['default'];
 
 
-},{"./utils":92}],89:[function(require,module,exports){
+},{"./utils":98}],95:[function(require,module,exports){
 (function (global){
 /* global window */
 'use strict';
@@ -27112,7 +27461,7 @@ module.exports = exports['default'];
 
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],90:[function(require,module,exports){
+},{}],96:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -27406,7 +27755,7 @@ function executeDecorators(fn, prog, container, depths, data, blockParams) {
 }
 
 
-},{"./base":66,"./exception":79,"./utils":92}],91:[function(require,module,exports){
+},{"./base":72,"./exception":85,"./utils":98}],97:[function(require,module,exports){
 // Build out our basic SafeString type
 'use strict';
 
@@ -27423,7 +27772,7 @@ exports['default'] = SafeString;
 module.exports = exports['default'];
 
 
-},{}],92:[function(require,module,exports){
+},{}],98:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -27549,7 +27898,7 @@ function appendContextPath(contextPath, id) {
 }
 
 
-},{}],93:[function(require,module,exports){
+},{}],99:[function(require,module,exports){
 // USAGE:
 // var handlebars = require('handlebars');
 /* eslint-disable no-var */
@@ -27576,7 +27925,7 @@ if (typeof require !== 'undefined' && require.extensions) {
   require.extensions['.hbs'] = extension;
 }
 
-},{"../dist/cjs/handlebars":64,"../dist/cjs/handlebars/compiler/printer":74,"fs":59}],94:[function(require,module,exports){
+},{"../dist/cjs/handlebars":70,"../dist/cjs/handlebars/compiler/printer":80,"fs":65}],100:[function(require,module,exports){
 /*
  * Copyright 2009-2011 Mozilla Foundation and contributors
  * Licensed under the New BSD license. See LICENSE.txt or:
@@ -27586,7 +27935,7 @@ exports.SourceMapGenerator = require('./source-map/source-map-generator').Source
 exports.SourceMapConsumer = require('./source-map/source-map-consumer').SourceMapConsumer;
 exports.SourceNode = require('./source-map/source-node').SourceNode;
 
-},{"./source-map/source-map-consumer":101,"./source-map/source-map-generator":102,"./source-map/source-node":103}],95:[function(require,module,exports){
+},{"./source-map/source-map-consumer":107,"./source-map/source-map-generator":108,"./source-map/source-node":109}],101:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2011 Mozilla Foundation and contributors
@@ -27695,7 +28044,7 @@ define(function (require, exports, module) {
 
 });
 
-},{"./util":104,"amdefine":105}],96:[function(require,module,exports){
+},{"./util":110,"amdefine":111}],102:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2011 Mozilla Foundation and contributors
@@ -27843,7 +28192,7 @@ define(function (require, exports, module) {
 
 });
 
-},{"./base64":97,"amdefine":105}],97:[function(require,module,exports){
+},{"./base64":103,"amdefine":111}],103:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2011 Mozilla Foundation and contributors
@@ -27918,7 +28267,7 @@ define(function (require, exports, module) {
 
 });
 
-},{"amdefine":105}],98:[function(require,module,exports){
+},{"amdefine":111}],104:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2011 Mozilla Foundation and contributors
@@ -28037,7 +28386,7 @@ define(function (require, exports, module) {
 
 });
 
-},{"amdefine":105}],99:[function(require,module,exports){
+},{"amdefine":111}],105:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2014 Mozilla Foundation and contributors
@@ -28125,7 +28474,7 @@ define(function (require, exports, module) {
 
 });
 
-},{"./util":104,"amdefine":105}],100:[function(require,module,exports){
+},{"./util":110,"amdefine":111}],106:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2011 Mozilla Foundation and contributors
@@ -28247,7 +28596,7 @@ define(function (require, exports, module) {
 
 });
 
-},{"amdefine":105}],101:[function(require,module,exports){
+},{"amdefine":111}],107:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2011 Mozilla Foundation and contributors
@@ -29326,7 +29675,7 @@ define(function (require, exports, module) {
 
 });
 
-},{"./array-set":95,"./base64-vlq":96,"./binary-search":98,"./quick-sort":100,"./util":104,"amdefine":105}],102:[function(require,module,exports){
+},{"./array-set":101,"./base64-vlq":102,"./binary-search":104,"./quick-sort":106,"./util":110,"amdefine":111}],108:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2011 Mozilla Foundation and contributors
@@ -29727,7 +30076,7 @@ define(function (require, exports, module) {
 
 });
 
-},{"./array-set":95,"./base64-vlq":96,"./mapping-list":99,"./util":104,"amdefine":105}],103:[function(require,module,exports){
+},{"./array-set":101,"./base64-vlq":102,"./mapping-list":105,"./util":110,"amdefine":111}],109:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2011 Mozilla Foundation and contributors
@@ -30143,7 +30492,7 @@ define(function (require, exports, module) {
 
 });
 
-},{"./source-map-generator":102,"./util":104,"amdefine":105}],104:[function(require,module,exports){
+},{"./source-map-generator":108,"./util":110,"amdefine":111}],110:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2011 Mozilla Foundation and contributors
@@ -30515,7 +30864,7 @@ define(function (require, exports, module) {
 
 });
 
-},{"amdefine":105}],105:[function(require,module,exports){
+},{"amdefine":111}],111:[function(require,module,exports){
 (function (process,__filename){
 /** vim: et:ts=4:sw=4:sts=4
  * @license amdefine 1.0.0 Copyright (c) 2011-2015, The Dojo Foundation All Rights Reserved.
@@ -30820,15 +31169,15 @@ function amdefine(module, requireFn) {
 module.exports = amdefine;
 
 }).call(this,require('_process'),"/node_modules/handlebars/node_modules/source-map/node_modules/amdefine/amdefine.js")
-},{"_process":61,"path":60}],106:[function(require,module,exports){
+},{"_process":67,"path":66}],112:[function(require,module,exports){
 // Create a simple path alias to allow browserify to resolve
 // the runtime on a supported path.
 module.exports = require('./dist/cjs/handlebars.runtime')['default'];
 
-},{"./dist/cjs/handlebars.runtime":65}],107:[function(require,module,exports){
+},{"./dist/cjs/handlebars.runtime":71}],113:[function(require,module,exports){
 module.exports = require("handlebars/runtime")["default"];
 
-},{"handlebars/runtime":106}],108:[function(require,module,exports){
+},{"handlebars/runtime":112}],114:[function(require,module,exports){
 /*!
  * jQuery Validation Plugin v1.15.0
  *
@@ -32361,7 +32710,7 @@ if ( $.ajaxPrefilter ) {
 }
 
 }));
-},{"jquery":109}],109:[function(require,module,exports){
+},{"jquery":115}],115:[function(require,module,exports){
 /*!
  * jQuery JavaScript Library v2.2.3
  * http://jquery.com/
@@ -42205,7 +42554,7 @@ if ( !noGlobal ) {
 return jQuery;
 }));
 
-},{}],110:[function(require,module,exports){
+},{}],116:[function(require,module,exports){
 /**
  * selectize.js (v0.12.1)
  * Copyright (c) 2013–2015 Brian Reavis & contributors
@@ -45264,7 +45613,7 @@ return jQuery;
 
 	return Selectize;
 }));
-},{"jquery":109,"microplugin":111,"sifter":112}],111:[function(require,module,exports){
+},{"jquery":115,"microplugin":117,"sifter":118}],117:[function(require,module,exports){
 /**
  * microplugin.js
  * Copyright (c) 2013 Brian Reavis & contributors
@@ -45400,7 +45749,7 @@ return jQuery;
 
 	return MicroPlugin;
 }));
-},{}],112:[function(require,module,exports){
+},{}],118:[function(require,module,exports){
 /**
  * sifter.js
  * Copyright (c) 2013 Brian Reavis & contributors
@@ -45873,7 +46222,7 @@ return jQuery;
 }));
 
 
-},{}],113:[function(require,module,exports){
+},{}],119:[function(require,module,exports){
 /*! DataTables Bootstrap 3 integration
  * ©2011-2015 SpryMedia Ltd - datatables.net/license
  */
@@ -46056,7 +46405,7 @@ DataTable.ext.renderer.pageButton.bootstrap = function ( settings, host, idx, bu
 
 return DataTable;
 }));
-},{"datatables.net":63}],114:[function(require,module,exports){
+},{"datatables.net":69}],120:[function(require,module,exports){
 /*! DataTables 1.10.11
  * ©2008-2015 SpryMedia Ltd - datatables.net/license
  */
@@ -61326,4 +61675,4 @@ return DataTable;
 	return $.fn.dataTable;
 }));
 
-},{"jquery":109}]},{},[25]);
+},{"jquery":115}]},{},[25]);

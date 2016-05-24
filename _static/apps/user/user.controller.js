@@ -41,7 +41,6 @@ function userController() {
             var userId = $(this).data("id");
             showFormEdit(userId);
         });
-        
     }
 
     function onLoad() {
@@ -53,16 +52,18 @@ function userController() {
     }
 
     function showFormCreate() {
-        var modalForm = self.form.controller(self.endpoint)
-        modalForm.done(function(){
+        var form = self.form.controller(self.endpoint, null)
+
+        $.when(form.defer.promise()).done(function() {
             self.tableGrid.reload();
         });
     }
 
     function showFormEdit(id) {
         $http.get(self.endpoint + "/" + id).done(function(model) {
-            var modalForm = self.form.controller(self.endpoint, model.data[0])
-            modalForm.done(function(){
+            var form = self.form.controller(self.endpoint, model.data[0])
+
+            $.when(form.defer.promise()).done(function() {
                 self.tableGrid.reload();
             })
         });

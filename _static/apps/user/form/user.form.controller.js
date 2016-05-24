@@ -12,7 +12,6 @@ function userFormController(endpoint, data) {
 
     var self = {
         load: onLoad,
-        onClose: onClose,
         modal: $app.$view.$modal,
         formId: "#user-form",
         data: data || {},
@@ -152,10 +151,6 @@ function userFormController(endpoint, data) {
         }, function() {
             // do nothing
         });
-    }
-
-    function onClose() {
-        return $.when(self.defer.promise());
     }
 };
 

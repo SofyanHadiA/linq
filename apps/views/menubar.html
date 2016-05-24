@@ -1,0 +1,49 @@
+{{define "menubar"}}
+<aside class="main-sidebar">
+    <section class="sidebar">
+        <div class="user-panel">
+            <div class="pull-left image">
+                <img src="{{.BaseUrl}}vendors/theme/dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">
+            </div>
+            <div class="pull-left info">
+                <p>Sofyan Hadi Ahmad</p>
+                <!-- Status -->
+                <a href="#"><i class="fa fa-circle text-warning"></i> Online</a>
+            </div>
+        </div>
+
+        <ul class="sidebar-menu">
+            <li class="header">NAVIGATION</li>
+            <li class="treeview">
+                <a href="#">
+                    <i class="fa fa-shopping-cart"></i> <span>Sales</span> <i class="fa fa-angle-left pull-right"></i>
+                </a>
+                <ul class="treeview-menu" style="display: none;">
+                    <li><a href="#sale"><i class="fa fa-circle-o"></i>Manage Sales</a></li>
+                    <li><a href="./pos" target="_blank"><i class="fa fa-circle-o"></i>Open POS</a></li>
+                </ul>
+            </li>
+            <li class="treeview">
+                <a href="#">
+                    <i class="fa fa-th"></i> <span>Product</span> <i class="fa fa-angle-left pull-right"></i>
+                </a>
+                <ul class="treeview-menu" style="display: none;">
+                    <li><a href="#product"><i class="fa fa-circle-o"></i>Product</a></li>
+                    <li><a href="#product-category"><i class="fa fa-circle-o"></i>Category</a></li>
+                </ul>
+            </li>
+            <li class="treeview">
+                <a href="#">
+                    <i class="fa fa-users"></i> <span>Customer</span> <i class="fa fa-angle-left pull-right"></i>
+                </a>
+                <ul class="treeview-menu" style="display: none;">
+                    <li><a href="#sale"><i class="fa fa-circle-o"></i>Manage Customer</a></li>
+                    <li><a href="#report-customer"><i class="fa fa-circle-o"></i>Customer Sales Report</a></li>
+                </ul>
+            </li>
+            <li><a href="#user"><i class="fa fa-user"></i><span>User</span></a></li>
+
+        </ul>
+    </section>
+</aside>
+{{end}}
