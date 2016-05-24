@@ -8,7 +8,8 @@ var $handlebars = require('handlebars');
 function loaderModule() {
 
     var self = {
-        load: load
+        load: load,
+        module: []
     }
 
     return self;
@@ -18,19 +19,29 @@ function loaderModule() {
         var hash = location.hash.replace(/^#/, '') || config.route.default;
         var appView = config.view.appView || 'app-view';
         $(appView).html('<div class="spinner text-center"><div class="dots-loader">Loading…</div></div>');
-        var module = $app.$module.resolve(hash);
+        
+        if(self.module[hash] ){
+            $app.$view.render(self.module[hash].template, self.module[hash].model, appView);
+            self.module[hash].controller.renderTable();
+            
+        }else{
+            self.module[hash] = $app.$module.resolve(hash);
+            
+            if (self.module[hash].templateUrl) {
+                $app.$http.get(self.module[hash].templateUrl).then(function(response) {
+                    self.module[hash].template = response;
+                    $app.$view.render(self.module[hash].template, self.module[hash].model, appView);
+                });
+            }
+            else {
+                $app.$view.render(self.module[hash].template, self.module[hash].model, appView);
+    
+            }
+            
+            self.module[hash].controller = self.module[hash].controller();
+        }
 
-        if (module.templateUrl) {
-            $app.$http.get(module.templateUrl).then(function(response) {
-                module.template = response;
-                $view.render(module.template, module.model, appView);
-                module.controller();
-            });
-        }
-        else {
-            $app.$view.render(module.template, module.model, appView);
-            module.controller();
-        }
+        $('body').find(".modal").remove();
     };
 };
 

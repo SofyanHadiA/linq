@@ -7,6 +7,10 @@ import (
 	"github.com/SofyanHadiA/linq/core/utils"
 )
 
+const (
+	VIEW_LOCATION = "apps/views/"
+)
+
 type ViewData struct {
 	BaseUrl   string
 	PageTitle string
@@ -16,11 +20,11 @@ type ViewData struct {
 
 var viewData ViewData
 
-var mainTemplate string = "views/template.html"
-var headerTemplate string = "views/header.html"
-var footerTemplate string = "views/footer.html"
-var sidebarTemplate string = "views/sidebar.html"
-var menubarTemplate string = "views/menubar.html"
+var mainTemplate string = VIEW_LOCATION + "template.html"
+var headerTemplate string = VIEW_LOCATION + "header.html"
+var footerTemplate string = VIEW_LOCATION + "footer.html"
+var sidebarTemplate string = VIEW_LOCATION + "sidebar.html"
+var menubarTemplate string = VIEW_LOCATION + "menubar.html"
 
 func init() {
 	viewData = ViewData{

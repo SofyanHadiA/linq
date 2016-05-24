@@ -49,15 +49,19 @@ func (repo productCategoryRepository) GetAll(paging utils.Paging) (IModels, erro
 		query += ` AND (title LIKE '%?%') `
 	}
 
-	if paging.Order > 0 {
-		var columnMap string
-		switch paging.Order {
-		case 1:
-			columnMap = "title"
-		}
-
-		query += fmt.Sprintf(" ORDER BY %s %s ", columnMap, paging.OrderDir)
+	var columnMap string
+	switch paging.Order {
+	case 1:
+		columnMap = "title"
+	case 2:
+		columnMap = "slug"
+	case 3:
+		columnMap = "description"
+	default:
+		columnMap = "created"
 	}
+
+	query += fmt.Sprintf(" ORDER BY %s %s ", columnMap, paging.OrderDir)
 
 	if paging.Length > 0 {
 		query += fmt.Sprintf(" LIMIT %d ", paging.Length)

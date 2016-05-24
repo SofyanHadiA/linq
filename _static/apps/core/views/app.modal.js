@@ -6,7 +6,7 @@ function modalModule() {
         modalId: "",
         show: show,
         hide: doHide,
-        promise : {},
+        promise: {},
         generateId: generateId
     };
 
@@ -17,29 +17,26 @@ function modalModule() {
         self.modalId = config.modalId || self.generateId();
         var renderedTemplate = $app.$view.render(template, model);
 
-        $('body').append('<div class="modal" id="' + self.modalId + '" tabindex="-1" role="dialog">' 
-            + '<div class="modal-dialog modal-' + config.size + '">' + '<div class="modal-content">'
-            + renderedTemplate 
-            + '</div></div></div>');
+        $('body').append('<div class="modal" id="' + self.modalId + '" tabindex="-1" role="dialog">' + '<div class="modal-dialog modal-' + config.size + '">' + '<div class="modal-content">' + renderedTemplate + '</div></div></div>');
 
         $('#' + self.modalId).modal("show");
 
         $(document).on('hidden.bs.modal', '#' + self.modalId, function() {
-            $('body').find('#' + self.modalId).remove();
+            $('body #' + self.modalId).remove();
             defer.done();
         });
 
         self.promise = defer.promise();
-        
+
         return self;
     };
-    
-    function doHide(){
+
+    function doHide() {
         $('#' + self.modalId).modal("hide");
         return self;
     }
-    
-    function generateId(){
+
+    function generateId() {
         return "modal-container-" + (Math.random() + 1).toString(36).substring(7)
     }
 };

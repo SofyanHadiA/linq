@@ -1,23 +1,18 @@
 /*global $app $*/
 
 require('cropit');
-var bootbox = require('bootbox');
-
 
 function productFormController(endpoint, data) {
     var $modal = $app.$view.$modal;
     var $form = $app.$view.$form;
     var $http = $app.$http;
-    var $notify = $app.$notify;
 
     var self = {
         load: onLoad,
-        close: onClose,
         modal: $app.$view.$modal,
         formId: "#product-form",
         data: data || {},
         isPhotoChanged: false,
-        promise: {},
         defer: $.Deferred(),
         formConfig: {
             rules: {
@@ -26,6 +21,9 @@ function productFormController(endpoint, data) {
                     required: true
                 },
                 sellPrice: {
+                    required: true
+                },
+                stock: {
                     required: true
                 },
                 categoryId: {
@@ -40,9 +38,9 @@ function productFormController(endpoint, data) {
     return self;
 
     function onLoad() {
-        var modalConfig = {
+        self.modalConfig = self.modalConfig || {
             size: 'lg',
-            modalId: self.modal.generateId()
+            modalId: "product-modal"
         }
 
         var input = {
@@ -52,10 +50,14 @@ function productFormController(endpoint, data) {
             buyPriceInput: $form.input("buyPrice").setValue(self.data["buyPrice"], 0),
             sellPriceInput: $form.input("sellPrice").setValue(self.data["sellPrice"], 0).setClass("required"),
             stockInput: $form.input("stock").setValue(self.data["stock"], 0).setClass("required"),
-            categoryInput: $form.input("categoryId").setValue(self.data["categoryId"]).setClass("required")
+            categoryInput: $form.input("categoryId").setClass("required")
         };
+        
+        if(self.data.category){
+            input.categoryInput.setSelected(self.data["categoryId"], self.data["category"]["title"]);
+        }
 
-        self.modal = $modal.show(require('./product.form.template.hbs'), input, modalConfig);
+        self.modal = $modal.show(require('./product.form.template.hbs'), input, self.modalConfig);
 
         $form.create(self.formId)
             .config(self.formConfig)
@@ -109,13 +111,6 @@ function productFormController(endpoint, data) {
         }
     }
 
-    function doDelete(id) {
-        $http.delete(endpoint + "/" + id).success(function(model) {
-            self.modal.hide();
-            onClose();
-        });
-    }
-
     function onDone(data) {
         $.when(uploadPhoto(data.uid)).then(function() {
             self.modal.hide();
@@ -125,12 +120,9 @@ function productFormController(endpoint, data) {
         });
     }
 
-    function onClose() {
-        return $.when(self.defer.promise());
-    }
-
     function renderCategoryDropDown() {
         $('body #categoryId').selectize({
+            persist: true,
             valueField: 'uid',
             labelField: 'title',
             searchField: 'title',
@@ -138,7 +130,7 @@ function productFormController(endpoint, data) {
             load: function(query, callback) {
                 if (!query.length) return callback();
                 $.ajax({
-                    url: 'https://linq-sofyan-a-1.c9users.io/api/v1/productcategories',
+                    url: './api/v1/productcategories',
                     type: 'GET',
                     error: function() {
                         callback();
