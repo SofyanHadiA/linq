@@ -168,7 +168,7 @@ var $app = {
 
 module.exports = $app;
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./../language/en.js":24,"./app.http.js":2,"./app.loader.js":4,"./app.module.js":5,"./app.notify.js":6,"./app.tablegrid.js":7,"./views/app.view.js":10,"bootstrap":52,"handlebars":99,"jquery":115}],4:[function(require,module,exports){
+},{"./../language/en.js":24,"./app.http.js":2,"./app.loader.js":4,"./app.module.js":5,"./app.notify.js":6,"./app.tablegrid.js":7,"./views/app.view.js":10,"bootstrap":55,"handlebars":102,"jquery":118}],4:[function(require,module,exports){
 /*
  * Page loader core module 
  */
@@ -217,7 +217,7 @@ function loaderModule() {
 };
 
 module.exports = loaderModule;
-},{"handlebars":99}],5:[function(require,module,exports){
+},{"handlebars":102}],5:[function(require,module,exports){
 function moduleModule() {
     var self = {
         modules: {},
@@ -272,7 +272,7 @@ function notifyModule() {
 }
 
 module.exports = notifyModule; 
-},{"bootstrap-notify":51}],7:[function(require,module,exports){
+},{"bootstrap-notify":54}],7:[function(require,module,exports){
 var bootbox = require('bootbox');
 require('./../../vendors/datatables/media/js/jquery.dataTables.js');
 require('./../../vendors/datatables/media/js/dataTables.bootstrap.js');
@@ -402,7 +402,7 @@ function tableGridModule() {
 };
 
 module.exports = tableGridModule;
-},{"./../../vendors/datatables/media/js/dataTables.bootstrap.js":119,"./../../vendors/datatables/media/js/jquery.dataTables.js":120,"bootbox":50}],8:[function(require,module,exports){
+},{"./../../vendors/datatables/media/js/dataTables.bootstrap.js":122,"./../../vendors/datatables/media/js/jquery.dataTables.js":123,"bootbox":53}],8:[function(require,module,exports){
 var $ = jQuery;
 var $selectize = require('../../../node_modules/selectize/dist/js/selectize.js');
 require('../../../node_modules/jquery-validation/dist/jquery.validate.js');
@@ -538,7 +538,7 @@ var formModule = function() {
 
 module.exports = formModule();
 
-},{"../../../node_modules/jquery-validation/dist/jquery.validate.js":114,"../../../node_modules/selectize/dist/js/selectize.js":116}],9:[function(require,module,exports){
+},{"../../../node_modules/jquery-validation/dist/jquery.validate.js":117,"../../../node_modules/selectize/dist/js/selectize.js":119}],9:[function(require,module,exports){
 var $ = jQuery;
 
 function modalModule() {
@@ -611,7 +611,7 @@ function viewModule() {
 }
 
 module.exports = viewModule();
-},{"./../../language/en.js":24,"./app.form.js":8,"./app.modal.js":9,"handlebars":99}],11:[function(require,module,exports){
+},{"./../../language/en.js":24,"./app.form.js":8,"./app.modal.js":9,"handlebars":102}],11:[function(require,module,exports){
 function customerController() {
 
     var $ = $app.$;
@@ -698,7 +698,7 @@ module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":f
     + "\n                            </button>\n\n                            <a class=\"btn btn-success\" id=\"import-excel\" href=\"../customers/excel_import\" data-target=\"#modal-container\">\n                                <i class=\"fa fa-file-excel-o\"></i> Excel Import\n                            </a>\n                        </div>\n                    </div>\n                </div>\n\n                <div class=\"box-body \">\n                    <table id=\"customer-table\" class=\"table table-bordered table-hover\">\n                        <thead>\n                            <tr>\n                                <th width=\"10px\">\n                                    <input type=\"checkbox\" id=\"select-all\" />\n                                </th>\n                                <th>Last Name</th>\n                                <th>First Name</th>\n                                <th>Email</th>\n                                <th>Phone</th>\n                                <th width=\"50px\">Action</th>\n                            </tr>\n                        </thead>\n                    </table>\n                </div>\n\n                <div id=\"feedback_bar\"></div>\n            </div>\n        </div>\n    </div>\n</section>";
 },"useData":true});
 
-},{"hbsfy/runtime":113}],15:[function(require,module,exports){
+},{"hbsfy/runtime":116}],15:[function(require,module,exports){
 function customerFormController() {
 
     var $modal = $app.$modal;
@@ -784,7 +784,7 @@ module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":f
     + "\" />                        \n                    </div>\n                </div>\n            </div>\n\n            <?php $this->load->view(\"people/form_basic_info\"); ?>\n\n            <div class=\"col-sm-6\">\n                <div class=\"form-group\">\n                    <?php echo form_label($this->lang->line('customers_taxable'), 'taxable', array('class' => 'col-sm-4 control-label')); ?>\n                    <div class='col-sm-8'>\n                        <div class=\"checkbox\">\n                            <label>\n                                <?php echo form_checkbox('taxable', '1', $person_info->taxable == '' ? TRUE : (boolean)$person_info->taxable); ?>\n                            </label>\n                        </div>\n                    </div>\n                </div>\n            </div>\n        </div>\n\n    </fieldset>    \n    </form>    \n</div>\n\n<div class=\"modal-footer\">\n    <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">Close</button>\n    <button type=\"submit\" form=\"customer_form\" class=\"btn btn-primary\">Save changes</button>\n</div>\n\n";
 },"useData":true});
 
-},{"hbsfy/runtime":113}],18:[function(require,module,exports){
+},{"hbsfy/runtime":116}],18:[function(require,module,exports){
 module.exports = {
 	controller: {},
 	model:{},
@@ -878,7 +878,7 @@ module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":f
     return "<section class=\"content-header\"></section> \n<section class=\"content\"> \n    <div class=\"row\"> \n        <div class=\"col-md-12\"> \n            <div class=\"box\"> \n                <div class=\"box-body\"> \n                    <dashboard-content/> \n                </div> \n            </div> \n        </div> \n    </div> \n</section>";
 },"useData":true});
 
-},{"hbsfy/runtime":113}],24:[function(require,module,exports){
+},{"hbsfy/runtime":116}],24:[function(require,module,exports){
 module.exports = {
 	slug: "Slug",
 	description: "Description",
@@ -1511,6 +1511,7 @@ var $app = require('./core/app.js');
 $app.$module.register('home', require('./home/home.js')($app));
 $app.$module.register('user', require('./user/user.js')($app));
 $app.$module.register('sale', require('./sale/sale.js')($app));
+$app.$module.register('pos', require('./pos/pos.js')($app));
 $app.$module.register('product', require('./product/product.js')($app));
 $app.$module.register('product-category', require('./productCategory/productCategory.js')($app));
 $app.$module.register('customers', require('./customer/customer.js')($app));
@@ -1520,7 +1521,126 @@ var config = require('./config.js');
 
 // start the application
 $app.start(config);
-},{"./config.js":1,"./core/app.js":3,"./customer/customer.js":12,"./home/home.js":21,"./product/product.js":30,"./productCategory/productCategory.js":36,"./sale/sale.js":42,"./user/user.js":48}],26:[function(require,module,exports){
+},{"./config.js":1,"./core/app.js":3,"./customer/customer.js":12,"./home/home.js":21,"./pos/pos.js":27,"./product/product.js":33,"./productCategory/productCategory.js":39,"./sale/sale.js":45,"./user/user.js":51}],26:[function(require,module,exports){
+/*global $app $*/
+'use strict'
+
+function posController() {
+    var $ = $app.$;
+    var $notify = $app.$notify;
+    var $tablegrid = $app.$tablegrid;
+    var $modal = $app.$modal;
+    var $http = $app.$http;
+
+    var self = {
+        tableGrid: {},
+        load: onLoad,
+        renderTable: renderTable,
+        endpoint: 'api/v1/poss'
+    };
+
+    self.load();
+
+    return self;
+
+    function renderTable() {
+        self.tableGrid = $tablegrid.render("#pos-table", self.endpoint, [{
+                    sortable: false,
+                    data: null,
+                    "render": function(data, type, full) {
+                        if (full['image']) {
+                            return '<img class="table-image" src="./uploads/pos_photos/' + full['image'] + '" />'
+                        }
+                        return ""
+                    }
+                }, {
+                    data: 'sku'
+                }, {
+                    data: 'title'
+                }, {
+                    data: 'category.title'
+                }, {
+                    data: 'sellPrice'
+                }, {
+                    data: 'stock'
+                }
+
+            ],
+            'uid');
+
+        self.tableGrid.action.delete = doDelete;
+        self.tableGrid.action.deleteBulk = doDeleteBulk;
+
+        $('#pos-table').on('click', '.edit-data', function() {
+            var posId = $(this).data("id");
+            showFormEdit(posId);
+        });
+    }
+
+    function onLoad() {
+        self.renderTable();
+
+        $('body').on('click', '#pos-add', function() {
+            showFormCreate();
+        });
+    }
+
+    function showFormCreate() {
+        var form = self.form.controller(self.endpoint, null)
+
+        $.when(form.defer.promise()).done(function() {
+            self.tableGrid.reload();
+        });
+    }
+
+    function showFormEdit(id) {
+        $http.get(self.endpoint + "/" + id).done(function(model) {
+            var form = self.form.controller(self.endpoint, model.data[0])
+
+            $.when(form.defer.promise()).done(function() {
+                self.tableGrid.reload();
+            })
+        });
+    }
+
+    function doDelete(id) {
+        $http.delete(self.endpoint + "/" + id).done(function(model) {
+            self.tableGrid.reload();
+        });
+    }
+
+    function doDeleteBulk(ids) {
+        $http.post(self.endpoint + "/bulkdelete", {
+            ids: ids
+        }).done(function(ids) {
+            self.tableGrid.reload();
+        });
+    }
+};
+
+module.exports = posController;
+},{}],27:[function(require,module,exports){
+(function (global){
+function posModule($app) {
+
+	global.$app = $app;
+
+	return {
+		'controller': require('./pos.controller.js'),
+		'template': require('./pos.template.hbs'),
+	}
+};
+
+module.exports = posModule;
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{"./pos.controller.js":26,"./pos.template.hbs":28}],28:[function(require,module,exports){
+// hbsfy compiled Handlebars template
+var HandlebarsCompiler = require('hbsfy/runtime');
+module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
+    return "<section class=\"content\">\n    <div class=\"row\">\n        <div class=\"col-md-8 col-sm-12 col-xs-12\">\n            <div class=\"box\">\n                <div class=\"box-body\">\n                    <div class=\"col-xs-12 col-sm-12 col-md-4\">\n                        <button type=\"button\" class=\"btn btn-default\">Option</button>\n                    </div>\n                    <div class=\"col-xs-12 col-sm-12 col-md-10\">\n                    <div class=\"btn-group btn-group-justified\">\n                        <div class=\"btn-group\" role=\"group\">\n                            <button type=\"button\" class=\"btn btn-default\">Cancel</button>\n                        </div>\n                        <div class=\"btn-group\" role=\"group\">\n                            <button type=\"button\" class=\"btn btn-default\">Suspend</button>\n                        </div>\n                    </div>\n                    </div>\n                    <div class=\"row\">\n                        <div class=\"form-group col-md-8\">\n                            <input class=\"form-control\" type=\"text\" placeholder=\"Scan Barcode\">\n                        </div>\n                        <div class=\"form-group col-md-4\">\n                            <input class=\"form-control\" type=\"text\" placeholder=\"Customer\">\n                        </div>\n                    </div>\n                </div>\n            </div>\n\n            <div class=\"box\">\n                <div class=\"box-body\">\n                    <table id=\"user-table\" class=\"table table-condensed table-hover\">\n                        <thead>\n                            <tr>\n                                <th>Item</th>\n                                <th>Price</th>\n                                <th>Qty</th>\n                                <th>Disc</th>\n                                <th>Sub Total</th>\n                            </tr>\n                        </thead>\n                    </table>\n                </div>\n            </div>\n        </div>\n        <div class=\"col-md-4 col-sm-12 col-xs-12\">\n            <div class=\"box\">\n                <div class=\"box-body\">\n                    <div class=\"form-group\">\n                        <div>\n                            <div class=\"row\">\n                                <label class=\"col-sm-12 col-md-5\">\n                                    <h4>Sub Total</h4></label>\n                                <label class=\"col-sm-12 col-md-7 text-right\">\n                                    <h4>Rp. 999.9999.999,00</h4></label>\n                            </div>\n                            <hr/>\n                            <label>Discount all Items</label>\n                            <div class=\"input-group\">\n                                <div class=\"input-group-btn\">\n                                    <button type=\"button\" class=\"btn btn-default dropdown-toggle\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\">Percentage <span class=\"caret\"></span></button>\n                                    <ul class=\"dropdown-menu\">\n                                        <li><a href=\"#\">Percentage</a></li>\n                                        <li><a href=\"#\">Fix Price</a></li>\n                                    </ul>\n                                </div>\n                                <input type=\"text\" class=\"form-control\">\n                            </div>\n                            <hr/>\n                            <label>Payment</label>\n                            <div class=\"input-group\">\n                                <div class=\"input-group-btn\">\n                                    <button type=\"button\" class=\"btn btn-default dropdown-toggle\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\">Cash <span class=\"caret\"></span></button>\n                                    <ul class=\"dropdown-menu\">\n                                        <li><a href=\"#\">Cash</a></li>\n                                        <li><a href=\"#\">Credit Card</a></li>\n                                        <li><a href=\"#\">Coupon</a></li>\n                                    </ul>\n                                </div>\n                                <input type=\"text\" class=\"text-right form-control\">\n                                <span class=\"input-group-addon\"><i class=\"fa fa-plus\"></i></span>\n                            </div>\n                            <hr/>\n                            <button class=\"btn btn-primary form-control text-center\">COMPLETE SALES</button>\n                            <br/>\n                            <textarea class=\"form-control\" placeholder=\"Comments\"></textarea>\n                            <div class=\"input-group\">\n                                <div class=\"checkbox\">\n                                    <label class=\"\">\n                                        <input type=\"checkbox\"> Show comments on receipt\n                                    </label>\n                                </div>\n                            </div>\n                        </div>\n                    </div>\n                </div>\n            </div>\n        </div>\n    </div>\n</section>";
+},"useData":true});
+
+},{"hbsfy/runtime":116}],29:[function(require,module,exports){
 /*global $app $*/
 
 require('cropit');
@@ -1668,7 +1788,7 @@ function productFormController(endpoint, data) {
 };
 
 module.exports = productFormController;
-},{"./product.form.template.hbs":28,"cropit":68}],27:[function(require,module,exports){
+},{"./product.form.template.hbs":31,"cropit":71}],30:[function(require,module,exports){
 (function (global){
 
 function customerFormModule ($app) {
@@ -1683,7 +1803,7 @@ function customerFormModule ($app) {
 
 module.exports = customerFormModule; 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./product.form.controller.js":26,"./product.form.template.hbs":28}],28:[function(require,module,exports){
+},{"./product.form.controller.js":29,"./product.form.template.hbs":31}],31:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
@@ -1708,7 +1828,7 @@ module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":f
     + "</div>\n                </form>\n            </div>\n        </div>\n    </fieldset>\n</div>\n\n<div class=\"modal-footer\">\n    <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">Close</button>\n    <button type=\"submit\" form=\"product-form\" class=\"btn btn-primary\">Save changes</button>\n</div>\n";
 },"useData":true});
 
-},{"hbsfy/runtime":113}],29:[function(require,module,exports){
+},{"hbsfy/runtime":116}],32:[function(require,module,exports){
 /*global $app $*/
 'use strict'
 
@@ -1810,7 +1930,7 @@ function productController() {
 };
 
 module.exports = productController;
-},{"./form/product.form.js":27}],30:[function(require,module,exports){
+},{"./form/product.form.js":30}],33:[function(require,module,exports){
 (function (global){
 function productModule($app) {
 
@@ -1824,7 +1944,7 @@ function productModule($app) {
 
 module.exports = productModule;
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./product.controller.js":29,"./product.template.hbs":31}],31:[function(require,module,exports){
+},{"./product.controller.js":32,"./product.template.hbs":34}],34:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
@@ -1843,7 +1963,7 @@ module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":f
     + "\n                            </button>\n\n                            <a class=\"btn btn-success\" id=\"import-excel\" href=\"../customers/excel_import\" data-target=\"#modal-container\">\n                                <i class=\"fa fa-file-excel-o\"></i> Excel Import\n                            </a>\n                        </div>\n                    </div>\n                </div>\n\n                <div class=\"box-body \">\n                    <table id=\"product-table\" class=\"table table-bordered table-hover\">\n                        <thead>\n                            <tr>\n                                <th width=\"10px\">\n                                    <input type=\"checkbox\" id=\"select-all\" />\n                                </th>\n                                <th>Image</th>\n                                <th>SKU</th>\n                                <th>Title</th>\n                                <th>Category</th>\n                                <th>Sell Price</th>\n                                <th>Stock</th>\n                                <th width=\"50px\">Action</th>\n                            </tr>\n                        </thead>\n                    </table>\n                </div>\n\n                <div id=\"feedback_bar\"></div>\n            </div>\n        </div>\n    </div>\n</section>";
 },"useData":true});
 
-},{"hbsfy/runtime":113}],32:[function(require,module,exports){
+},{"hbsfy/runtime":116}],35:[function(require,module,exports){
 /*global $app $*/
 
 require('cropit');
@@ -1929,7 +2049,7 @@ function productCategoryFormController(endpoint, data) {
 };
 
 module.exports = productCategoryFormController;
-},{"./productCategory.form.template.hbs":34,"bootbox":50,"cropit":68}],33:[function(require,module,exports){
+},{"./productCategory.form.template.hbs":37,"bootbox":53,"cropit":71}],36:[function(require,module,exports){
 (function (global){
 
 function customerFormModule ($app) {
@@ -1944,7 +2064,7 @@ function customerFormModule ($app) {
 
 module.exports = customerFormModule; 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./productCategory.form.controller.js":32,"./productCategory.form.template.hbs":34}],34:[function(require,module,exports){
+},{"./productCategory.form.controller.js":35,"./productCategory.form.template.hbs":37}],37:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
@@ -1963,7 +2083,7 @@ module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":f
     + "</div>\n                </form>\n            </div>\n        </div>\n    </fieldset>\n</div>\n\n<div class=\"modal-footer\">\n    <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">Close</button>\n    <button type=\"submit\" form=\"productCategory-form\" class=\"btn btn-primary\">Save changes</button>\n</div>\n";
 },"useData":true});
 
-},{"hbsfy/runtime":113}],35:[function(require,module,exports){
+},{"hbsfy/runtime":116}],38:[function(require,module,exports){
 /*global $app $*/
 'use strict'
 
@@ -2051,7 +2171,7 @@ function productCategoryController() {
 };
 
 module.exports = productCategoryController;
-},{"./form/productCategory.form.js":33}],36:[function(require,module,exports){
+},{"./form/productCategory.form.js":36}],39:[function(require,module,exports){
 (function (global){
 function productCategoryModule($app) {
 
@@ -2065,7 +2185,7 @@ function productCategoryModule($app) {
 
 module.exports = productCategoryModule;
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./productCategory.controller.js":35,"./productCategory.template.hbs":37}],37:[function(require,module,exports){
+},{"./productCategory.controller.js":38,"./productCategory.template.hbs":40}],40:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
@@ -2084,7 +2204,7 @@ module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":f
     + "\n                            </button>\n\n                            <a class=\"btn btn-success\" id=\"import-excel\" href=\"../customers/excel_import\" data-target=\"#modal-container\">\n                                <i class=\"fa fa-file-excel-o\"></i> Excel Import\n                            </a>\n                        </div>\n                    </div>\n                </div>\n\n                <div class=\"box-body \">\n                    <table id=\"productCategory-table\" class=\"table table-bordered table-hover\">\n                        <thead>\n                            <tr>\n                                <th width=\"10px\">\n                                    <input type=\"checkbox\" id=\"select-all\" />\n                                </th>\n                                <th>Title</th>\n                                <th>Slug</th>\n                                <th>Description</th>\n                                <th width=\"50px\">Action</th>\n                            </tr>\n                        </thead>\n                    </table>\n                </div>\n\n                <div id=\"feedback_bar\"></div>\n            </div>\n        </div>\n    </div>\n</section>";
 },"useData":true});
 
-},{"hbsfy/runtime":113}],38:[function(require,module,exports){
+},{"hbsfy/runtime":116}],41:[function(require,module,exports){
 /*global $app $*/
 
 require('cropit');
@@ -2232,7 +2352,7 @@ function saleFormController(endpoint, data) {
 };
 
 module.exports = saleFormController;
-},{"./sale.form.template.hbs":40,"cropit":68}],39:[function(require,module,exports){
+},{"./sale.form.template.hbs":43,"cropit":71}],42:[function(require,module,exports){
 (function (global){
 
 function customerFormModule ($app) {
@@ -2247,7 +2367,7 @@ function customerFormModule ($app) {
 
 module.exports = customerFormModule; 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./sale.form.controller.js":38,"./sale.form.template.hbs":40}],40:[function(require,module,exports){
+},{"./sale.form.controller.js":41,"./sale.form.template.hbs":43}],43:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
@@ -2272,7 +2392,7 @@ module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":f
     + "</div>\n                </form>\n            </div>\n        </div>\n    </fieldset>\n</div>\n\n<div class=\"modal-footer\">\n    <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">Close</button>\n    <button type=\"submit\" form=\"sale-form\" class=\"btn btn-primary\">Save changes</button>\n</div>\n";
 },"useData":true});
 
-},{"hbsfy/runtime":113}],41:[function(require,module,exports){
+},{"hbsfy/runtime":116}],44:[function(require,module,exports){
 /*global $app $*/
 'use strict'
 
@@ -2374,7 +2494,7 @@ function saleController() {
 };
 
 module.exports = saleController;
-},{"./form/sale.form.js":39}],42:[function(require,module,exports){
+},{"./form/sale.form.js":42}],45:[function(require,module,exports){
 (function (global){
 function saleModule($app) {
 
@@ -2388,7 +2508,7 @@ function saleModule($app) {
 
 module.exports = saleModule;
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./sale.controller.js":41,"./sale.template.hbs":43}],43:[function(require,module,exports){
+},{"./sale.controller.js":44,"./sale.template.hbs":46}],46:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
@@ -2402,12 +2522,10 @@ module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":f
     + alias2(alias1(((stack1 = (depth0 != null ? depth0.lang : depth0)) != null ? stack1.module_sales : stack1), depth0))
     + "</li>\n    </ol>\n</section>\n\n<section class=\"content\">\n    <div class=\"row\">\n        <div class=\"col-md-12\">\n            <div class=\"box\">\n                <div class=\"box-header\">\n                    <div class=\"row\">\n                        <div class=\"col-sm-6 \">\n                            <div class=\"btn-group\">\n                                <a href=\"../customers/delete\" id=\"delete-selected\" class=\"btn btn-sm btn-default\">\n                                    <i class=\"fa fa-trash\"></i> "
     + alias2(alias1(((stack1 = (depth0 != null ? depth0.lang : depth0)) != null ? stack1.common_delete : stack1), depth0))
-    + "\n                                </a>\n                            </div>\n                        </div>\n\n                        <div class=\"col-sm-6 text-right\">\n                            <button id=\"sale-add\" class=\"btn btn-primary\">\n                                <i class=\"fa fa-plus\"></i> "
-    + alias2(alias1(((stack1 = (depth0 != null ? depth0.lang : depth0)) != null ? stack1.sale_new : stack1), depth0))
-    + "\n                            </button>\n\n                            <a class=\"btn btn-success\" id=\"import-excel\" href=\"../customers/excel_import\" data-target=\"#modal-container\">\n                                <i class=\"fa fa-file-excel-o\"></i> Excel Import\n                            </a>\n                        </div>\n                    </div>\n                </div>\n\n                <div class=\"box-body \">\n                    <table id=\"sale-table\" class=\"table table-bordered table-hover\">\n                        <thead>\n                            <tr>\n                                <th width=\"10px\">\n                                    <input type=\"checkbox\" id=\"select-all\" />\n                                </th>\n                                <th>Image</th>\n                                <th>SKU</th>\n                                <th>Title</th>\n                                <th>Category</th>\n                                <th>Sell Price</th>\n                                <th>Stock</th>\n                                <th width=\"50px\">Action</th>\n                            </tr>\n                        </thead>\n                    </table>\n                </div>\n\n                <div id=\"feedback_bar\"></div>\n            </div>\n        </div>\n    </div>\n</section>";
+    + "\n                                </a>\n                            </div>\n                        </div>\n\n                        <div class=\"col-sm-6 text-right\">\n                        </div>\n                    </div>\n                </div>\n\n                <div class=\"box-body \">\n                    <table id=\"sale-table\" class=\"table table-bordered table-hover\">\n                        <thead>\n                            <tr>\n                                <th width=\"10px\">\n                                    <input type=\"checkbox\" id=\"select-all\" />\n                                </th>\n                                <th>Image</th>\n                                <th>SKU</th>\n                                <th>Title</th>\n                                <th>Category</th>\n                                <th>Sell Price</th>\n                                <th>Stock</th>\n                                <th width=\"50px\">Action</th>\n                            </tr>\n                        </thead>\n                    </table>\n                </div>\n\n                <div id=\"feedback_bar\"></div>\n            </div>\n        </div>\n    </div>\n</section>";
 },"useData":true});
 
-},{"hbsfy/runtime":113}],44:[function(require,module,exports){
+},{"hbsfy/runtime":116}],47:[function(require,module,exports){
 /*global $app $*/
 
 require('cropit');
@@ -2565,7 +2683,7 @@ function userFormController(endpoint, data) {
 };
 
 module.exports = userFormController;
-},{"./user.form.template.hbs":46,"bootbox":50,"cropit":68}],45:[function(require,module,exports){
+},{"./user.form.template.hbs":49,"bootbox":53,"cropit":71}],48:[function(require,module,exports){
 (function (global){
 
 function customerFormModule ($app) {
@@ -2580,7 +2698,7 @@ function customerFormModule ($app) {
 
 module.exports = customerFormModule; 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./user.form.controller.js":44,"./user.form.template.hbs":46}],46:[function(require,module,exports){
+},{"./user.form.controller.js":47,"./user.form.template.hbs":49}],49:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
@@ -2617,7 +2735,7 @@ module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":f
     + "\">Delete This User</button>\n                        </div>\n                    </div>\n                </div>\n            </div>\n        </div>\n    </div>\n</div>\n\n<div class=\"modal-footer\">\n    <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">Close</button>\n    <button type=\"submit\" form=\"user-form\" class=\"btn btn-primary\">Save changes</button>\n</div>\n";
 },"useData":true});
 
-},{"hbsfy/runtime":113}],47:[function(require,module,exports){
+},{"hbsfy/runtime":116}],50:[function(require,module,exports){
 /*global $app $*/
 'use strict'
 
@@ -2703,7 +2821,7 @@ function userController() {
 };
 
 module.exports = userController;
-},{"./form/user.form.js":45}],48:[function(require,module,exports){
+},{"./form/user.form.js":48}],51:[function(require,module,exports){
 (function (global){
 function userModule($app) {
 
@@ -2717,7 +2835,7 @@ function userModule($app) {
 
 module.exports = userModule;
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./user.controller.js":47,"./user.template.hbs":49}],49:[function(require,module,exports){
+},{"./user.controller.js":50,"./user.template.hbs":52}],52:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
@@ -2738,7 +2856,7 @@ module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":f
     + "\n                            </button>\n\n                            <a class=\"btn btn-success\" id=\"import-excel\" href=\"../customers/excel_import\" data-target=\"#modal-container\">\n                                <i class=\"fa fa-file-excel-o\"></i> Excel Import\n                            </a>\n                        </div>\n                    </div>\n                </div>\n\n                <div class=\"box-body \">\n                    <table id=\"user-table\" class=\"table table-bordered table-hover\">\n                        <thead>\n                            <tr>\n                                <th width=\"10px\">\n                                    <input type=\"checkbox\" id=\"select-all\" />\n                                </th>\n                                <th>User</th>\n                                <th>Email</th>\n                                <th width=\"50px\">Action</th>\n                            </tr>\n                        </thead>\n                    </table>\n                </div>\n\n                <div id=\"feedback_bar\"></div>\n            </div>\n        </div>\n    </div>\n</section>";
 },"useData":true});
 
-},{"hbsfy/runtime":113}],50:[function(require,module,exports){
+},{"hbsfy/runtime":116}],53:[function(require,module,exports){
 /**
  * bootbox.js [v4.4.0]
  *
@@ -3725,7 +3843,7 @@ module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":f
   return exports;
 }));
 
-},{"jquery":115}],51:[function(require,module,exports){
+},{"jquery":118}],54:[function(require,module,exports){
 /*
 * Project: Bootstrap Notify = v3.1.3
 * Description: Turns standard Bootstrap alerts into "Growl-like" notifications.
@@ -4080,7 +4198,7 @@ module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":f
 
 }));
 
-},{"jquery":115}],52:[function(require,module,exports){
+},{"jquery":118}],55:[function(require,module,exports){
 // This file is autogenerated via the `commonjs` Grunt task. You can require() this file in a CommonJS environment.
 require('../../js/transition.js')
 require('../../js/alert.js')
@@ -4094,7 +4212,7 @@ require('../../js/popover.js')
 require('../../js/scrollspy.js')
 require('../../js/tab.js')
 require('../../js/affix.js')
-},{"../../js/affix.js":53,"../../js/alert.js":54,"../../js/button.js":55,"../../js/carousel.js":56,"../../js/collapse.js":57,"../../js/dropdown.js":58,"../../js/modal.js":59,"../../js/popover.js":60,"../../js/scrollspy.js":61,"../../js/tab.js":62,"../../js/tooltip.js":63,"../../js/transition.js":64}],53:[function(require,module,exports){
+},{"../../js/affix.js":56,"../../js/alert.js":57,"../../js/button.js":58,"../../js/carousel.js":59,"../../js/collapse.js":60,"../../js/dropdown.js":61,"../../js/modal.js":62,"../../js/popover.js":63,"../../js/scrollspy.js":64,"../../js/tab.js":65,"../../js/tooltip.js":66,"../../js/transition.js":67}],56:[function(require,module,exports){
 /* ========================================================================
  * Bootstrap: affix.js v3.3.6
  * http://getbootstrap.com/javascript/#affix
@@ -4258,7 +4376,7 @@ require('../../js/affix.js')
 
 }(jQuery);
 
-},{}],54:[function(require,module,exports){
+},{}],57:[function(require,module,exports){
 /* ========================================================================
  * Bootstrap: alert.js v3.3.6
  * http://getbootstrap.com/javascript/#alerts
@@ -4354,7 +4472,7 @@ require('../../js/affix.js')
 
 }(jQuery);
 
-},{}],55:[function(require,module,exports){
+},{}],58:[function(require,module,exports){
 /* ========================================================================
  * Bootstrap: button.js v3.3.6
  * http://getbootstrap.com/javascript/#buttons
@@ -4476,7 +4594,7 @@ require('../../js/affix.js')
 
 }(jQuery);
 
-},{}],56:[function(require,module,exports){
+},{}],59:[function(require,module,exports){
 /* ========================================================================
  * Bootstrap: carousel.js v3.3.6
  * http://getbootstrap.com/javascript/#carousel
@@ -4715,7 +4833,7 @@ require('../../js/affix.js')
 
 }(jQuery);
 
-},{}],57:[function(require,module,exports){
+},{}],60:[function(require,module,exports){
 /* ========================================================================
  * Bootstrap: collapse.js v3.3.6
  * http://getbootstrap.com/javascript/#collapse
@@ -4928,7 +5046,7 @@ require('../../js/affix.js')
 
 }(jQuery);
 
-},{}],58:[function(require,module,exports){
+},{}],61:[function(require,module,exports){
 /* ========================================================================
  * Bootstrap: dropdown.js v3.3.6
  * http://getbootstrap.com/javascript/#dropdowns
@@ -5095,7 +5213,7 @@ require('../../js/affix.js')
 
 }(jQuery);
 
-},{}],59:[function(require,module,exports){
+},{}],62:[function(require,module,exports){
 /* ========================================================================
  * Bootstrap: modal.js v3.3.6
  * http://getbootstrap.com/javascript/#modals
@@ -5434,7 +5552,7 @@ require('../../js/affix.js')
 
 }(jQuery);
 
-},{}],60:[function(require,module,exports){
+},{}],63:[function(require,module,exports){
 /* ========================================================================
  * Bootstrap: popover.js v3.3.6
  * http://getbootstrap.com/javascript/#popovers
@@ -5544,7 +5662,7 @@ require('../../js/affix.js')
 
 }(jQuery);
 
-},{}],61:[function(require,module,exports){
+},{}],64:[function(require,module,exports){
 /* ========================================================================
  * Bootstrap: scrollspy.js v3.3.6
  * http://getbootstrap.com/javascript/#scrollspy
@@ -5718,7 +5836,7 @@ require('../../js/affix.js')
 
 }(jQuery);
 
-},{}],62:[function(require,module,exports){
+},{}],65:[function(require,module,exports){
 /* ========================================================================
  * Bootstrap: tab.js v3.3.6
  * http://getbootstrap.com/javascript/#tabs
@@ -5875,7 +5993,7 @@ require('../../js/affix.js')
 
 }(jQuery);
 
-},{}],63:[function(require,module,exports){
+},{}],66:[function(require,module,exports){
 /* ========================================================================
  * Bootstrap: tooltip.js v3.3.6
  * http://getbootstrap.com/javascript/#tooltip
@@ -6391,7 +6509,7 @@ require('../../js/affix.js')
 
 }(jQuery);
 
-},{}],64:[function(require,module,exports){
+},{}],67:[function(require,module,exports){
 /* ========================================================================
  * Bootstrap: transition.js v3.3.6
  * http://getbootstrap.com/javascript/#transitions
@@ -6452,9 +6570,9 @@ require('../../js/affix.js')
 
 }(jQuery);
 
-},{}],65:[function(require,module,exports){
+},{}],68:[function(require,module,exports){
 
-},{}],66:[function(require,module,exports){
+},{}],69:[function(require,module,exports){
 (function (process){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -6682,7 +6800,7 @@ var substr = 'ab'.substr(-1) === 'b'
 ;
 
 }).call(this,require('_process'))
-},{"_process":67}],67:[function(require,module,exports){
+},{"_process":70}],70:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -6778,7 +6896,7 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],68:[function(require,module,exports){
+},{}],71:[function(require,module,exports){
 /*! cropit - v0.5.0 <https://github.com/scottcheng/cropit> */
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
@@ -7989,7 +8107,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ ])
 });
 ;
-},{"jquery":115}],69:[function(require,module,exports){
+},{"jquery":118}],72:[function(require,module,exports){
 /*! DataTables 1.10.11
  * ©2008-2015 SpryMedia Ltd - datatables.net/license
  */
@@ -23258,7 +23376,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	return $.fn.dataTable;
 }));
 
-},{"jquery":115}],70:[function(require,module,exports){
+},{"jquery":118}],73:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -23325,7 +23443,7 @@ exports['default'] = inst;
 module.exports = exports['default'];
 
 
-},{"./handlebars.runtime":71,"./handlebars/compiler/ast":73,"./handlebars/compiler/base":74,"./handlebars/compiler/compiler":76,"./handlebars/compiler/javascript-compiler":78,"./handlebars/compiler/visitor":81,"./handlebars/no-conflict":95}],71:[function(require,module,exports){
+},{"./handlebars.runtime":74,"./handlebars/compiler/ast":76,"./handlebars/compiler/base":77,"./handlebars/compiler/compiler":79,"./handlebars/compiler/javascript-compiler":81,"./handlebars/compiler/visitor":84,"./handlebars/no-conflict":98}],74:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -23393,7 +23511,7 @@ exports['default'] = inst;
 module.exports = exports['default'];
 
 
-},{"./handlebars/base":72,"./handlebars/exception":85,"./handlebars/no-conflict":95,"./handlebars/runtime":96,"./handlebars/safe-string":97,"./handlebars/utils":98}],72:[function(require,module,exports){
+},{"./handlebars/base":75,"./handlebars/exception":88,"./handlebars/no-conflict":98,"./handlebars/runtime":99,"./handlebars/safe-string":100,"./handlebars/utils":101}],75:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -23499,7 +23617,7 @@ exports.createFrame = _utils.createFrame;
 exports.logger = _logger2['default'];
 
 
-},{"./decorators":83,"./exception":85,"./helpers":86,"./logger":94,"./utils":98}],73:[function(require,module,exports){
+},{"./decorators":86,"./exception":88,"./helpers":89,"./logger":97,"./utils":101}],76:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -23532,7 +23650,7 @@ exports['default'] = AST;
 module.exports = exports['default'];
 
 
-},{}],74:[function(require,module,exports){
+},{}],77:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -23582,7 +23700,7 @@ function parse(input, options) {
 }
 
 
-},{"../utils":98,"./helpers":77,"./parser":79,"./whitespace-control":82}],75:[function(require,module,exports){
+},{"../utils":101,"./helpers":80,"./parser":82,"./whitespace-control":85}],78:[function(require,module,exports){
 /* global define */
 'use strict';
 
@@ -23750,7 +23868,7 @@ exports['default'] = CodeGen;
 module.exports = exports['default'];
 
 
-},{"../utils":98,"source-map":100}],76:[function(require,module,exports){
+},{"../utils":101,"source-map":103}],79:[function(require,module,exports){
 /* eslint-disable new-cap */
 
 'use strict';
@@ -24324,7 +24442,7 @@ function transformLiteralToPath(sexpr) {
 }
 
 
-},{"../exception":85,"../utils":98,"./ast":73}],77:[function(require,module,exports){
+},{"../exception":88,"../utils":101,"./ast":76}],80:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -24556,7 +24674,7 @@ function preparePartialBlock(open, program, close, locInfo) {
 }
 
 
-},{"../exception":85}],78:[function(require,module,exports){
+},{"../exception":88}],81:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -25684,7 +25802,7 @@ exports['default'] = JavaScriptCompiler;
 module.exports = exports['default'];
 
 
-},{"../base":72,"../exception":85,"../utils":98,"./code-gen":75}],79:[function(require,module,exports){
+},{"../base":75,"../exception":88,"../utils":101,"./code-gen":78}],82:[function(require,module,exports){
 /* istanbul ignore next */
 /* Jison generated parser */
 "use strict";
@@ -26424,7 +26542,7 @@ var handlebars = (function () {
 exports['default'] = handlebars;
 
 
-},{}],80:[function(require,module,exports){
+},{}],83:[function(require,module,exports){
 /* eslint-disable new-cap */
 'use strict';
 
@@ -26612,7 +26730,7 @@ PrintVisitor.prototype.HashPair = function (pair) {
 /* eslint-enable new-cap */
 
 
-},{"./visitor":81}],81:[function(require,module,exports){
+},{"./visitor":84}],84:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -26754,7 +26872,7 @@ exports['default'] = Visitor;
 module.exports = exports['default'];
 
 
-},{"../exception":85}],82:[function(require,module,exports){
+},{"../exception":88}],85:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -26977,7 +27095,7 @@ exports['default'] = WhitespaceControl;
 module.exports = exports['default'];
 
 
-},{"./visitor":81}],83:[function(require,module,exports){
+},{"./visitor":84}],86:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -26995,7 +27113,7 @@ function registerDefaultDecorators(instance) {
 }
 
 
-},{"./decorators/inline":84}],84:[function(require,module,exports){
+},{"./decorators/inline":87}],87:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -27026,7 +27144,7 @@ exports['default'] = function (instance) {
 module.exports = exports['default'];
 
 
-},{"../utils":98}],85:[function(require,module,exports){
+},{"../utils":101}],88:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -27068,7 +27186,7 @@ exports['default'] = Exception;
 module.exports = exports['default'];
 
 
-},{}],86:[function(require,module,exports){
+},{}],89:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -27116,7 +27234,7 @@ function registerDefaultHelpers(instance) {
 }
 
 
-},{"./helpers/block-helper-missing":87,"./helpers/each":88,"./helpers/helper-missing":89,"./helpers/if":90,"./helpers/log":91,"./helpers/lookup":92,"./helpers/with":93}],87:[function(require,module,exports){
+},{"./helpers/block-helper-missing":90,"./helpers/each":91,"./helpers/helper-missing":92,"./helpers/if":93,"./helpers/log":94,"./helpers/lookup":95,"./helpers/with":96}],90:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -27157,7 +27275,7 @@ exports['default'] = function (instance) {
 module.exports = exports['default'];
 
 
-},{"../utils":98}],88:[function(require,module,exports){
+},{"../utils":101}],91:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -27253,7 +27371,7 @@ exports['default'] = function (instance) {
 module.exports = exports['default'];
 
 
-},{"../exception":85,"../utils":98}],89:[function(require,module,exports){
+},{"../exception":88,"../utils":101}],92:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -27280,7 +27398,7 @@ exports['default'] = function (instance) {
 module.exports = exports['default'];
 
 
-},{"../exception":85}],90:[function(require,module,exports){
+},{"../exception":88}],93:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -27311,7 +27429,7 @@ exports['default'] = function (instance) {
 module.exports = exports['default'];
 
 
-},{"../utils":98}],91:[function(require,module,exports){
+},{"../utils":101}],94:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -27339,7 +27457,7 @@ exports['default'] = function (instance) {
 module.exports = exports['default'];
 
 
-},{}],92:[function(require,module,exports){
+},{}],95:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -27353,7 +27471,7 @@ exports['default'] = function (instance) {
 module.exports = exports['default'];
 
 
-},{}],93:[function(require,module,exports){
+},{}],96:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -27388,7 +27506,7 @@ exports['default'] = function (instance) {
 module.exports = exports['default'];
 
 
-},{"../utils":98}],94:[function(require,module,exports){
+},{"../utils":101}],97:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -27437,7 +27555,7 @@ exports['default'] = logger;
 module.exports = exports['default'];
 
 
-},{"./utils":98}],95:[function(require,module,exports){
+},{"./utils":101}],98:[function(require,module,exports){
 (function (global){
 /* global window */
 'use strict';
@@ -27461,7 +27579,7 @@ module.exports = exports['default'];
 
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],96:[function(require,module,exports){
+},{}],99:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -27755,7 +27873,7 @@ function executeDecorators(fn, prog, container, depths, data, blockParams) {
 }
 
 
-},{"./base":72,"./exception":85,"./utils":98}],97:[function(require,module,exports){
+},{"./base":75,"./exception":88,"./utils":101}],100:[function(require,module,exports){
 // Build out our basic SafeString type
 'use strict';
 
@@ -27772,7 +27890,7 @@ exports['default'] = SafeString;
 module.exports = exports['default'];
 
 
-},{}],98:[function(require,module,exports){
+},{}],101:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -27898,7 +28016,7 @@ function appendContextPath(contextPath, id) {
 }
 
 
-},{}],99:[function(require,module,exports){
+},{}],102:[function(require,module,exports){
 // USAGE:
 // var handlebars = require('handlebars');
 /* eslint-disable no-var */
@@ -27925,7 +28043,7 @@ if (typeof require !== 'undefined' && require.extensions) {
   require.extensions['.hbs'] = extension;
 }
 
-},{"../dist/cjs/handlebars":70,"../dist/cjs/handlebars/compiler/printer":80,"fs":65}],100:[function(require,module,exports){
+},{"../dist/cjs/handlebars":73,"../dist/cjs/handlebars/compiler/printer":83,"fs":68}],103:[function(require,module,exports){
 /*
  * Copyright 2009-2011 Mozilla Foundation and contributors
  * Licensed under the New BSD license. See LICENSE.txt or:
@@ -27935,7 +28053,7 @@ exports.SourceMapGenerator = require('./source-map/source-map-generator').Source
 exports.SourceMapConsumer = require('./source-map/source-map-consumer').SourceMapConsumer;
 exports.SourceNode = require('./source-map/source-node').SourceNode;
 
-},{"./source-map/source-map-consumer":107,"./source-map/source-map-generator":108,"./source-map/source-node":109}],101:[function(require,module,exports){
+},{"./source-map/source-map-consumer":110,"./source-map/source-map-generator":111,"./source-map/source-node":112}],104:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2011 Mozilla Foundation and contributors
@@ -28044,7 +28162,7 @@ define(function (require, exports, module) {
 
 });
 
-},{"./util":110,"amdefine":111}],102:[function(require,module,exports){
+},{"./util":113,"amdefine":114}],105:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2011 Mozilla Foundation and contributors
@@ -28192,7 +28310,7 @@ define(function (require, exports, module) {
 
 });
 
-},{"./base64":103,"amdefine":111}],103:[function(require,module,exports){
+},{"./base64":106,"amdefine":114}],106:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2011 Mozilla Foundation and contributors
@@ -28267,7 +28385,7 @@ define(function (require, exports, module) {
 
 });
 
-},{"amdefine":111}],104:[function(require,module,exports){
+},{"amdefine":114}],107:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2011 Mozilla Foundation and contributors
@@ -28386,7 +28504,7 @@ define(function (require, exports, module) {
 
 });
 
-},{"amdefine":111}],105:[function(require,module,exports){
+},{"amdefine":114}],108:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2014 Mozilla Foundation and contributors
@@ -28474,7 +28592,7 @@ define(function (require, exports, module) {
 
 });
 
-},{"./util":110,"amdefine":111}],106:[function(require,module,exports){
+},{"./util":113,"amdefine":114}],109:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2011 Mozilla Foundation and contributors
@@ -28596,7 +28714,7 @@ define(function (require, exports, module) {
 
 });
 
-},{"amdefine":111}],107:[function(require,module,exports){
+},{"amdefine":114}],110:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2011 Mozilla Foundation and contributors
@@ -29675,7 +29793,7 @@ define(function (require, exports, module) {
 
 });
 
-},{"./array-set":101,"./base64-vlq":102,"./binary-search":104,"./quick-sort":106,"./util":110,"amdefine":111}],108:[function(require,module,exports){
+},{"./array-set":104,"./base64-vlq":105,"./binary-search":107,"./quick-sort":109,"./util":113,"amdefine":114}],111:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2011 Mozilla Foundation and contributors
@@ -30076,7 +30194,7 @@ define(function (require, exports, module) {
 
 });
 
-},{"./array-set":101,"./base64-vlq":102,"./mapping-list":105,"./util":110,"amdefine":111}],109:[function(require,module,exports){
+},{"./array-set":104,"./base64-vlq":105,"./mapping-list":108,"./util":113,"amdefine":114}],112:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2011 Mozilla Foundation and contributors
@@ -30492,7 +30610,7 @@ define(function (require, exports, module) {
 
 });
 
-},{"./source-map-generator":108,"./util":110,"amdefine":111}],110:[function(require,module,exports){
+},{"./source-map-generator":111,"./util":113,"amdefine":114}],113:[function(require,module,exports){
 /* -*- Mode: js; js-indent-level: 2; -*- */
 /*
  * Copyright 2011 Mozilla Foundation and contributors
@@ -30864,7 +30982,7 @@ define(function (require, exports, module) {
 
 });
 
-},{"amdefine":111}],111:[function(require,module,exports){
+},{"amdefine":114}],114:[function(require,module,exports){
 (function (process,__filename){
 /** vim: et:ts=4:sw=4:sts=4
  * @license amdefine 1.0.0 Copyright (c) 2011-2015, The Dojo Foundation All Rights Reserved.
@@ -31169,15 +31287,15 @@ function amdefine(module, requireFn) {
 module.exports = amdefine;
 
 }).call(this,require('_process'),"/node_modules/handlebars/node_modules/source-map/node_modules/amdefine/amdefine.js")
-},{"_process":67,"path":66}],112:[function(require,module,exports){
+},{"_process":70,"path":69}],115:[function(require,module,exports){
 // Create a simple path alias to allow browserify to resolve
 // the runtime on a supported path.
 module.exports = require('./dist/cjs/handlebars.runtime')['default'];
 
-},{"./dist/cjs/handlebars.runtime":71}],113:[function(require,module,exports){
+},{"./dist/cjs/handlebars.runtime":74}],116:[function(require,module,exports){
 module.exports = require("handlebars/runtime")["default"];
 
-},{"handlebars/runtime":112}],114:[function(require,module,exports){
+},{"handlebars/runtime":115}],117:[function(require,module,exports){
 /*!
  * jQuery Validation Plugin v1.15.0
  *
@@ -32710,7 +32828,7 @@ if ( $.ajaxPrefilter ) {
 }
 
 }));
-},{"jquery":115}],115:[function(require,module,exports){
+},{"jquery":118}],118:[function(require,module,exports){
 /*!
  * jQuery JavaScript Library v2.2.3
  * http://jquery.com/
@@ -42554,7 +42672,7 @@ if ( !noGlobal ) {
 return jQuery;
 }));
 
-},{}],116:[function(require,module,exports){
+},{}],119:[function(require,module,exports){
 /**
  * selectize.js (v0.12.1)
  * Copyright (c) 2013–2015 Brian Reavis & contributors
@@ -45613,7 +45731,7 @@ return jQuery;
 
 	return Selectize;
 }));
-},{"jquery":115,"microplugin":117,"sifter":118}],117:[function(require,module,exports){
+},{"jquery":118,"microplugin":120,"sifter":121}],120:[function(require,module,exports){
 /**
  * microplugin.js
  * Copyright (c) 2013 Brian Reavis & contributors
@@ -45749,7 +45867,7 @@ return jQuery;
 
 	return MicroPlugin;
 }));
-},{}],118:[function(require,module,exports){
+},{}],121:[function(require,module,exports){
 /**
  * sifter.js
  * Copyright (c) 2013 Brian Reavis & contributors
@@ -46222,7 +46340,7 @@ return jQuery;
 }));
 
 
-},{}],119:[function(require,module,exports){
+},{}],122:[function(require,module,exports){
 /*! DataTables Bootstrap 3 integration
  * ©2011-2015 SpryMedia Ltd - datatables.net/license
  */
@@ -46405,7 +46523,7 @@ DataTable.ext.renderer.pageButton.bootstrap = function ( settings, host, idx, bu
 
 return DataTable;
 }));
-},{"datatables.net":69}],120:[function(require,module,exports){
+},{"datatables.net":72}],123:[function(require,module,exports){
 /*! DataTables 1.10.11
  * ©2008-2015 SpryMedia Ltd - datatables.net/license
  */
@@ -61675,4 +61793,4 @@ return DataTable;
 	return $.fn.dataTable;
 }));
 
-},{"jquery":115}]},{},[25]);
+},{"jquery":118}]},{},[25]);
