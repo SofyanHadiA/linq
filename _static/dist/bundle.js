@@ -295,17 +295,17 @@ function tableGridModule() {
 
     return self;
 
-    function render(tableContainer, serviceUrl, tableConfig, columnId = "id") {
+    function render(tableContainer, serviceUrl, columnConfig, columnId = "id") {
         self.table = tableContainer;
 
-        tableConfig = [{
+        columnConfig = [{
                 sortable: false,
                 data: columnId,
                 render: function(data, type, row) {
                     return '<input type="checkbox" id="rows-' + data + '" value="' + data + '"/>';
                 }
             }]
-            .concat(tableConfig)
+            .concat(columnConfig)
             .concat([{
                 sortable: false,
                 data: columnId,
@@ -317,7 +317,7 @@ function tableGridModule() {
         self.dataTable = $(self.table).DataTable({
             "info": true,
             "autoWidth": false,
-            columns: tableConfig,
+            columns: columnConfig,
             "pageLength": 25,
             "order": [
                 [1, "asc"]
@@ -447,7 +447,6 @@ var formModule = function() {
     };
 
     function input(name, inputType = "text", className = "", value = "") {
-
         var self = {
             name: name,
             inputType: inputType,
@@ -1524,18 +1523,19 @@ $app.start(config);
 },{"./config.js":1,"./core/app.js":3,"./customer/customer.js":12,"./home/home.js":21,"./pos/pos.js":27,"./product/product.js":33,"./productCategory/productCategory.js":39,"./sale/sale.js":45,"./user/user.js":51}],26:[function(require,module,exports){
 /*global $app $*/
 'use strict'
+require('./../../vendors/datatables/media/js/jquery.dataTables.js');
+require('./../../vendors/datatables/media/js/dataTables.bootstrap.js');
 
 function posController() {
-    var $ = $app.$;
     var $notify = $app.$notify;
     var $tablegrid = $app.$tablegrid;
     var $modal = $app.$modal;
     var $http = $app.$http;
 
     var self = {
-        tableGrid: {},
         load: onLoad,
         renderTable: renderTable,
+        registerTable: {},
         endpoint: 'api/v1/poss'
     };
 
@@ -1544,82 +1544,60 @@ function posController() {
     return self;
 
     function renderTable() {
-        self.tableGrid = $tablegrid.render("#pos-table", self.endpoint, [{
-                    sortable: false,
-                    data: null,
-                    "render": function(data, type, full) {
-                        if (full['image']) {
-                            return '<img class="table-image" src="./uploads/pos_photos/' + full['image'] + '" />'
-                        }
-                        return ""
-                    }
-                }, {
-                    data: 'sku'
-                }, {
-                    data: 'title'
-                }, {
-                    data: 'category.title'
-                }, {
-                    data: 'sellPrice'
-                }, {
-                    data: 'stock'
-                }
-
+        self.registerTable = $("#pos-register-table").DataTable({
+            "info": true,
+            "autoWidth": false,
+            "pageLength": 25,
+            "order": [
+                [1, "asc"]
             ],
-            'uid');
-
-        self.tableGrid.action.delete = doDelete;
-        self.tableGrid.action.deleteBulk = doDeleteBulk;
-
-        $('#pos-table').on('click', '.edit-data', function() {
-            var posId = $(this).data("id");
-            showFormEdit(posId);
+            "processing": true,
+            "paging": false,
+            "filter": false,
+            "info": false
         });
     }
 
     function onLoad() {
         self.renderTable();
 
-        $('body').on('click', '#pos-add', function() {
-            showFormCreate();
+        // $('body').on('change', '#pos-item-search', function() {
+        //     var keyword = $(this).val();
+        //     searchItem(keyword);
+        // });
+
+        $('body').on('keydown', '#pos-item-search', function(e) {
+            var key = e.which;
+            if (key == 13) {
+                var keyword = $(this).val();
+                searchItem(keyword);
+            }
         });
     }
 
-    function showFormCreate() {
-        var form = self.form.controller(self.endpoint, null)
+    function searchItem(keyword) {
+        $http.get("api/v1/products/search/" + keyword).done(function(products) {
+            if (products.data.length == 1) {
+                var product = products.data[0]
 
-        $.when(form.defer.promise()).done(function() {
-            self.tableGrid.reload();
+                self.registerTable.row.add([
+                    product.title,
+                    product.sellPrice,
+                    1,
+                    0,
+                    product.sellPrice
+                ]).draw(false);
+            };
         });
     }
 
-    function showFormEdit(id) {
-        $http.get(self.endpoint + "/" + id).done(function(model) {
-            var form = self.form.controller(self.endpoint, model.data[0])
+    function reloadSlesRegister() {
 
-            $.when(form.defer.promise()).done(function() {
-                self.tableGrid.reload();
-            })
-        });
-    }
-
-    function doDelete(id) {
-        $http.delete(self.endpoint + "/" + id).done(function(model) {
-            self.tableGrid.reload();
-        });
-    }
-
-    function doDeleteBulk(ids) {
-        $http.post(self.endpoint + "/bulkdelete", {
-            ids: ids
-        }).done(function(ids) {
-            self.tableGrid.reload();
-        });
     }
 };
 
 module.exports = posController;
-},{}],27:[function(require,module,exports){
+},{"./../../vendors/datatables/media/js/dataTables.bootstrap.js":122,"./../../vendors/datatables/media/js/jquery.dataTables.js":123}],27:[function(require,module,exports){
 (function (global){
 function posModule($app) {
 
@@ -1637,7 +1615,7 @@ module.exports = posModule;
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
-    return "<section class=\"content\">\n    <div class=\"row\">\n        <div class=\"col-md-8 col-sm-12 col-xs-12\">\n            <div class=\"box\">\n                <div class=\"box-body\">\n                    <div class=\"col-xs-12 col-sm-12 col-md-4\">\n                        <button type=\"button\" class=\"btn btn-default\">Option</button>\n                    </div>\n                    <div class=\"col-xs-12 col-sm-12 col-md-10\">\n                    <div class=\"btn-group btn-group-justified\">\n                        <div class=\"btn-group\" role=\"group\">\n                            <button type=\"button\" class=\"btn btn-default\">Cancel</button>\n                        </div>\n                        <div class=\"btn-group\" role=\"group\">\n                            <button type=\"button\" class=\"btn btn-default\">Suspend</button>\n                        </div>\n                    </div>\n                    </div>\n                    <div class=\"row\">\n                        <div class=\"form-group col-md-8\">\n                            <input class=\"form-control\" type=\"text\" placeholder=\"Scan Barcode\">\n                        </div>\n                        <div class=\"form-group col-md-4\">\n                            <input class=\"form-control\" type=\"text\" placeholder=\"Customer\">\n                        </div>\n                    </div>\n                </div>\n            </div>\n\n            <div class=\"box\">\n                <div class=\"box-body\">\n                    <table id=\"user-table\" class=\"table table-condensed table-hover\">\n                        <thead>\n                            <tr>\n                                <th>Item</th>\n                                <th>Price</th>\n                                <th>Qty</th>\n                                <th>Disc</th>\n                                <th>Sub Total</th>\n                            </tr>\n                        </thead>\n                    </table>\n                </div>\n            </div>\n        </div>\n        <div class=\"col-md-4 col-sm-12 col-xs-12\">\n            <div class=\"box\">\n                <div class=\"box-body\">\n                    <div class=\"form-group\">\n                        <div>\n                            <div class=\"row\">\n                                <label class=\"col-sm-12 col-md-5\">\n                                    <h4>Sub Total</h4></label>\n                                <label class=\"col-sm-12 col-md-7 text-right\">\n                                    <h4>Rp. 999.9999.999,00</h4></label>\n                            </div>\n                            <hr/>\n                            <label>Discount all Items</label>\n                            <div class=\"input-group\">\n                                <div class=\"input-group-btn\">\n                                    <button type=\"button\" class=\"btn btn-default dropdown-toggle\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\">Percentage <span class=\"caret\"></span></button>\n                                    <ul class=\"dropdown-menu\">\n                                        <li><a href=\"#\">Percentage</a></li>\n                                        <li><a href=\"#\">Fix Price</a></li>\n                                    </ul>\n                                </div>\n                                <input type=\"text\" class=\"form-control\">\n                            </div>\n                            <hr/>\n                            <label>Payment</label>\n                            <div class=\"input-group\">\n                                <div class=\"input-group-btn\">\n                                    <button type=\"button\" class=\"btn btn-default dropdown-toggle\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\">Cash <span class=\"caret\"></span></button>\n                                    <ul class=\"dropdown-menu\">\n                                        <li><a href=\"#\">Cash</a></li>\n                                        <li><a href=\"#\">Credit Card</a></li>\n                                        <li><a href=\"#\">Coupon</a></li>\n                                    </ul>\n                                </div>\n                                <input type=\"text\" class=\"text-right form-control\">\n                                <span class=\"input-group-addon\"><i class=\"fa fa-plus\"></i></span>\n                            </div>\n                            <hr/>\n                            <button class=\"btn btn-primary form-control text-center\">COMPLETE SALES</button>\n                            <br/>\n                            <textarea class=\"form-control\" placeholder=\"Comments\"></textarea>\n                            <div class=\"input-group\">\n                                <div class=\"checkbox\">\n                                    <label class=\"\">\n                                        <input type=\"checkbox\"> Show comments on receipt\n                                    </label>\n                                </div>\n                            </div>\n                        </div>\n                    </div>\n                </div>\n            </div>\n        </div>\n    </div>\n</section>";
+    return "<section class=\"content\">\n    <div class=\"row\">\n        <div class=\"col-md-8 col-sm-12 col-xs-12\">\n            <div class=\"box\">\n                <div class=\"box-body\">\n\n                    <div class=\"col-xs-6 col-sm-6 col-md-8\">\n                        <div class=\"row\">\n                            <button class=\"col-xs-6 col-sm-6 col-md-6 btn btn-app btn-warning\"><i class=\"fa fa-pause\"></i> Suspend</button>\n                            <button class=\"col-xs-6 col-sm-6 col-md-6 btn btn-app btn-danger\"><i class=\"fa fa-close\"></i> Cancel</button>\n                        </div>\n                    </div>\n                    <div class=\"col-xs-6 col-sm-6 col-md-4\">\n                        <div class=\"row\">\n                            <button class=\"col-xs-6 col-sm-6 col-md-6 btn btn-app btn-primary\"><i class=\"fa fa-close\"></i> Cancel</button>\n                            <button class=\"col-xs-6 col-sm-6 col-md-6 btn btn-app btn-primary\"><i class=\"fa fa-close\"></i> Cancel</button>\n                        </div>\n                    </div>\n\n                    <div class=\"clearfix\"></div>\n                    <div class=\"row\">\n                        <div class=\"form-group col-md-8\">\n                            <input id=\"pos-item-search\" class=\"form-control input-lg\" type=\"text\" placeholder=\"Scan Barcode\">\n                        </div>\n                        <div class=\"form-group col-md-4\">\n                            <input class=\"form-control input-lg\" type=\"text\" placeholder=\"Customer\">\n                        </div>\n                    </div>\n                </div>\n            </div>\n\n            <div class=\"box\">\n                <div class=\"box-body\">\n                    <table id=\"pos-register-table\" class=\"table table-condensed table-hover\">\n                        <thead>\n                            <tr>\n                                <th>Item</th>\n                                <th>Price</th>\n                                <th>Qty</th>\n                                <th>Disc</th>\n                                <th>Sub Total</th>\n                            </tr>\n                        </thead>\n                    </table>\n                </div>\n            </div>\n        </div>\n        <div class=\"col-md-4 col-sm-12 col-xs-12\">\n            <div class=\"box\">\n                <div class=\"box-body\">\n                    <div>\n                        <div>\n                            <div class=\"row bg-red\">\n                                <h5 class=\"col-xs-4 col-sm-4 col-md-4\">Sub Total (IDR)</h5>\n                                <h3 class=\"col-xs-8 col-sm-8 col-md-8 text-right\"><b>999.9999.999,00</b></h3>\n                            </div>\n                            <hr/>\n                            <label>Discount all Items</label>\n                            <div class=\"input-group\">\n                                <div class=\"input-group-btn\">\n                                    <button type=\"button\" class=\"btn btn-default dropdown-toggle\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\">Percentage <span class=\"caret\"></span></button>\n                                    <ul class=\"dropdown-menu\">\n                                        <li><a href=\"#\">Percentage</a></li>\n                                        <li><a href=\"#\">Fix Price</a></li>\n                                    </ul>\n                                </div>\n                                <input type=\"text\" class=\"form-control\">\n                            </div>\n                            <hr/>\n                            <label>Payment</label>\n                            <div class=\"input-group\">\n                                <div class=\"input-group-btn\">\n                                    <button type=\"button\" class=\"btn btn-default dropdown-toggle\" data-toggle=\"dropdown\">Cash <span class=\"caret\"></span></button>\n                                    <ul class=\"dropdown-menu\">\n                                        <li><a href=\"#\">Cash</a></li>\n                                        <li><a href=\"#\">Credit Card</a></li>\n                                        <li><a href=\"#\">Coupon</a></li>\n                                    </ul>\n                                </div>\n                                <input type=\"text\" class=\"text-right form-control\">\n                                <span class=\"input-group-addon\"><i class=\"fa fa-plus\"></i></span>\n                            </div>\n                            <hr/>\n                            <button class=\"btn btn-primary form-control text-center\">COMPLETE SALES</button>\n                            <hr/>\n                            <textarea class=\"form-control\" placeholder=\"Comments\"></textarea>\n                            <div class=\"input-group\">\n                                <div class=\"checkbox\">\n                                    <label class=\"\">\n                                        <input type=\"checkbox\"> Show comments on receipt\n                                    </label>\n                                </div>\n                            </div>\n                        </div>\n                    </div>\n                </div>\n            </div>\n        </div>\n    </div>\n</section>";
 },"useData":true});
 
 },{"hbsfy/runtime":116}],29:[function(require,module,exports){
@@ -1906,7 +1884,7 @@ function productController() {
 
     function showFormEdit(id) {
         $http.get(self.endpoint + "/" + id).done(function(model) {
-            var form = self.form.controller(self.endpoint, model.data[0])
+            var form = self.form.controller(self.endpoint, model.data)
 
             $.when(form.defer.promise()).done(function() {
                 self.tableGrid.reload();
@@ -2147,7 +2125,7 @@ function productCategoryController() {
 
     function showFormEdit(id) {
         $http.get(self.endpoint + "/" + id).done(function(model) {
-            var form = self.form.controller(self.endpoint, model.data[0])
+            var form = self.form.controller(self.endpoint, model.data)
 
             $.when(form.defer.promise()).done(function() {
                 self.tableGrid.reload();
@@ -2799,7 +2777,7 @@ function userController() {
 
     function showFormEdit(id) {
         $http.get(self.endpoint + "/" + id).done(function(model) {
-            var form = self.form.controller(self.endpoint, model.data[0])
+            var form = self.form.controller(self.endpoint, model.data)
 
             $.when(form.defer.promise()).done(function() {
                 self.tableGrid.reload();

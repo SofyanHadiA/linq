@@ -3,8 +3,7 @@ package products
 import (
 	"fmt"
 
-	. "github.com/SofyanHadiA/linq/core/database"
-	. "github.com/SofyanHadiA/linq/core/repository"
+	. "github.com/SofyanHadiA/linq/core"
 	"github.com/SofyanHadiA/linq/core/utils"
 
 	"github.com/jmoiron/sqlx"
@@ -43,23 +42,23 @@ func (repo productRepository) IsExist(id uuid.UUID) (bool, error) {
 }
 
 func (repo productRepository) GetAll(paging utils.Paging) (IModels, error) {
-	query := `SELECT products.*, product_categories.title FROM products JOIN product_categories ON products.category = product_categories.uid WHERE products.deleted=0 `
+	query := `SELECT products.*, product_categories.title as cat_title FROM products JOIN product_categories ON products.category = product_categories.uid WHERE products.deleted=0 `
 
 	if paging.Keyword != "" {
-		query += ` AND (products.title LIKE '%?%' OR product_categories.title like '%?%' OR code LIKE '%?%' OR buy_price LIKE '%?%' OR sell_price LIKE '%?%') `
+		query += " AND (products.title LIKE ? OR product_categories.title LIKE ? OR code LIKE ? OR buy_price LIKE ? OR sell_price LIKE ?) "
 	}
 
 	if paging.Order > 0 {
 		var columnMap string
 		switch paging.Order {
 		case 1:
-			columnMap = "code"
+			columnMap = "`code`"
 		case 2:
-			columnMap = "code"
+			columnMap = "`code`"
 		case 3:
-			columnMap = "products.title"
+			columnMap = "title"
 		case 4:
-			columnMap = "product_categories.title"
+			columnMap = "cat_title"
 		case 5:
 			columnMap = "sell_price"
 		case 6:
@@ -81,10 +80,12 @@ func (repo productRepository) GetAll(paging utils.Paging) (IModels, error) {
 	var err error
 
 	if paging.Keyword != "" {
-		rows, err = repo.db.Resolve(query, paging.Keyword)
+		keyword := "%" + paging.Keyword + "%"
+		rows, err = repo.db.Resolve(query, keyword, keyword, keyword, keyword, keyword)
 	} else {
 		rows, err = repo.db.Resolve(query)
 	}
+
 	if err != nil {
 		return nil, err
 	}

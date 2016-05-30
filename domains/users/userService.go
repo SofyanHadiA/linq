@@ -5,17 +5,17 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/SofyanHadiA/linq/core/repository"
+	"github.com/SofyanHadiA/linq/core"
 	"github.com/SofyanHadiA/linq/core/utils"
 
 	"github.com/satori/go.uuid"
 )
 
 type UserService struct {
-	repo repository.IRepository
+	repo core.IRepository
 }
 
-func NewUserService(repo repository.IRepository) UserService {
+func NewUserService(repo core.IRepository) UserService {
 	return UserService{
 		repo: repo,
 	}
@@ -29,19 +29,19 @@ func (service UserService) IsExist(id uuid.UUID) (bool, error) {
 	return service.repo.IsExist(id)
 }
 
-func (service UserService) GetAll(paging utils.Paging) (repository.IModels, error) {
+func (service UserService) GetAll(paging utils.Paging) (core.IModels, error) {
 	return service.repo.GetAll(paging)
 }
 
-func (service UserService) Get(id uuid.UUID) (repository.IModel, error) {
+func (service UserService) Get(id uuid.UUID) (core.IModel, error) {
 	return service.repo.Get(id)
 }
 
-func (service UserService) Create(model repository.IModel) error {
+func (service UserService) Create(model core.IModel) error {
 	return service.repo.Insert(model)
 }
 
-func (service UserService) Modify(model repository.IModel) error {
+func (service UserService) Modify(model core.IModel) error {
 	if exist, _ := service.repo.IsExist(model.GetId()); exist {
 		return service.repo.Update(model)
 	} else {
@@ -49,19 +49,17 @@ func (service UserService) Modify(model repository.IModel) error {
 	}
 }
 
-func (service UserService) UpdateUserPhoto(model repository.IModel) error {
+func (service UserService) UpdateUserPhoto(model core.IModel) error {
 	if exist, _ := service.repo.IsExist(model.GetId()); exist {
 		userRepo := service.repo.(userRepository)
-
 		err := userRepo.UpdateUserPhoto(model)
-
 		return err
 	} else {
 		return userNotFoundError()
 	}
 }
 
-func (service UserService) Remove(model repository.IModel) error {
+func (service UserService) Remove(model core.IModel) error {
 	if exist, _ := service.repo.IsExist(model.GetId()); exist {
 		err := service.repo.Delete(model)
 
@@ -73,11 +71,10 @@ func (service UserService) Remove(model repository.IModel) error {
 
 func (service UserService) RemoveBulk(userIds []uuid.UUID) error {
 	for _, id := range userIds {
-		if exist, _ := service.repo.IsExist(id); exist {
+		if exist, _ := service.repo.IsExist(id); !exist {
 			return userNotFoundError()
 		}
 	}
-
 	err := service.repo.DeleteBulk(userIds)
 	return err
 }

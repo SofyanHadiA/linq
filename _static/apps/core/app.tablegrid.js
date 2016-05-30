@@ -20,17 +20,17 @@ function tableGridModule() {
 
     return self;
 
-    function render(tableContainer, serviceUrl, tableConfig, columnId = "id") {
+    function render(tableContainer, serviceUrl, columnConfig, columnId = "id") {
         self.table = tableContainer;
 
-        tableConfig = [{
+        columnConfig = [{
                 sortable: false,
                 data: columnId,
                 render: function(data, type, row) {
                     return '<input type="checkbox" id="rows-' + data + '" value="' + data + '"/>';
                 }
             }]
-            .concat(tableConfig)
+            .concat(columnConfig)
             .concat([{
                 sortable: false,
                 data: columnId,
@@ -42,7 +42,7 @@ function tableGridModule() {
         self.dataTable = $(self.table).DataTable({
             "info": true,
             "autoWidth": false,
-            columns: tableConfig,
+            columns: columnConfig,
             "pageLength": 25,
             "order": [
                 [1, "asc"]

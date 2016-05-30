@@ -1,10 +1,11 @@
 package sales
 
 import (
+	"encoding/json"
 	"fmt"
 
-	. "github.com/SofyanHadiA/linq/core/database"
-	. "github.com/SofyanHadiA/linq/core/repository"
+	"github.com/SofyanHadiA/linq/core"
+	"github.com/SofyanHadiA/linq/core/services"
 	"github.com/SofyanHadiA/linq/core/utils"
 
 	"github.com/jmoiron/sqlx"
@@ -12,13 +13,73 @@ import (
 )
 
 type saleRepository struct {
-	db IDB
+	db           core.IDB
+	cacheService services.ICacheService
 }
 
-func NewSaleRepository(db IDB) IRepository {
+func NewSaleRepository(db core.IDB, cacheService services.ICacheService) core.IRepository {
 	return saleRepository{
-		db: db,
+		db:           db,
+		cacheService: cacheService,
 	}
+}
+
+func (repo saleRepository) AddCartItem(sale Sale, productId uuid.UUID) error {
+	jsonData, err := json.Marshal(productId)
+	repo.cacheService.Set("cart:"+sale.Uid.String(), jsonData)
+
+	return err
+}
+
+func (repo saleRepository) GetCartItems(sale Sale) ([]uuid.UUID, error) {
+	cartJson, err := repo.cacheService.Get("cart:" + sale.Uid.String())
+
+	if err == nil {
+		var items []uuid.UUID
+		err = json.Unmarshal([]byte(cartJson), &items)
+		return items, err
+	}
+
+	return nil, err
+}
+
+func (repo saleRepository) NewUserCart(userId uuid.UUID) (*Sale, error) {
+	userCarts, err := repo.GetUserCarts(userId)
+
+	if err == nil || repo.cacheService.KeyNil(err) {
+		cart := Sale{}
+		cart.Uid = uuid.NewV4()
+		
+		var newCarts Sales
+
+		if(repo.cacheService.KeyNil(err)){
+			newCarts = Sales{cart}
+		}else{
+			newCarts = append(*userCarts, cart)
+		}
+		
+		jsonData, err := json.Marshal(newCarts)
+
+		if err == nil {
+			err = repo.cacheService.Set("usercarts:"+userId.String(), jsonData)
+			return &cart, err
+		}
+	}
+
+	return nil, err
+}
+
+func (repo saleRepository) GetUserCarts(userId uuid.UUID) (*Sales, error) {
+	userCartJson, err := repo.cacheService.Get("usercarts:" + userId.String())
+
+	if err == nil {
+		var carts Sales
+		err = json.Unmarshal([]byte(userCartJson), &carts)
+
+		return &carts, err
+	}
+
+	return nil, err
 }
 
 func (repo saleRepository) CountAll() (int, error) {
@@ -42,7 +103,7 @@ func (repo saleRepository) IsExist(id uuid.UUID) (bool, error) {
 	return result, err
 }
 
-func (repo saleRepository) GetAll(paging utils.Paging) (IModels, error) {
+func (repo saleRepository) GetAll(paging utils.Paging) (core.IModels, error) {
 	query := "SELECT * FROM sales WHERE deleted=0 "
 
 	// if paging.Keyword != "" {
@@ -103,7 +164,7 @@ func (repo saleRepository) GetAll(paging utils.Paging) (IModels, error) {
 	return &result, err
 }
 
-func (repo saleRepository) Get(id uuid.UUID) (IModel, error) {
+func (repo saleRepository) Get(id uuid.UUID) (core.IModel, error) {
 	selectQuery := "SELECT * FROM sales WHERE uid = ? AND deleted= 0 "
 
 	sale := &Sale{}
@@ -144,7 +205,7 @@ func (repo saleRepository) getDetail(uid uuid.UUID) (SaleDetails, error) {
 	return details, err
 }
 
-func (repo saleRepository) Insert(model IModel) error {
+func (repo saleRepository) Insert(model core.IModel) error {
 	insertQuery := `INSERT INTO sales 
 		(uid, customer, user, discount, discount_type, total, total_payment, payment_type, note, created ) 
 		VALUES(:uid, :customer, :user, :discount, :discount_type, :total, :total_payment, :payment_type, :note, now())`
@@ -157,7 +218,7 @@ func (repo saleRepository) Insert(model IModel) error {
 	return err
 }
 
-func (repo saleRepository) Update(model IModel) error {
+func (repo saleRepository) Update(model core.IModel) error {
 	updateQuery := `UPDATE sales SET 
 		customer=:customer, user=:user, discount=:discount, discount_type=:discount_type, total=:total, 
 		total_payment=:total_payment, payment_type=:payment_type, note=:note, updated=now() WHERE uid=:uid`
@@ -167,8 +228,7 @@ func (repo saleRepository) Update(model IModel) error {
 	return err
 }
 
-
-func (repo saleRepository) Delete(model IModel) error {
+func (repo saleRepository) Delete(model core.IModel) error {
 	deleteQuery := "UPDATE sales SET deleted=1 WHERE uid=:uid"
 
 	_, err := repo.db.Execute(deleteQuery, model)

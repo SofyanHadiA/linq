@@ -5,7 +5,7 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/SofyanHadiA/linq/core/repository"
+	"github.com/SofyanHadiA/linq/core"
 	"github.com/SofyanHadiA/linq/core/utils"
 
 	_ "github.com/go-sql-driver/mysql"
@@ -22,7 +22,7 @@ type mySqlDB struct {
 	ConnectionString string
 }
 
-func MySqlDB(host string, username string, password string, database string, port int) IDB {
+func MySqlDB(host string, username string, password string, database string, port int) core.IDB {
 	DB := mySqlDB{
 		Username:         username,
 		Password:         password,
@@ -81,7 +81,7 @@ func (mysql mySqlDB) Resolve(query string, args ...interface{}) (*sqlx.Rows, err
 	}
 }
 
-func (mysql mySqlDB) Execute(query string, model repository.IModel) (*sql.Result, error) {
+func (mysql mySqlDB) Execute(query string, model core.IModel) (*sql.Result, error) {
 	db, err := sqlx.Connect("mysql", mysql.ConnectionString)
 	defer db.Close()
 

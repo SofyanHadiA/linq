@@ -1,7 +1,7 @@
 package sales
 
 import (
-	"github.com/SofyanHadiA/linq/core/repository"
+	"github.com/SofyanHadiA/linq/core"
 	"github.com/SofyanHadiA/linq/domains/users"
 
 	"github.com/satori/go.uuid"
@@ -9,7 +9,7 @@ import (
 )
 
 type Sale struct {
-	repository.BasicFields
+	core.BasicFields
 	CustomerId uuid.UUID `json:"customerId" db:"customer"`
 	//Customer     customers.Customer `json:"customer" db:"-"`
 	UserId       uuid.UUID       `json:"cashierId" db:"user"`

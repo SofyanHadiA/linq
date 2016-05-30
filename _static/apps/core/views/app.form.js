@@ -42,7 +42,6 @@ var formModule = function() {
     };
 
     function input(name, inputType = "text", className = "", value = "") {
-
         var self = {
             name: name,
             inputType: inputType,

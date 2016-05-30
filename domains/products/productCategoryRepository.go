@@ -3,8 +3,7 @@ package products
 import (
 	"fmt"
 
-	. "github.com/SofyanHadiA/linq/core/database"
-	. "github.com/SofyanHadiA/linq/core/repository"
+	. "github.com/SofyanHadiA/linq/core"
 	"github.com/SofyanHadiA/linq/core/utils"
 
 	"github.com/jmoiron/sqlx"

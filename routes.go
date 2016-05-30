@@ -1,26 +1,24 @@
 package main
 
 import (
-	. "github.com/SofyanHadiA/linq/core"
-	"github.com/SofyanHadiA/linq/core/database"
-
 	"github.com/SofyanHadiA/linq/apps/controllers"
-	Dashboard "github.com/SofyanHadiA/linq/apps/dashboard"
+	"github.com/SofyanHadiA/linq/apps/dashboard"
+	. "github.com/SofyanHadiA/linq/core"
 	"github.com/SofyanHadiA/linq/core/services"
 	"github.com/SofyanHadiA/linq/domains/products"
 	"github.com/SofyanHadiA/linq/domains/sales"
 	"github.com/SofyanHadiA/linq/domains/users"
 )
 
-func GetRoutes(db database.IDB) Routes {
+func GetRoutes(db IDB, cacheService services.ICacheService) Routes {
 	userController := controllers.UserController(users.NewUserService(users.NewUserRepository(db)))
 	productController := controllers.ProductController(products.NewProductService(products.NewProductRepository(db), services.UploadService("./uploads/product_photos/")))
 	productCategoryController := controllers.ProductCategoryController(products.NewProductCategoryService(products.NewProductCategoryRepository(db)))
-	salesController := controllers.SaleController(sales.NewSaleService(sales.NewSaleRepository(db)))
+	salesController := controllers.SaleController(sales.NewSaleService(sales.NewSaleRepository(db, cacheService)))
 
 	return Routes{
-		Route{"DashboardIndex", "GET", "/", Dashboard.Index},
-		Route{"DashboardIndex", "GET", "/index.html", Dashboard.Index},
+		Route{"DashboardIndex", "GET", "/", dashboard.Index},
+		Route{"DashboardIndex", "GET", "/index.html", dashboard.Index},
 
 		Route{"SaleList", "GET", "/api/v1/sales", salesController.GetAll},
 		Route{"SaleSingle", "GET", "/api/v1/sales/{id}", salesController.Get},
@@ -28,6 +26,7 @@ func GetRoutes(db database.IDB) Routes {
 		Route{"SaleModify", "PUT", "/api/v1/sales/{id}", salesController.Modify},
 		Route{"SaleRemove", "DELETE", "/api/v1/sales/{id}", salesController.Remove},
 		Route{"SaleBulkRemove", "POST", "/api/v1/sales/bulkdelete", salesController.RemoveBulk},
+		Route{"SalesNewRegister", "POST", "/api/v1/sales/carts", salesController.CreateNewCarts},
 
 		Route{"UserList", "GET", "/api/v1/users", userController.GetAll},
 		Route{"UserSingle", "GET", "/api/v1/users/{id}", userController.Get},
@@ -39,6 +38,7 @@ func GetRoutes(db database.IDB) Routes {
 		Route{"UserBulkRemove", "POST", "/api/v1/users/bulkdelete", userController.RemoveBulk},
 
 		Route{"ProductList", "GET", "/api/v1/products", productController.GetAll},
+		Route{"ProductSearch", "GET", "/api/v1/products/search/{keyword}", productController.Search},
 		Route{"ProductSingle", "GET", "/api/v1/products/{id}", productController.Get},
 		Route{"ProductCreate", "POST", "/api/v1/products", productController.Create},
 		Route{"ProductModify", "PUT", "/api/v1/products/{id}", productController.Modify},

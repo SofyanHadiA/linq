@@ -23,8 +23,8 @@ func ApiService(w http.ResponseWriter, r *http.Request) *apiService {
 }
 
 type JsonSuccessResponse struct {
-	Data  []interface{} `json:"data"`
-	Token uuid.UUID     `json:"token"`
+	Data  interface{} `json:"data"`
+	Token uuid.UUID   `json:"token"`
 }
 
 type JsonErrorResponse struct {
@@ -60,11 +60,8 @@ func (api *apiService) ReturnJson(payload interface{}) {
 		api.Header().Set("Content-Type", "application/linq.api+json; charset=UTF-8")
 		api.WriteHeader(http.StatusOK)
 
-		data := make([]interface{}, 1)
-		data[0] = payload
-
 		responseData := JsonSuccessResponse{
-			Data:  data,
+			Data:  payload,
 			Token: uuid.NewV4(),
 		}
 

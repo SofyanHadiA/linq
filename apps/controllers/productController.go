@@ -6,7 +6,7 @@ import (
 
 	"github.com/SofyanHadiA/linq/apps"
 	. "github.com/SofyanHadiA/linq/apps/viewmodels"
-	"github.com/SofyanHadiA/linq/core/services"
+	"github.com/SofyanHadiA/linq/core"
 	"github.com/SofyanHadiA/linq/core/utils"
 	"github.com/SofyanHadiA/linq/domains/products"
 
@@ -14,10 +14,10 @@ import (
 )
 
 type productController struct {
-	service services.IService
+	service core.IService
 }
 
-func ProductController(service services.IService) productController {
+func ProductController(service core.IService) productController {
 	return productController{
 		service: service,
 	}
@@ -68,12 +68,37 @@ func (ctrl productController) Get(w http.ResponseWriter, r *http.Request) {
 	respWriter := apps.ApiService(w, r)
 
 	productId, err := uuid.FromString(respWriter.MuxVars("id"))
-	respWriter.HandleApiError(err, http.StatusBadRequest)
 
-	product, err := ctrl.service.Get(productId)
+	if err == nil {
+		product, err := ctrl.service.Get(productId)
+
+		if err == nil {
+			respWriter.ReturnJson(product)
+		}
+	}
+
 	respWriter.HandleApiError(err, http.StatusInternalServerError)
+}
 
-	respWriter.ReturnJson(product)
+func (ctrl productController) Search(w http.ResponseWriter, r *http.Request) {
+	respWriter := apps.ApiService(w, r)
+
+	keyword := respWriter.MuxVars("keyword")
+
+	paging := utils.Paging{
+		keyword,
+		20,
+		1,
+		"asc",
+	}
+
+	product, err := ctrl.service.GetAll(paging)
+
+	if err == nil {
+		respWriter.ReturnJson(product)
+	}
+
+	respWriter.HandleApiError(err, http.StatusInternalServerError)
 }
 
 func (ctrl productController) Create(w http.ResponseWriter, r *http.Request) {
@@ -81,39 +106,38 @@ func (ctrl productController) Create(w http.ResponseWriter, r *http.Request) {
 
 	var requestData RequestProductDataModel
 	err := respWriter.DecodeBody(&requestData)
-	respWriter.HandleApiError(err, http.StatusBadRequest)
 
 	if err == nil {
 		err = ctrl.service.Create(&requestData.Data)
-		respWriter.HandleApiError(err, http.StatusInternalServerError)
 
 		if err == nil {
 			respWriter.ReturnJson(requestData.Data)
 		}
 	}
+
+	respWriter.HandleApiError(err, http.StatusInternalServerError)
 }
 
 func (ctrl productController) Modify(w http.ResponseWriter, r *http.Request) {
 	respWriter := apps.ApiService(w, r)
 
 	productId, err := uuid.FromString(respWriter.MuxVars("id"))
-	respWriter.HandleApiError(err, http.StatusBadRequest)
 
 	if err == nil {
 		var requestData RequestProductDataModel
 		err = respWriter.DecodeBody(&requestData)
-		respWriter.HandleApiError(err, http.StatusBadRequest)
 
 		if err == nil {
 			requestData.Data.Uid = productId
 
 			err = ctrl.service.Modify(&requestData.Data)
 			if err == nil {
-				respWriter.HandleApiError(err, http.StatusInternalServerError)
 				respWriter.ReturnJson(requestData.Data)
 			}
 		}
 	}
+
+	respWriter.HandleApiError(err, http.StatusInternalServerError)
 }
 
 func (ctrl productController) SetProductPhoto(w http.ResponseWriter, r *http.Request) {
@@ -156,14 +180,18 @@ func (ctrl productController) Remove(w http.ResponseWriter, r *http.Request) {
 		if exist, err := ctrl.service.IsExist(productId); !exist {
 			respWriter.HandleApiError(err, http.StatusBadRequest)
 		}
+
 		product, err := ctrl.service.Get(productId)
-		respWriter.HandleApiError(err, http.StatusBadRequest)
 
-		err = ctrl.service.Remove(product)
-		respWriter.HandleApiError(err, http.StatusInternalServerError)
-
-		respWriter.ReturnJson(product)
+		if err == nil {
+			err = ctrl.service.Remove(product)
+			if err == nil {
+				respWriter.ReturnJson(product)
+			}
+		}
 	}
+
+	respWriter.HandleApiError(err, http.StatusInternalServerError)
 }
 
 func (ctrl productController) RemoveBulk(w http.ResponseWriter, r *http.Request) {
@@ -171,9 +199,15 @@ func (ctrl productController) RemoveBulk(w http.ResponseWriter, r *http.Request)
 
 	var requestData RequestDataIds
 
-	respWriter.DecodeBody(&requestData)
+	err := respWriter.DecodeBody(&requestData)
+	respWriter.HandleApiError(err, http.StatusBadRequest)
 
-	result := ctrl.service.RemoveBulk(requestData.Data.Ids)
+	if err == nil {
+		err = ctrl.service.RemoveBulk(requestData.Data.Ids)
+		if err == nil {
+			respWriter.ReturnJson(requestData.Data.Ids)
+		}
+	}
 
-	respWriter.ReturnJson(result)
+	respWriter.HandleApiError(err, http.StatusInternalServerError)
 }

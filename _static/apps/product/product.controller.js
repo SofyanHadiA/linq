@@ -75,7 +75,7 @@ function productController() {
 
     function showFormEdit(id) {
         $http.get(self.endpoint + "/" + id).done(function(model) {
-            var form = self.form.controller(self.endpoint, model.data[0])
+            var form = self.form.controller(self.endpoint, model.data)
 
             $.when(form.defer.promise()).done(function() {
                 self.tableGrid.reload();

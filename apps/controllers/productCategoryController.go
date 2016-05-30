@@ -6,17 +6,17 @@ import (
 
 	"github.com/SofyanHadiA/linq/apps"
 	. "github.com/SofyanHadiA/linq/apps/viewmodels"
-	"github.com/SofyanHadiA/linq/core/services"
+	"github.com/SofyanHadiA/linq/core"
 	"github.com/SofyanHadiA/linq/core/utils"
 
 	"github.com/satori/go.uuid"
 )
 
 type productCategoryController struct {
-	service services.IService
+	service core.IService
 }
 
-func ProductCategoryController(service services.IService) productCategoryController {
+func ProductCategoryController(service core.IService) productCategoryController {
 	return productCategoryController{
 		service: service,
 	}
@@ -141,9 +141,15 @@ func (ctrl productCategoryController) RemoveBulk(w http.ResponseWriter, r *http.
 
 	var requestData RequestDataIds
 
-	respWriter.DecodeBody(&requestData)
+	err := respWriter.DecodeBody(&requestData)
+	respWriter.HandleApiError(err, http.StatusBadRequest)
 
-	result := ctrl.service.RemoveBulk(requestData.Data.Ids)
+	if err == nil {
+		err = ctrl.service.RemoveBulk(requestData.Data.Ids)
+		if err == nil {
+			respWriter.ReturnJson(requestData.Data.Ids)
+		}
+	}
 
-	respWriter.ReturnJson(result)
+	respWriter.HandleApiError(err, http.StatusInternalServerError)
 }

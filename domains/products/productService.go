@@ -3,7 +3,7 @@ package products
 import (
 	"errors"
 
-	"github.com/SofyanHadiA/linq/core/repository"
+	"github.com/SofyanHadiA/linq/core"
 	"github.com/SofyanHadiA/linq/core/services"
 	"github.com/SofyanHadiA/linq/core/utils"
 
@@ -11,11 +11,11 @@ import (
 )
 
 type ProductService struct {
-	repo          repository.IRepository
+	repo          core.IRepository
 	uploadService services.IUploadService
 }
 
-func NewProductService(repo repository.IRepository, uploadService services.IUploadService) ProductService {
+func NewProductService(repo core.IRepository, uploadService services.IUploadService) ProductService {
 	return ProductService{
 		repo:          repo,
 		uploadService: uploadService,
@@ -30,27 +30,27 @@ func (service ProductService) IsExist(id uuid.UUID) (bool, error) {
 	return service.repo.IsExist(id)
 }
 
-func (service ProductService) GetAll(paging utils.Paging) (repository.IModels, error) {
+func (service ProductService) GetAll(paging utils.Paging) (core.IModels, error) {
 	return service.repo.GetAll(paging)
 }
 
-func (service ProductService) Get(id uuid.UUID) (repository.IModel, error) {
+func (service ProductService) Get(id uuid.UUID) (core.IModel, error) {
 	return service.repo.Get(id)
 }
 
-func (service ProductService) Create(model repository.IModel) error {
+func (service ProductService) Create(model core.IModel) error {
 	return service.repo.Insert(model)
 }
 
-func (service ProductService) Modify(model repository.IModel) error {
+func (service ProductService) Modify(model core.IModel) error {
 	if exist, _ := service.repo.IsExist(model.GetId()); exist {
 		return service.repo.Update(model)
 	} else {
-		return productNotFoundError()
+		return productNotFoundError(model.GetId())
 	}
 }
 
-func (service ProductService) UpdateProductPhoto(model repository.IModel, imageString string) error {
+func (service ProductService) UpdateProductPhoto(model core.IModel, imageString string) error {
 	if exist, _ := service.repo.IsExist(model.GetId()); exist {
 		fileName := model.GetId().String() + ".png"
 		err := service.uploadService.UploadImage(imageString, fileName)
@@ -67,24 +67,23 @@ func (service ProductService) UpdateProductPhoto(model repository.IModel, imageS
 
 		return err
 	} else {
-		return productNotFoundError()
+		return productNotFoundError(model.GetId())
 	}
 }
 
-func (service ProductService) Remove(model repository.IModel) error {
+func (service ProductService) Remove(model core.IModel) error {
 	if exist, _ := service.repo.IsExist(model.GetId()); exist {
 		err := service.repo.Delete(model)
-
 		return err
 	} else {
-		return productNotFoundError()
+		return productNotFoundError(model.GetId())
 	}
 }
 
 func (service ProductService) RemoveBulk(productIds []uuid.UUID) error {
 	for _, id := range productIds {
-		if exist, _ := service.repo.IsExist(id); exist {
-			return productNotFoundError()
+		if exist, _ := service.repo.IsExist(id); !exist {
+			return productNotFoundError(id)
 		}
 	}
 
@@ -92,6 +91,6 @@ func (service ProductService) RemoveBulk(productIds []uuid.UUID) error {
 	return err
 }
 
-func productNotFoundError() error {
-	return errors.New("ProductNotFound")
+func productNotFoundError(id uuid.UUID) error {
+	return errors.New("Product not found: " + id.String())
 }

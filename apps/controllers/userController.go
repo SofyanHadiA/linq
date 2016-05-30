@@ -11,7 +11,7 @@ import (
 
 	"github.com/SofyanHadiA/linq/apps"
 	. "github.com/SofyanHadiA/linq/apps/viewmodels"
-	"github.com/SofyanHadiA/linq/core/services"
+	"github.com/SofyanHadiA/linq/core"
 	"github.com/SofyanHadiA/linq/core/utils"
 	"github.com/SofyanHadiA/linq/domains/users"
 
@@ -19,10 +19,10 @@ import (
 )
 
 type userController struct {
-	service services.IService
+	service core.IService
 }
 
-func UserController(service services.IService) userController {
+func UserController(service core.IService) userController {
 	return userController{
 		service: service,
 	}
@@ -217,9 +217,15 @@ func (ctrl userController) RemoveBulk(w http.ResponseWriter, r *http.Request) {
 
 	var requestData RequestDataIds
 
-	respWriter.DecodeBody(&requestData)
+	err := respWriter.DecodeBody(&requestData)
+	respWriter.HandleApiError(err, http.StatusBadRequest)
 
-	result := ctrl.service.RemoveBulk(requestData.Data.Ids)
+	if err == nil {
+		err = ctrl.service.RemoveBulk(requestData.Data.Ids)
+		if err == nil {
+			respWriter.ReturnJson(requestData.Data.Ids)
+		}
+	}
 
-	respWriter.ReturnJson(result)
+	respWriter.HandleApiError(err, http.StatusInternalServerError)
 }

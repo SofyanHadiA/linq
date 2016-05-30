@@ -1,17 +1,18 @@
 /*global $app $*/
 'use strict'
+require('./../../vendors/datatables/media/js/jquery.dataTables.js');
+require('./../../vendors/datatables/media/js/dataTables.bootstrap.js');
 
 function posController() {
-    var $ = $app.$;
     var $notify = $app.$notify;
     var $tablegrid = $app.$tablegrid;
     var $modal = $app.$modal;
     var $http = $app.$http;
 
     var self = {
-        tableGrid: {},
         load: onLoad,
         renderTable: renderTable,
+        registerTable: {},
         endpoint: 'api/v1/poss'
     };
 
@@ -20,77 +21,55 @@ function posController() {
     return self;
 
     function renderTable() {
-        self.tableGrid = $tablegrid.render("#pos-table", self.endpoint, [{
-                    sortable: false,
-                    data: null,
-                    "render": function(data, type, full) {
-                        if (full['image']) {
-                            return '<img class="table-image" src="./uploads/pos_photos/' + full['image'] + '" />'
-                        }
-                        return ""
-                    }
-                }, {
-                    data: 'sku'
-                }, {
-                    data: 'title'
-                }, {
-                    data: 'category.title'
-                }, {
-                    data: 'sellPrice'
-                }, {
-                    data: 'stock'
-                }
-
+        self.registerTable = $("#pos-register-table").DataTable({
+            "info": true,
+            "autoWidth": false,
+            "pageLength": 25,
+            "order": [
+                [1, "asc"]
             ],
-            'uid');
-
-        self.tableGrid.action.delete = doDelete;
-        self.tableGrid.action.deleteBulk = doDeleteBulk;
-
-        $('#pos-table').on('click', '.edit-data', function() {
-            var posId = $(this).data("id");
-            showFormEdit(posId);
+            "processing": true,
+            "paging": false,
+            "filter": false,
+            "info": false
         });
     }
 
     function onLoad() {
         self.renderTable();
 
-        $('body').on('click', '#pos-add', function() {
-            showFormCreate();
+        // $('body').on('change', '#pos-item-search', function() {
+        //     var keyword = $(this).val();
+        //     searchItem(keyword);
+        // });
+
+        $('body').on('keydown', '#pos-item-search', function(e) {
+            var key = e.which;
+            if (key == 13) {
+                var keyword = $(this).val();
+                searchItem(keyword);
+            }
         });
     }
 
-    function showFormCreate() {
-        var form = self.form.controller(self.endpoint, null)
+    function searchItem(keyword) {
+        $http.get("api/v1/products/search/" + keyword).done(function(products) {
+            if (products.data.length == 1) {
+                var product = products.data[0]
 
-        $.when(form.defer.promise()).done(function() {
-            self.tableGrid.reload();
+                self.registerTable.row.add([
+                    product.title,
+                    product.sellPrice,
+                    1,
+                    0,
+                    product.sellPrice
+                ]).draw(false);
+            };
         });
     }
 
-    function showFormEdit(id) {
-        $http.get(self.endpoint + "/" + id).done(function(model) {
-            var form = self.form.controller(self.endpoint, model.data[0])
+    function reloadSlesRegister() {
 
-            $.when(form.defer.promise()).done(function() {
-                self.tableGrid.reload();
-            })
-        });
-    }
-
-    function doDelete(id) {
-        $http.delete(self.endpoint + "/" + id).done(function(model) {
-            self.tableGrid.reload();
-        });
-    }
-
-    function doDeleteBulk(ids) {
-        $http.post(self.endpoint + "/bulkdelete", {
-            ids: ids
-        }).done(function(ids) {
-            self.tableGrid.reload();
-        });
     }
 };
 

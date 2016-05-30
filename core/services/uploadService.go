@@ -7,10 +7,6 @@ import (
 	"strings"
 )
 
-type IUploadService interface {
-	UploadImage(image string, imageName string) error
-}
-
 type uploadService struct {
 	StoreLocation string
 }

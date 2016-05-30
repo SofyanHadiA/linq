@@ -6,20 +6,61 @@ import (
 
 	"github.com/SofyanHadiA/linq/apps"
 	. "github.com/SofyanHadiA/linq/apps/viewmodels"
-	"github.com/SofyanHadiA/linq/core/services"
+	"github.com/SofyanHadiA/linq/core"
 	"github.com/SofyanHadiA/linq/core/utils"
+	"github.com/SofyanHadiA/linq/domains/sales"
 
 	"github.com/satori/go.uuid"
 )
 
 type saleController struct {
-	service services.IService
+	service core.IService
 }
 
-func SaleController(service services.IService) saleController {
+func SaleController(service core.IService) saleController {
 	return saleController{
 		service: service,
 	}
+}
+
+func (ctrl saleController) CreateNewCarts(w http.ResponseWriter, r *http.Request) {
+	respWriter := apps.ApiService(w, r)
+
+	// TODO: Get from session
+	//userId, err := uuid.FromString(respWriter.MuxVars("id"))
+	userId := uuid.NewV4()
+	//err := error{}
+
+	//if err == nil {
+	// var requestData RequestSaleDataModel
+	// err := respWriter.DecodeBody(&requestData)
+	// respWriter.HandleApiError(err, http.StatusBadRequest)
+
+	// if err == nil {
+	saleService := ctrl.service.(sales.SaleService)
+	cart, err := saleService.NewUserCart(userId)
+	respWriter.HandleApiError(err, http.StatusInternalServerError)
+
+	if err == nil {
+		respWriter.ReturnJson(cart)
+	}
+	// }
+}
+
+func (ctrl saleController) GetUserCarts(w http.ResponseWriter, r *http.Request) {
+	respWriter := apps.ApiService(w, r)
+
+	userId, err := uuid.FromString(respWriter.MuxVars("id"))
+	respWriter.HandleApiError(err, http.StatusBadRequest)
+
+	saleService := ctrl.service.(sales.SaleService)
+
+	carts, err := saleService.GetUserCarts(userId)
+	if err == nil {
+		respWriter.ReturnJson(carts)
+	}
+
+	respWriter.HandleApiError(err, http.StatusInternalServerError)
 }
 
 func (ctrl saleController) GetAll(w http.ResponseWriter, r *http.Request) {
@@ -140,9 +181,15 @@ func (ctrl saleController) RemoveBulk(w http.ResponseWriter, r *http.Request) {
 
 	var requestData RequestDataIds
 
-	respWriter.DecodeBody(&requestData)
+	err := respWriter.DecodeBody(&requestData)
+	respWriter.HandleApiError(err, http.StatusBadRequest)
 
-	result := ctrl.service.RemoveBulk(requestData.Data.Ids)
+	if err == nil {
+		err = ctrl.service.RemoveBulk(requestData.Data.Ids)
+		if err == nil {
+			respWriter.ReturnJson(requestData.Data.Ids)
+		}
+	}
 
-	respWriter.ReturnJson(result)
+	respWriter.HandleApiError(err, http.StatusInternalServerError)
 }
