@@ -1,7 +1,8 @@
-# Linq
+# Rinjani
 Linq - the business platform to track, manage and collaborate your business operation.
 
 Features
+- [ ] GraphQL
 - [x] User
 - [ ] Authentication/Authorization 
 - [ ] Product
@@ -32,5 +33,3 @@ _Under Development_
 - Swagger
 - Ladon https://github.com/ory-am/ladon
 
-## Demo App
-https://linq-sofyan-a-1.c9users.io/#user
