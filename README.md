@@ -1,23 +1,20 @@
 # Rinjani
-Linq - the business platform to track, manage and collaborate your business operation.
+Rinjani Framework - Robust, clean, secure, easy to use, micro service, Graph QL ready Framework.
 
-Features
+#Features
+### Itterartion #1
 - [ ] GraphQL
-- [x] User
+- [x] User Management
+- [ ] Code Management and Generator
 - [ ] Authentication/Authorization 
-- [ ] Product
-- [ ] Customer
-- [ ] Sales
-- [ ] Inventory
 - [ ] Chat, notif and messaging
-- [ ] POS
-- [ ] TODO: Will add more features
 
 ## Current Version
 _Under Development_
 
 ## Technology stack
 - Golang 
+- Angular 2
 - MySQL
 - Browserify
 - jQuery
@@ -32,4 +29,3 @@ _Under Development_
 - Redis
 - Swagger
 - Ladon https://github.com/ory-am/ladon
-
