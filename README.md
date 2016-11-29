@@ -1,29 +1,30 @@
 # Rinjani
-Rinjani Framework - Robust, clean, secure, easy to use, micro service, Graph QL ready Framework.
+Rinjani Framework - Robust, clean, secure, micro service, Graph QL ready Golang - Framework.
 
 #Features
 ### Itterartion #1
 - [ ] GraphQL
 - [x] User Management
+- [ ] GRPC - www.grpc.io
 - [ ] Code Management and Generator
 - [ ] Authentication/Authorization 
-- [ ] Chat, notif and messaging
+- [ ] Websocket - Chat, notif and messaging
 
 ## Current Version
 _Under Development_
 
 ## Technology stack
 - Golang 
-- Angular 2
+- React
 - MySQL
 - Browserify
 - jQuery
 - Bootrap UI
 
 #### Will implemented soon:
-- Go Micro
 - Consul
-- RPC
+- Kubernetes
+- GRPC
 - Protocol Buffer
 - MongoDB
 - Redis
