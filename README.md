@@ -1,4 +1,4 @@
-# Rinjani
+# Rinjani - a Golang Framework
 Rinjani Framework - Robust, clean, secure, micro service, Graph QL ready Golang - Framework.
 
 #Features
