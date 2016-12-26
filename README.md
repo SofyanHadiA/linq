@@ -1,6 +1,11 @@
 # Rinjani - a Golang Framework
 Rinjani Framework - Robust, clean, secure, micro service, Graph QL ready Golang - Framework.
 
+# How to run
+## Setup Backend (TODO)
+
+## Setup Frontend (TODO)
+
 #Features
 ### Itterartion #1
 - [ ] GraphQL
@@ -15,7 +20,8 @@ _Under Development_
 
 ## Technology stack
 - Golang 
-- React
+- Handlebar
+- jQuery
 - MySQL
 - Browserify
 - jQuery
