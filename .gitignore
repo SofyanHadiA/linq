@@ -1,3 +1,4 @@
 uploads/product_photos/*.png
 uploads/user_avatars/*.png
 linq
+.vscode/
