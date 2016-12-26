@@ -6,8 +6,8 @@ Rinjani Framework - Robust, clean, secure, micro service, Graph QL ready Golang 
 
 ## Setup Frontend (TODO)
 
-#Features
-### Itterartion #1
+# Features
+## Itterartion #1
 - [ ] GraphQL
 - [x] User Management
 - [ ] GRPC - www.grpc.io
@@ -20,14 +20,14 @@ _Under Development_
 
 ## Technology stack
 - Golang 
-- Handlebar
+- Handlebars
 - jQuery
 - MySQL
 - Browserify
 - jQuery
 - Bootrap UI
 
-#### Will implemented soon:
+## Will Implemented
 - Consul
 - Kubernetes
 - GRPC
